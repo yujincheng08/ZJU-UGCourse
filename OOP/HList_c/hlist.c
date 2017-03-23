@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+//Allocate a node and initialize it.
 static HList *newNode()
 {
     HList *node = (HList*)malloc(sizeof(HList));
@@ -12,6 +13,7 @@ static HList *newNode()
     return node;
 }
 
+//Find the next node and return the previous node with type and element.
 static void seek(HList **node, HList **pre, void *element, Type type)
 {
     if(pre)
@@ -29,6 +31,7 @@ static void seek(HList **node, HList **pre, void *element, Type type)
     *node = current;
 }
 
+//Return the last element and its previous element.
 static HList *last(HList *list, HList **pre)
 {
     while(list->next)
@@ -40,13 +43,29 @@ static HList *last(HList *list, HList **pre)
     return list;
 }
 
+//New an element copying the provided element.
+static void *newElement(void *element, Type type)
+{
+    void *e = malloc(type.size);
+    memcpy(e,element,type.size);
+    return e;
+}
+
+//Delete an element and reset its pointer.
+static void deleteElement(HList **node)
+{
+    free((*node)->Element);
+    free(*node);
+    *node = NULL;
+}
+
 void Append(HList *list, void *element, Type type)
 {
     if(!list) return;
     list = last(list,NULL);
     list->next = newNode();
     list = list->next;
-    list->Element = element;
+    list->Element = newElement(element,type);
     list->ElementType = type;
 }
 
@@ -58,8 +77,7 @@ void Remove(HList *list, void *element, Type type)
     seek(&list,&pre,element,type);
     if(!list) return;
     pre->next = list->next;
-    free(list->Element);
-    free(list);
+    deleteElement(&list);;
 }
 
 
@@ -83,7 +101,7 @@ HList *TypeNext(HList *list, Type type)
     return list;
 }
 
-void printAll(HList *list)
+void PrintAll(HList *list)
 {
     if(!list)
         return;
@@ -97,12 +115,12 @@ void printAll(HList *list)
 
 void Push(HList *list, void *element, Type type)
 {
-    if(list)
+    if(!list)
         return;
     HList *New = newNode();
     New->next = list->next;
     list->next = New;
-    New->Element = element;
+    New->Element = newElement(element,type);
     New->ElementType = type;
 }
 
@@ -121,16 +139,16 @@ void Reverse(HList *list)
     list->next = last;
 }
 
-void merge(HList *list, HList *operand)
+void Merge(HList *list, HList *operand)
 {
     if(!list||!operand) return;
     while(list->next)
         list = list->next;
     list->next = operand->next;
-    free(operand);
+    operand->next = NULL;
 }
 
-void empty(HList *list)
+void Empty(HList *list)
 {
     if(!list)
         return;
@@ -141,7 +159,7 @@ void empty(HList *list)
     while(list)
     {
         next = list->next;
-        free(list);
+        deleteElement(&list);
         list = next;
     }
 }
@@ -150,7 +168,7 @@ void Pop(HList *list)
 {
     HList *next = list->next;
     list->next = next->next;
-    free(next);
+    deleteElement(&next);
 }
 
 void Out(HList *list)
@@ -158,5 +176,14 @@ void Out(HList *list)
     HList *pre;
     list = last(list,&pre);
     pre->next = NULL;
-    free(list);
+    deleteElement(&list);
+}
+
+int IsEmpty(HList *list)
+{
+    //Skip dummy head.
+    if(list->next)
+        return 0;
+    else
+        return 1;
 }
