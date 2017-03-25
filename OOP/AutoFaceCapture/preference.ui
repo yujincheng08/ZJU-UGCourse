@@ -1,0 +1,750 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Preference</class>
+ <widget class="QDialog" name="Preference">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>309</width>
+    <height>625</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Preference</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QGroupBox" name="frameBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="toolTip">
+      <string>Setting of recoginze frame</string>
+     </property>
+     <property name="statusTip">
+      <string>Setting of recoginze frame</string>
+     </property>
+     <property name="title">
+      <string>FrameSetting</string>
+     </property>
+     <layout class="QFormLayout" name="formLayout_2">
+      <property name="fieldGrowthPolicy">
+       <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+      </property>
+      <item row="0" column="0" colspan="2">
+       <widget class="QGroupBox" name="shapeBox">
+        <property name="toolTip">
+         <string>The shape of recognize frame.</string>
+        </property>
+        <property name="statusTip">
+         <string>The shape of recognize frame.</string>
+        </property>
+        <property name="title">
+         <string>Shape</string>
+        </property>
+        <layout class="QFormLayout" name="formLayout">
+         <property name="fieldGrowthPolicy">
+          <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+         </property>
+         <item row="0" column="0">
+          <widget class="QRadioButton" name="rectButton">
+           <property name="text">
+            <string>Rect</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QRadioButton" name="ellipseButton">
+           <property name="text">
+            <string>Ellipse</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <layout class="QHBoxLayout" name="thicknessLayout">
+        <item>
+         <widget class="QLabel" name="thicknessLabel">
+          <property name="toolTip">
+           <string>The thickness of recognize frame.</string>
+          </property>
+          <property name="statusTip">
+           <string>The thickness of recognize frame.</string>
+          </property>
+          <property name="text">
+           <string>Thickness:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="thicknessSpinBox">
+          <property name="toolTip">
+           <string>The thickness of recognize frame.</string>
+          </property>
+          <property name="statusTip">
+           <string>The thickness of recognize frame.</string>
+          </property>
+          <property name="suffix">
+           <string> px</string>
+          </property>
+          <property name="minimum">
+           <number>1</number>
+          </property>
+          <property name="value">
+           <number>1</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="6" column="0" colspan="2">
+       <widget class="QGroupBox" name="aspectBox">
+        <property name="toolTip">
+         <string>The actual size of recognize frame (Not calculated expend size).</string>
+        </property>
+        <property name="statusTip">
+         <string>The actual size of recognize frame (Not calculated expend size).</string>
+        </property>
+        <property name="title">
+         <string>Actual size of recognize.</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+        <layout class="QFormLayout" name="formLayout_7">
+         <item row="0" column="0">
+          <layout class="QHBoxLayout" name="horizontalLayout">
+           <item>
+            <widget class="QLabel" name="defaultLabel">
+             <property name="text">
+              <string>Default:</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="defaultBox">
+             <item>
+              <property name="text">
+               <string>Custom</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>1 Inch</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Small 1 Inch</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Big 1 Inch</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>2 Ich</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>ID</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Academic level</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Enrollment status</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item row="1" column="0">
+          <layout class="QHBoxLayout" name="horizontalLayout_4">
+           <item>
+            <widget class="QRadioButton" name="scaledButton">
+             <property name="toolTip">
+              <string>Set the scale value of width/height</string>
+             </property>
+             <property name="statusTip">
+              <string>Set the scale value of width/height</string>
+             </property>
+             <property name="text">
+              <string>Aspect Ratio</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QRadioButton" name="fixedButton">
+             <property name="toolTip">
+              <string>Set fixed ignoring original size. If you want to output an image with fixed size, select it.</string>
+             </property>
+             <property name="statusTip">
+              <string>Set fixed ignoring original size. If you want to output an image with fixed size, select it.</string>
+             </property>
+             <property name="text">
+              <string>Fixed</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item row="2" column="0">
+          <layout class="QHBoxLayout" name="horizontalLayout_3">
+           <item>
+            <widget class="QSpinBox" name="aspectSpinBox_x">
+             <property name="toolTip">
+              <string>The actual size of recognize frame (Not calculated expend size).</string>
+             </property>
+             <property name="statusTip">
+              <string>The actual size of recognize frame (Not calculated expend size).</string>
+             </property>
+             <property name="suffix">
+              <string/>
+             </property>
+             <property name="prefix">
+              <string>width:</string>
+             </property>
+             <property name="minimum">
+              <number>1</number>
+             </property>
+             <property name="maximum">
+              <number>1000</number>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QSpinBox" name="aspectSpinBox_y">
+             <property name="toolTip">
+              <string>The actual size of recognize frame (Not calculated expend size).</string>
+             </property>
+             <property name="statusTip">
+              <string>The actual size of recognize frame (Not calculated expend size).</string>
+             </property>
+             <property name="suffix">
+              <string/>
+             </property>
+             <property name="prefix">
+              <string>height:</string>
+             </property>
+             <property name="minimum">
+              <number>1</number>
+             </property>
+             <property name="maximum">
+              <number>1000</number>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item row="7" column="0" colspan="2">
+       <widget class="QGroupBox" name="marginBox">
+        <property name="toolTip">
+         <string>The expend size (Margin) of recognize frame.</string>
+        </property>
+        <property name="statusTip">
+         <string>The expend size (Margin) of recognize frame.</string>
+        </property>
+        <property name="title">
+         <string>Expend size of recognize.</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+        <layout class="QFormLayout" name="formLayout_6">
+         <item row="0" column="0">
+          <layout class="QHBoxLayout" name="horizontalLayout_5">
+           <item>
+            <widget class="QRadioButton" name="scaledButton_2">
+             <property name="toolTip">
+              <string>Calculate with actual size.</string>
+             </property>
+             <property name="statusTip">
+              <string>Calculate with actual size.</string>
+             </property>
+             <property name="text">
+              <string>Scaled</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QRadioButton" name="fixedButton_2">
+             <property name="toolTip">
+              <string>Set fix margin.</string>
+             </property>
+             <property name="statusTip">
+              <string>Set fix margin.</string>
+             </property>
+             <property name="text">
+              <string>Fixed</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item row="1" column="0">
+          <layout class="QHBoxLayout" name="horizontalLayout_6">
+           <item>
+            <widget class="QSpinBox" name="marginSpinBox_x">
+             <property name="toolTip">
+              <string>The expend size (Margin) of recognize frame.</string>
+             </property>
+             <property name="statusTip">
+              <string>The expend size (Margin) of recognize frame.</string>
+             </property>
+             <property name="suffix">
+              <string> %</string>
+             </property>
+             <property name="prefix">
+              <string>width:</string>
+             </property>
+             <property name="maximum">
+              <number>1000</number>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QSpinBox" name="marginSpinBox_y">
+             <property name="toolTip">
+              <string>The expend size (Margin) of recognize frame.</string>
+             </property>
+             <property name="statusTip">
+              <string>The expend size (Margin) of recognize frame.</string>
+             </property>
+             <property name="suffix">
+              <string> %</string>
+             </property>
+             <property name="prefix">
+              <string>height:</string>
+             </property>
+             <property name="maximum">
+              <number>1000</number>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <layout class="QGridLayout" name="gridLayout">
+        <item row="0" column="0">
+         <widget class="QLabel" name="clolorLabel">
+          <property name="toolTip">
+           <string>The color of recognize frame.</string>
+          </property>
+          <property name="statusTip">
+           <string>The color of recognize frame.</string>
+          </property>
+          <property name="text">
+           <string>Color:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QLineEdit" name="colorLineEdit">
+          <property name="toolTip">
+           <string>The color of recognize frame.</string>
+          </property>
+          <property name="statusTip">
+           <string>The color of recognize frame.</string>
+          </property>
+          <property name="text">
+           <string notr="true">#FF0000</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2">
+         <widget class="QPushButton" name="colorButton">
+          <property name="toolTip">
+           <string>Select the color of recognize frame.</string>
+          </property>
+          <property name="statusTip">
+           <string>Select the color of recognize frame.</string>
+          </property>
+          <property name="text">
+           <string>Select...</string>
+          </property>
+          <property name="icon">
+           <iconset resource="resource.qrc">
+            <normaloff>:/icons/bower.png</normaloff>:/icons/bower.png</iconset>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="4" column="0">
+       <layout class="QHBoxLayout" name="horizontalLayout_8">
+        <item>
+         <widget class="QLabel" name="dpiLabel">
+          <property name="text">
+           <string>Dpi:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="dpiBox">
+          <property name="minimum">
+           <number>1</number>
+          </property>
+          <property name="maximum">
+           <number>1000</number>
+          </property>
+          <property name="value">
+           <number>72</number>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="unitLabel">
+          <property name="text">
+           <string>Unit:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="unitBox">
+          <item>
+           <property name="text">
+            <string>Inch</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Centimeter</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Millimeter</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Metric inch</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Pixel</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="3" column="0">
+       <layout class="QHBoxLayout" name="offsetLayout">
+        <item>
+         <widget class="QLabel" name="offestLabel">
+          <property name="toolTip">
+           <string>The offset of recognize frame.</string>
+          </property>
+          <property name="statusTip">
+           <string>The offset of recognize frame.</string>
+          </property>
+          <property name="text">
+           <string>Offset:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="offsetSpinBox_x">
+          <property name="toolTip">
+           <string>The offset of recognize frame.</string>
+          </property>
+          <property name="statusTip">
+           <string>The offset of recognize frame.</string>
+          </property>
+          <property name="suffix">
+           <string> px</string>
+          </property>
+          <property name="prefix">
+           <string>x:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="offsetSpinBox_y">
+          <property name="toolTip">
+           <string>The offset of recognize frame.</string>
+          </property>
+          <property name="statusTip">
+           <string>The offset of recognize frame.</string>
+          </property>
+          <property name="suffix">
+           <string> px</string>
+          </property>
+          <property name="prefix">
+           <string>y:</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="autoCaptureBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="toolTip">
+      <string>Set the auto capture argument.</string>
+     </property>
+     <property name="statusTip">
+      <string>Set the auto capture argument.</string>
+     </property>
+     <property name="title">
+      <string>AutoCapture</string>
+     </property>
+     <layout class="QFormLayout" name="formLayout_3">
+      <property name="fieldGrowthPolicy">
+       <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+      </property>
+      <item row="0" column="0">
+       <layout class="QHBoxLayout" name="toleranceLayout">
+        <item>
+         <widget class="QLabel" name="toleranceLabel">
+          <property name="toolTip">
+           <string>If the frame float within this value, it might regard still and begin to capture after set time.</string>
+          </property>
+          <property name="statusTip">
+           <string>If the frame float within this value, it might regard still and begin to capture after set time.</string>
+          </property>
+          <property name="text">
+           <string>Tolerance:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="toleranceSpinBox">
+          <property name="toolTip">
+           <string>If the frame float within this value, it might regard still and begin to capture after set time.</string>
+          </property>
+          <property name="statusTip">
+           <string>If the frame float within this value, it might regard still and begin to capture after set time.</string>
+          </property>
+          <property name="suffix">
+           <string> px</string>
+          </property>
+          <property name="value">
+           <number>10</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="addZeroBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="toolTip">
+      <string>If enabled, the number of counter will be add zero before in order to filled the digit.</string>
+     </property>
+     <property name="statusTip">
+      <string>If enabled, the number of counter will be add zero before in order to filled the digit.</string>
+     </property>
+     <property name="title">
+      <string>Counter auto add zero</string>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <property name="checked">
+      <bool>false</bool>
+     </property>
+     <layout class="QFormLayout" name="formLayout_4">
+      <item row="0" column="0">
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QLabel" name="digitLabel">
+          <property name="toolTip">
+           <string>The digit of the counter.</string>
+          </property>
+          <property name="statusTip">
+           <string>The digit of the counter.</string>
+          </property>
+          <property name="text">
+           <string>Digit:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="digitSpinBox">
+          <property name="toolTip">
+           <string>The digit of the counter.</string>
+          </property>
+          <property name="statusTip">
+           <string>The digit of the counter.</string>
+          </property>
+          <property name="minimum">
+           <number>1</number>
+          </property>
+          <property name="maximum">
+           <number>10</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="otherBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="toolTip">
+      <string>Other setting.</string>
+     </property>
+     <property name="statusTip">
+      <string>Other setting.</string>
+     </property>
+     <property name="title">
+      <string>Other</string>
+     </property>
+     <layout class="QFormLayout" name="formLayout_5">
+      <item row="0" column="0">
+       <layout class="QHBoxLayout" name="horizontalLayout_7">
+        <item>
+         <widget class="QLabel" name="waitLabel">
+          <property name="toolTip">
+           <string>The time count down in the sure dialog.</string>
+          </property>
+          <property name="statusTip">
+           <string>The time count down in the sure dialog.</string>
+          </property>
+          <property name="text">
+           <string>SureDialog wait time:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="waitSpinBox">
+          <property name="toolTip">
+           <string>The time count down in the sure dialog.</string>
+          </property>
+          <property name="statusTip">
+           <string>The time count down in the sure dialog.</string>
+          </property>
+          <property name="suffix">
+           <string> s</string>
+          </property>
+          <property name="maximum">
+           <number>1000</number>
+          </property>
+          <property name="value">
+           <number>5</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="layoutDirection">
+      <enum>Qt::LeftToRight</enum>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+     <property name="centerButtons">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="resource.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>Preference</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>248</x>
+     <y>254</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>Preference</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>316</x>
+     <y>260</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

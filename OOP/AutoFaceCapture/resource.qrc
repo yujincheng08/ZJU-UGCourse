@@ -1,0 +1,28 @@
+<RCC>
+    <qresource prefix="/translation"/>
+    <qresource prefix="/sound">
+        <file>Ding.wav</file>
+        <file>Shot.wav</file>
+    </qresource>
+    <qresource prefix="/icons">
+        <file alias="about.png">icons/about.png</file>
+        <file alias="aboutQt.png">icons/aboutQt.png</file>
+        <file alias="autoCapture.png">icons/autoCapture.png</file>
+        <file alias="bower.png">icons/bower.png</file>
+        <file alias="camera.png">icons/camera.png</file>
+        <file alias="capture.png">icons/capture.png</file>
+        <file alias="clear.png">icons/clear.png</file>
+        <file alias="delete.png">icons/delete.png</file>
+        <file alias="file.png">icons/file.png</file>
+        <file alias="language.png">icons/language.png</file>
+        <file alias="quit.png">icons/quit.png</file>
+        <file alias="reset.png">icons/reset.png</file>
+        <file alias="retry.png">icons/retry.png</file>
+        <file alias="setting.png">icons/setting.png</file>
+        <file alias="sure.png">icons/sure.png</file>
+        <file alias="remove.png">icons/remove.png</file>
+        <file alias="preference.png">icons/preference.png</file>
+        <file alias="open.png">icons/open.png</file>
+        <file alias="selectAll.png">icons/selectAll.png</file>
+    </qresource>
+</RCC>

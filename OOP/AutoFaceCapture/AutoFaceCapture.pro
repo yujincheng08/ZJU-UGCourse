@@ -1,0 +1,34 @@
+#-------------------------------------------------
+#
+# Project created by QtCreator 2013-11-23T15:06:58
+#
+#-------------------------------------------------
+
+QT += core gui multimedia
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+CONFIG += link_pkgconfig
+PKGCONFIG += opencv
+QMAKE_CXXFLAGS_WARN_ON += -Wno-reorder
+TARGET = ../AutoFaceCapture
+TEMPLATE = app
+SOURCES += main.cpp\
+        mainwindow.cpp \
+    preference.cpp \
+    capturelistwidget.cpp \
+    suredialog.cpp \
+    mycamera.cpp
+HEADERS  += mainwindow.h \
+    preference.h \
+    capturelistwidget.h \
+    suredialog.h \
+    mycamera.h
+
+TRANSLATIONS += trans/my_zh_CN.ts \
+   trans/my_en_US.ts
+
+FORMS    += mainwindow.ui \
+    preference.ui \
+    suredialog.ui
+RC_FILE = icon.rc
+RESOURCES += resource.qrc
+ICON = icon.icns
