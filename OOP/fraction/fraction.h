@@ -9,6 +9,8 @@ class Fraction
 private:
     int Numerator;
     int Denominator;
+    class LiteralDenominator;
+    friend LiteralDenominator operator ""_f(unsigned long long int x);
 public:
     inline const int &numerator() const {return Numerator;}
     inline const int &denominator() const {return Denominator;}
@@ -41,6 +43,7 @@ public:
                                     const Fraction &fraction);
     friend std::istream &operator>>(std::istream &in,
                                     Fraction &fraction);
+    friend Fraction operator/(int const numerator,const LiteralDenominator &denominator);
 private:
     void Reducte();
     int Gcd(int a, int b) const;
@@ -60,5 +63,27 @@ Exoperator(int,>,<)
 Exoperator(int,<=,>=)
 Exoperator(int,>=,<=)
 #undef Exoperator
+
+class Fraction::LiteralDenominator
+{
+    int Denominator;
+    constexpr LiteralDenominator(int denominator)
+        :Denominator(denominator){}
+    friend LiteralDenominator operator ""_f(unsigned long long int x);
+    friend Fraction operator/(int const numerator,const LiteralDenominator &denominator);
+};
+
+inline Fraction::LiteralDenominator operator ""_f(unsigned long long int x)
+{
+    return Fraction::LiteralDenominator((int)x);
+}
+
+
+inline Fraction operator/(const int  numerator,
+                                    const Fraction::LiteralDenominator &denominator)
+{
+    return Fraction(numerator,denominator.Denominator);
+}
+
 
 #endif // FRACTION_H
