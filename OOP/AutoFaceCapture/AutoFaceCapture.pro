@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT += core gui multimedia
+QT += core gui multimedia multimediawidgets
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 CONFIG += link_pkgconfig
 PKGCONFIG += opencv
@@ -16,12 +16,14 @@ SOURCES += main.cpp\
     preference.cpp \
     capturelistwidget.cpp \
     suredialog.cpp \
-    mycamera.cpp
+    mycamera.cpp \
+    cameraview.cpp
 HEADERS  += mainwindow.h \
     preference.h \
     capturelistwidget.h \
     suredialog.h \
-    mycamera.h
+    mycamera.h \
+    cameraview.h
 
 TRANSLATIONS += trans/my_zh_CN.ts \
    trans/my_en_US.ts

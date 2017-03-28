@@ -11,11 +11,13 @@ class MyCamera;
 class captureListWidget;
 class QDir;
 class QSound;
+class CameraView;
+class QGraphicsView;
 class MainWindow : public QMainWindow, private Ui::MainWindow
 {
 	Q_OBJECT
 	CvCapture* cam;
-	MyCamera *camera;
+    //MyCamera *camera;
 	Preference *prefer;
 	QActionGroup *langActionGroup;
 	QMenu *lanMenu;
@@ -26,7 +28,8 @@ class MainWindow : public QMainWindow, private Ui::MainWindow
 	QActionGroup *camActionGroup;
 	QMenu *camMenu;
 	captureListWidget* listWidget;
-	int curCam;
+    CameraView *cameraView;
+    int curCam;
 	int camCount;
 	bool camConnected;
 public:
@@ -39,7 +42,7 @@ private slots:
 	void resetCounter();
 	void switchLan(QAction*);
 	void switchCam(QAction*);
-	void switchCam(int);
+    //void switchCam(int);
 	void refreshCam();
 	void translate();
 	void showMessgae(int);
@@ -49,7 +52,7 @@ public slots:
 private:
 	void readSetting();
 	void writeSetting();
-	int countCamera();
+    //int countCamera();
 	void createCamMenu();
 	void createLangMenu();
 	void createObjects();

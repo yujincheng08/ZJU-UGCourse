@@ -3,7 +3,7 @@
 
 #include <QWidget>
 #include <QTimer>
-#include <opencv/cv.h>
+#include <opencv/cv.hpp>
 #include <opencv/highgui.h>
 #include <QThread>
 #include <QTime>

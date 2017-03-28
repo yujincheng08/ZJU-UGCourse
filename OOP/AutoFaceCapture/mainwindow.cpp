@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include "mycamera.h"
-#include <opencv/cv.h>
-#include <opencv/highgui.h>
+//#include <opencv/cv.h>
+//#include <opencv/highgui.h>
 #include <QAction>
 #include <QMessageBox>
 #include <QFileDialog>
@@ -17,12 +17,16 @@
 #include <QKeySequence>
 #include <QShortcut>
 #include <QListWidget>
+#include <QCameraInfo>
+#include <QGraphicsView>
 #include "capturelistwidget.h"
 #include "suredialog.h"
+#include "cameraview.h"
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),prefer(new  Preference(this)),
 	m_path("trans"),listWidget(new captureListWidget(this)),
-	cam(nullptr),camera(nullptr),error(nullptr),
+    cam(nullptr),/*camera(nullptr),*/error(nullptr),
+    cameraView(new CameraView(this)),
 	camCount(0),camConnected(false),curCam(-1)
 {
 	setupUi(this);
@@ -35,6 +39,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	{
 		showMessgae(-1);
 	}
+    //setCentralWidget(cameraScene);
+    //cameraView->setCamera(QCameraInfo::availableCameras().first());
 	//camera->show();*/
 }
 
@@ -46,7 +52,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::createConnect()
 {
-	//connect(actionExit,SIGNAL(triggered()),this,SLOT(close()));
+    connect(actionExit,SIGNAL(triggered()),this,SLOT(close()));
 	connect(actionAbout,SIGNAL(triggered()),this,SLOT(showAbout()));
 	connect(actionAbout_Qt,SIGNAL(triggered()),qApp,SLOT(aboutQt()));
 	connect(captureButton,SIGNAL(clicked()),this,SLOT(capture()));
@@ -59,35 +65,35 @@ void MainWindow::createConnect()
 void MainWindow::connectCam()
 {
 	if(camConnected) return;
-	connect(camera,SIGNAL(goCapture()),this,SLOT(capture()));
-	connect(camera,SIGNAL(showMessage(int)),this,SLOT(showMessgae(int)));
-	connect(autoCapture,SIGNAL(toggled(bool)),camera,SLOT(setAutoCap(bool)));
-	connect(faceCheckBox,SIGNAL(toggled(bool)),camera,SLOT(showFrame(bool)));
+    //connect(camera,SIGNAL(goCapture()),this,SLOT(capture()));
+    //connect(camera,SIGNAL(showMessage(int)),this,SLOT(showMessgae(int)));
+//	connect(autoCapture,SIGNAL(toggled(bool)),camera,SLOT(setAutoCap(bool)));
+//	connect(faceCheckBox,SIGNAL(toggled(bool)),camera,SLOT(showFrame(bool)));
 	connect(faceCheckBox,SIGNAL(toggled(bool)),autoCapture,SLOT(setEnabled(bool)));
 	connect(faceCheckBox,SIGNAL(toggled(bool)),this,SLOT(setAutoCap(bool)));
 	connect(new QShortcut(QKeySequence(Qt::Key_Space), this),SIGNAL(activated()),this,SLOT(capture()));
-	connect(camera,SIGNAL(camLost()),this,SLOT(camLost()));
+//	connect(camera,SIGNAL(camLost()),this,SLOT(camLost()));
 	camConnected = true;
 }
 
 void MainWindow::disconnectCam()
 {
 	if(!camConnected) return;
-	disconnect(camera,SIGNAL(goCapture()),this,SLOT(capture()));
-	disconnect(camera,SIGNAL(showMessage(int)),this,SLOT(showMessgae(int)));
-	disconnect(autoCapture,SIGNAL(toggled(bool)),camera,SLOT(setAutoCap(bool)));
-	disconnect(faceCheckBox,SIGNAL(toggled(bool)),camera,SLOT(showFrame(bool)));
+//	disconnect(camera,SIGNAL(goCapture()),this,SLOT(capture()));
+//	disconnect(camera,SIGNAL(showMessage(int)),this,SLOT(showMessgae(int)));
+//	disconnect(autoCapture,SIGNAL(toggled(bool)),camera,SLOT(setAutoCap(bool)));
+//	disconnect(faceCheckBox,SIGNAL(toggled(bool)),camera,SLOT(showFrame(bool)));
 	disconnect(faceCheckBox,SIGNAL(toggled(bool)),autoCapture,SLOT(setEnabled(bool)));
 	disconnect(faceCheckBox,SIGNAL(toggled(bool)),this,SLOT(setAutoCap(bool)));
 	disconnect(new QShortcut(QKeySequence(Qt::Key_Space), this),SIGNAL(activated()),this,SLOT(capture()));
-	disconnect(camera,SIGNAL(camLost()),this,SLOT(camLost()));
+//	disconnect(camera,SIGNAL(camLost()),this,SLOT(camLost()));
 	camConnected = false;
 }
 
 void MainWindow::toggleCam(bool b)
 {
 	verticalLayout->removeWidget(error);
-	verticalLayout->removeWidget(camera);
+    //verticalLayout->removeWidget(camera);
 	if(b)
 	{
 		/*if(camera->isValid())
@@ -111,9 +117,9 @@ void MainWindow::toggleCam(bool b)
 			connectCam();
 			return true;
 		}*/
-		camera->setVisible(true);
+//		camera->setVisible(true);
 		error->setVisible(false);
-		verticalLayout->insertWidget(0,camera);
+//		verticalLayout->insertWidget(0,camera);
 		connectCam();
 		adjustSize();
 		captureButton->setDisabled(false);
@@ -141,7 +147,7 @@ void MainWindow::toggleCam(bool b)
 			return false;
 		}*/
 		error->setVisible(true);
-		camera->setVisible(false);
+//		camera->setVisible(false);
 		verticalLayout->insertWidget(0,error);
 		disconnectCam();
 		adjustSize();
@@ -152,10 +158,10 @@ void MainWindow::toggleCam(bool b)
 
 void MainWindow::setAutoCap(bool b)
 {
-	if(b)
-		camera->setAutoCap(faceCheckBox->isChecked()&&autoCapture->isChecked());
-	else
-		camera->setAutoCap(false);
+    //if(b)
+    //	camera->setAutoCap(faceCheckBox->isChecked()&&autoCapture->isChecked());
+    //else
+    //	camera->setAutoCap(false);
 }
 
 void MainWindow::camLost()
@@ -199,38 +205,38 @@ void MainWindow::showAbout()
 
 void MainWindow::capture()
 {
-	QImage image = camera->capture(faceCheckBox->isChecked());
-	image.setDotsPerMeterX(prefer->DotsPerMeter());
-	image.setDotsPerMeterY(prefer->DotsPerMeter());
-	captureButton->setDisabled(true);
-	camera->setAutoCap(false);
-	int result = 1;
-	if(prefer->waitTime()!=0)
-	{
-		sureDialog dialog(image,prefer->waitTime(),this);
-		result = dialog.exec();
-	}
-	QDir path(getFileName());
-	if(result ==sureDialog::Accepted)
-	{
-		bool pass = true;
-		if(QFile(path.path()).exists())
-			if(QMessageBox::question(this,tr("File is already existed."),
-									 tr("File is already existed.Cover it? (You can add %1 into file name "
-										"in order to change the filename automatically."))==QMessageBox::No)
-				pass = false;
-		if(pass)
-		{
-			image.save(path.path());
-			QListWidgetItem* item = new QListWidgetItem(QIcon(QPixmap::fromImage(image)),
-														path.dirName());
-			item->setData(Qt::UserRole,path.path());
-			listWidget->addItem(item);
-			counter->stepUp();
-		}
-	}
-	captureButton->setDisabled(false);
-    camera->setAutoCap(true && autoCapture->isChecked());
+//	QImage image = camera->capture(faceCheckBox->isChecked());
+//	image.setDotsPerMeterX(prefer->DotsPerMeter());
+//	image.setDotsPerMeterY(prefer->DotsPerMeter());
+//	captureButton->setDisabled(true);
+//	camera->setAutoCap(false);
+//	int result = 1;
+//	if(prefer->waitTime()!=0)
+//	{
+//		sureDialog dialog(image,prefer->waitTime(),this);
+//		result = dialog.exec();
+//	}
+//	QDir path(getFileName());
+//	if(result ==sureDialog::Accepted)
+//	{
+//		bool pass = true;
+//		if(QFile(path.path()).exists())
+//			if(QMessageBox::question(this,tr("File is already existed."),
+//									 tr("File is already existed.Cover it? (You can add %1 into file name "
+//										"in order to change the filename automatically."))==QMessageBox::No)
+//				pass = false;
+//		if(pass)
+//		{
+//			image.save(path.path());
+//			QListWidgetItem* item = new QListWidgetItem(QIcon(QPixmap::fromImage(image)),
+//														path.dirName());
+//			item->setData(Qt::UserRole,path.path());
+//			listWidget->addItem(item);
+//			counter->stepUp();
+//		}
+//	}
+//	captureButton->setDisabled(false);
+//    camera->setAutoCap(true && autoCapture->isChecked());
 }
 
 void MainWindow::selectDir()
@@ -289,8 +295,8 @@ void MainWindow::createObjects()
 {
 
     //creat cam
-    camera = new MyCamera(cam,prefer,spinBox,this);
-    camera->setObjectName(QStringLiteral("camera"));
+    //camera = new MyCamera(cam,prefer,spinBox,this);
+    //camera->setObjectName(QStringLiteral("camera"));
     error = new QLabel();
     error->setAlignment(Qt::AlignCenter);
     /*cam = cvCreateCameraCapture(0);
@@ -311,6 +317,7 @@ void MainWindow::createObjects()
 
 	//creat listWidget
 	verticalLayout_2->addWidget(listWidget);
+    verticalLayout->insertWidget(0,cameraView);
 	//creat countdown
 	countdown = new QLabel(this);
 	statusBar()->addPermanentWidget(countdown);
@@ -412,35 +419,45 @@ void MainWindow::closeEvent(QCloseEvent *event)
 		event->accept();
 }
 
-int MainWindow::countCamera()
-{
-	for(int i=0;;i++)
-    {
-        CvCapture *p = cvCreateCameraCapture(i);
-        bool result = (bool)p;
-        cvReleaseCapture(&p);
-        if(!result)
-		{
-            return i;
-        }
+//int MainWindow::countCamera()
+//{
+//	for(int i=0;;i++)
+//    {
+//        CvCapture *p = cvCreateCameraCapture(i);
+//        bool result = (bool)p;
+//        cvReleaseCapture(&p);
+//        if(!result)
+//		{
+//            return i;
+//        }
 
-	}
-}
+//	}
+    //return 0;
+//}
 
 void MainWindow::createCamMenu()
 {
 	camMenu->clear();
 	camActionGroup = new QActionGroup(this);
-	connect(camActionGroup,SIGNAL(triggered(QAction*)),this,SLOT(switchCam(QAction*)));
-	menuSetting->addMenu(camMenu);
-	for(int i=0;i!=camCount;i++)
+    connect(camActionGroup,SIGNAL(triggered(QAction*)),this,SLOT(switchCam(QAction*)));
+    menuSetting->addMenu(camMenu);
+    auto cameraList = QCameraInfo::availableCameras();
+    auto defaultCamera = QCameraInfo::defaultCamera();
+    for(auto i = cameraList.begin(); i!= cameraList.end(); ++i)
 	{
-		QAction *action = new QAction(QString("%1#%2").arg(tr("Camera")).arg(i+1),this);
+        //QAction *action = new QAction(QString("%1#%2").arg(tr("Camera")).arg(i+1),this);
+        auto action = new QAction(i->description(),this);
 		action->setCheckable(true);
-		action->setData(i);
+        action->setData(i->deviceName().toLatin1());
 		camMenu->addAction(action);
 		camActionGroup->addAction(action);
+        if(*i == defaultCamera)
+        {
+            action->setChecked(true);
+            switchCam(action);
+        }
 	}
+    camMenu->addSeparator();
 	QAction *refreshCam = new QAction(tr("Refresh camera list"),this);
 	connect(refreshCam,SIGNAL(triggered()),this,SLOT(refreshCam()));
 	camMenu->addAction(refreshCam);
@@ -449,39 +466,43 @@ void MainWindow::createCamMenu()
 
 void MainWindow::switchCam(QAction* action)
 {
-    int camnum = action->data().toInt();
-	switchCam(camnum);
+    cameraView->setCamera(action->data().toByteArray());
+    //int camnum = action->data().toInt();
+    //switchCam(camnum);
 }
 
-void MainWindow::switchCam(int num)
-{
-	if(num!= curCam && num < camCount)
-	{
-		cvReleaseCapture(&cam);
-		CvCapture *ncam = cvCreateCameraCapture(num);
-		if(ncam)
-		{
-			cam = ncam;
-			curCam = num;
-			camActionGroup->actions().at(num)->setChecked(true);
-			camera->changeCam(ncam);
-			toggleCam(true);
-		}
-	}
-}
+//void MainWindow::switchCam(int num)
+//{
+
+    //cameraView->setCamera(QCameraInfo::availableCameras().first());
+
+//	if(num!= curCam && num < camCount)
+//	{
+//		cvReleaseCapture(&cam);
+//		CvCapture *ncam = cvCreateCameraCapture(num);
+//		if(ncam)
+//		{
+//			cam = ncam;
+//			curCam = num;
+//			camActionGroup->actions().at(num)->setChecked(true);
+//			camera->changeCam(ncam);
+//			toggleCam(true);
+//		}
+//	}
+//}
 
 void MainWindow::refreshCam()
 {
-	camera->setValid(false);
+//	camera->setValid(false);
 	curCam = -1;
-	camCount = countCamera();
-	qDebug()<<camCount;
+    //camCount = countCamera();
+    //qDebug()<<camCount;
 	createCamMenu();
-	if(camCount==0)
-	{
-		toggleCam(false);
-	}
-	else
-		switchCam(0);
+    //if(camCount==0)
+    //{
+        //toggleCam(false);
+    //}
+    //else
+        //switchCam(0);
 }
 
