@@ -22,9 +22,6 @@ void CameraView::setCamera(const QCameraInfo &cameraInfo)
 {
     if(cameraInfo.isNull())
         return;
-    //Camera = new QCamera(cameraInfo);
-    //Camera->setViewfinder(Viewfinder);
-    //Camera->start();
     setCamera(new QCamera(cameraInfo,this));
 }
 
