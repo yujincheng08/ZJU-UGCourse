@@ -6,7 +6,7 @@ Fraction::Fraction(int numerator, int denominator)
     if(Denominator == 0)
         throw std::range_error("Devided by zero.");
     if(Numerator==0) Denominator=1;
-    if(Denominator!=1)
+    if(Denominator!=1&&Numerator!=1)
         Reducte();
 }
 
@@ -180,3 +180,5 @@ int Fraction::Gcd(int a, int b) const
         else  b=b-a;
     return a;
 }
+
+

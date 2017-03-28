@@ -4,14 +4,11 @@ using namespace std;
 
 int main()
 {
-    Fraction b(1,2);
-    int a = 1;
-    Fraction c;
-    cout << (a<b) <<endl;
-    cout << (a<=b) <<endl;
-    cout << (a>b) <<endl;
-    cout << (a>=b) <<endl;
-    cout << 2*a <<endl;
-    cout << (double)a <<endl;
+    Fraction b = 1235678/87654321_f;
+    Fraction a = 1/1111111111_f;
+    Fraction c = a + b;
+    cout << a <<endl;
+    cout << b <<endl;
+    cout << c <<endl;
     return 0;
 }
