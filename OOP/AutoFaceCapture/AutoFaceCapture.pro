@@ -17,13 +17,19 @@ SOURCES += main.cpp\
     capturelistwidget.cpp \
     suredialog.cpp \
     mycamera.cpp \
-    cameraview.cpp
+    cameraview.cpp \
+    facedetector.cpp \
+    thread.cpp \
+    autocapture.cpp
 HEADERS  += mainwindow.h \
     preference.h \
     capturelistwidget.h \
     suredialog.h \
     mycamera.h \
-    cameraview.h
+    cameraview.h \
+    facedetector.h \
+    thread.h \
+    autocapture.h
 
 TRANSLATIONS += trans/my_zh_CN.ts \
    trans/my_en_US.ts
@@ -34,3 +40,6 @@ FORMS    += mainwindow.ui \
 RC_FILE = icon.rc
 RESOURCES += resource.qrc
 ICON = icon.icns
+
+DISTFILES += \
+    faceRecognize.xml

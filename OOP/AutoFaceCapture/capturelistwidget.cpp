@@ -7,7 +7,6 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QCursor>
-#include <QtDebug>
 #include <QUrl>
 #include <QFile>
 #include <QMessageBox>
@@ -239,8 +238,7 @@ bool captureListWidget::forSelectedItems(bool deleted)
 {
 	bool result = true;
 	if(selectedNum()==0)	return false;
-	QList<QListWidgetItem*> selectedItems =
-			m_listWidget->selectedItems();
+    auto selectedItems = m_listWidget->selectedItems();
 	for(auto i = selectedItems.begin();i != selectedItems.end();i++)
 	{
 		QListWidgetItem* item = *i;

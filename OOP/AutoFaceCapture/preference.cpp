@@ -1,7 +1,6 @@
 #include "preference.h"
 #include <QSettings>
 #include <QColorDialog>
-#include <QtDebug>
 Preference::Preference(QWidget *parent) :
 	QDialog(parent)
 {
@@ -12,10 +11,6 @@ Preference::Preference(QWidget *parent) :
 	makeConnection();
 	calSize();
 	isCustom = true;
-}
-bool Preference::shape() const
-{
-	return rectButton->isChecked();
 }
 
 QColor  Preference::color() const
@@ -40,7 +35,7 @@ bool  Preference::aspect_scaled() const
 }
 QSize  Preference::aspect_val ()const
 {
-	return size;
+    return ssize;
 }
 bool  Preference::margin() const
 {
@@ -52,7 +47,7 @@ bool  Preference::margin_scaled() const
 }
 QSize  Preference::margin_val()const
 {
-	return smargin;
+    return smargin;
 }
 int  Preference::tolernace()const
 {
@@ -107,13 +102,6 @@ void Preference::setUnit(int t)
 void Preference::setDefaultIndex(int t)
 {
 	defaultBox->setCurrentIndex(t);
-}
-void Preference::setShape(bool t)
-{
-	if(t)
-		rectButton->setChecked(true);
-	else
-		ellipseButton->setChecked(true);
 }
 
 void Preference::translate()
@@ -247,7 +235,7 @@ void Preference::changeDefault(int t)
 	isCustom = false;
 	setAspect_sacled(false);
 	marginBox->setChecked(false);
-	setDpi(300);
+    //setDpi(300);
 	switch (t) {
 	case 1:
 		aspectSpinBox_x->setValue(25);
@@ -272,7 +260,7 @@ void Preference::changeDefault(int t)
 	case 5:
 		aspectSpinBox_x->setValue(26);
 		aspectSpinBox_y->setValue(32);
-		setDpi(350);
+        //setDpi(350);
 		unitBox->setCurrentIndex(2);
 		break;
 	case 6:
@@ -298,23 +286,23 @@ void Preference::calSize()
 	double scale =  unitBox->currentData().toDouble() / unitBox->itemData(0).toDouble();
 	if(aspect_scaled()||isPx)
 	{
-		size.setWidth(aspectSpinBox_x->value());
-		size.setHeight(aspectSpinBox_y->value());
+        ssize.setWidth(aspectSpinBox_x->value());
+        ssize.setHeight(aspectSpinBox_y->value());
 	}
 	else
 	{
-		size.setHeight(aspectSpinBox_y->value() * scale * dpiBox->value());
-		size.setWidth(aspectSpinBox_x->value() * scale * dpiBox->value());
+        ssize.setHeight(aspectSpinBox_y->value() * scale * dpiBox->value());
+        ssize.setWidth(aspectSpinBox_x->value() * scale * dpiBox->value());
 	}
 	if(margin_scaled()||isPx)
-	{
-		smargin.setWidth(marginSpinBox_x->value());
-		smargin.setHeight(marginSpinBox_y->value());
+    {
+        smargin.setWidth(marginSpinBox_x->value());
+        smargin.setHeight(marginSpinBox_y->value());
 	}
 	else
-	{		
-		smargin.setWidth(marginSpinBox_x->value() * scale * dpiBox->value());
-		smargin.setHeight(marginSpinBox_y->value() * scale * dpiBox->value());
+    {
+        smargin.setWidth(marginSpinBox_x->value() * scale * dpiBox->value());
+        smargin.setHeight(marginSpinBox_y->value() * scale * dpiBox->value());
 	}
 }
 
@@ -368,7 +356,6 @@ void Preference::setTolernace(int t)
 
 void Preference::loadSettings(const QSettings & s)
 {
-	setShape(s.value("shape",shape()).toBool());
 	setColor(s.value("color",color().name()).toString());
 	setThickness(s.value("thickness",thickness()).toInt());
 	setOffset(s.value("offset",offset()).toPoint());
@@ -385,10 +372,10 @@ void Preference::loadSettings(const QSettings & s)
 	setDefaultIndex(s.value("default",defaultIndex()).toInt());
 	setUnit(s.value("unit",unit()).toInt());
 	setDpi(s.value("dpi",dpi()).toInt());
+    resize(s.value("setting",size()).toSize());
 }
 void Preference::toSettings(QSettings & s)
 {
-	s.setValue("shape",shape());
 	s.setValue("color",color().name());
 	s.setValue("thickness",thickness());
 	s.setValue("offset",offset());
@@ -405,4 +392,5 @@ void Preference::toSettings(QSettings & s)
 	s.setValue("unit",unit());
 	s.setValue("dpi",dpi());
 	s.setValue("default",defaultIndex());
+    s.setValue("setting",size());
 }
