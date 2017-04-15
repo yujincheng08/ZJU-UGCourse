@@ -35,6 +35,7 @@ int main()
 
 void choose(int thisTime, int thisRealTime)
 {
+    bool haveNext = false;
     for(int i = 0; i<N ;++i)
     {
         if(!mark[i])
@@ -46,12 +47,15 @@ void choose(int thisTime, int thisRealTime)
             int newRealTime = submitTime + debugTime[i] * debugTimes;
             int newTime = thisTime + newRealTime + debugTimes *20;
             if(newRealTime <= 60* H)
+            {
+                haveNext = true;
                 choose(newTime,newRealTime);
+            }
             mark[i]=false;
             --top;
         }
     }
-    if(top > bestNum || (top==bestNum && thisTime < totalTime))
+    if(!haveNext && (top > bestNum || (top==bestNum && thisTime < totalTime)))
     {
         bestNum = top;
         totalTime = thisTime;
