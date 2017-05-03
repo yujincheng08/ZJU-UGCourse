@@ -2,33 +2,30 @@
 #define MAINWINDOW_H
 
 #include "ui_mainwindow.h"
-#include <QString>
-#include <QTranslator>
 #include "preference.h"
-#include <QThread>
-class CvCapture;
+
 class MyCamera;
 class captureListWidget;
 class QDir;
 class QSound;
+class CameraView;
+class QGraphicsView;
 class MainWindow : public QMainWindow, private Ui::MainWindow
 {
 	Q_OBJECT
-	CvCapture* cam;
-	MyCamera *camera;
+    QSound *Ding, *Shot;
 	Preference *prefer;
 	QActionGroup *langActionGroup;
 	QMenu *lanMenu;
-	QTranslator my_translate,qt_translate;
+    QTranslator *translator;
 	QLabel *countdown;
-	QString m_path;
 	QLabel *error;
 	QActionGroup *camActionGroup;
 	QMenu *camMenu;
 	captureListWidget* listWidget;
-	int curCam;
-	int camCount;
+    CameraView *cameraView;
 	bool camConnected;
+    QString *language;
 public:
 	MainWindow(QWidget *parent = 0);
 	~MainWindow();
@@ -38,25 +35,23 @@ private slots:
 	void selectDir();
 	void resetCounter();
 	void switchLan(QAction*);
-	void switchCam(QAction*);
-	void switchCam(int);
-	void refreshCam();
+    void switchLan(QString path);
+    //void switchCam(int);
 	void translate();
-	void showMessgae(int);
-	void setAutoCap(bool);
+    void showMessage(int);
+    void setAutoCapture(bool);
 public slots:
 	void camLost();
 private:
 	void readSetting();
 	void writeSetting();
-	int countCamera();
+    //int countCamera();
 	void createCamMenu();
 	void createLangMenu();
 	void createObjects();
 	void createConnect();
 	void connectCam();
 	void disconnectCam();
-	void toggleCam(bool);
     QDir getFileName();
 protected:
 	void closeEvent(QCloseEvent *) override;

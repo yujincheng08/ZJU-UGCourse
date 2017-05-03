@@ -8,8 +8,8 @@ class Preference : public QDialog, private Ui::Preference
 {
 	Q_OBJECT
 private:
-	QSize size,smargin;
-	bool isCustom;
+    QSize ssize,smargin;
+    bool isCustom;
 public:
 	Preference(QWidget* = 0);
 	//int exec() Q_DECL_OVERRIDE;
@@ -18,12 +18,7 @@ public:
 private:
 	void makeConnection();
 	void setpersent(QSpinBox*);
-	//void setpx(QSpinBox*);
 private slots:
-	//void setpersent_1();
-	//void setpx_1();
-	//void setpersent_2();
-	//void setpx_2();
 	void getLineColor();
 	void changeSuffix();
 	void calSize();
@@ -31,19 +26,18 @@ private slots:
 	void setData();
 	void changeStatus();
 public slots:
-	void reject() Q_DECL_OVERRIDE;
-	void accept() Q_DECL_OVERRIDE;
+    void reject() Q_DECL_OVERRIDE;
+    void accept() Q_DECL_OVERRIDE;
 public:
-	bool shape() const;
-	QColor  color() const;
+    QColor  color() const;
 	int  thickness() const;
-	QPoint  offset() const;
+    QPoint  offset() const;
 	bool  aspect() const;
 	bool  aspect_scaled() const;
-	QSize aspect_val()const;
+    QSize aspect_val()const;
 	bool  margin() const;
 	bool  margin_scaled() const;
-	QSize margin_val()const;
+    QSize margin_val()const;
 	int  tolernace()const;
 	bool addZero();
 	int addZero_digit();
@@ -55,7 +49,6 @@ public:
 	void setDpi(int);
 	void setUnit(int);
 	void setDefaultIndex(int);
-	void setShape(bool);
 	void setColor(const QColor&);
 	void setThickness(int);
 	void setOffset(const QPoint&);
@@ -64,7 +57,7 @@ public:
 	void setAspect(const QPoint&);
 	void setMargin(bool);
 	void setMargin(const QPoint&);
-	void setMargin_scaled(bool);
+    void setMargin_scaled(bool);
 	void setAddZero(bool);
 	void setAddZero_digit(int);
 	void setTolernace(int);

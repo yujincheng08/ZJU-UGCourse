@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>309</width>
-    <height>625</height>
+    <width>220</width>
+    <height>535</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -35,42 +35,54 @@
       <property name="fieldGrowthPolicy">
        <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
       </property>
-      <item row="0" column="0" colspan="2">
-       <widget class="QGroupBox" name="shapeBox">
-        <property name="toolTip">
-         <string>The shape of recognize frame.</string>
-        </property>
-        <property name="statusTip">
-         <string>The shape of recognize frame.</string>
-        </property>
-        <property name="title">
-         <string>Shape</string>
-        </property>
-        <layout class="QFormLayout" name="formLayout">
-         <property name="fieldGrowthPolicy">
-          <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-         </property>
-         <item row="0" column="0">
-          <widget class="QRadioButton" name="rectButton">
-           <property name="text">
-            <string>Rect</string>
-           </property>
-           <property name="checked">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QRadioButton" name="ellipseButton">
-           <property name="text">
-            <string>Ellipse</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
+      <item row="0" column="0">
+       <layout class="QGridLayout" name="gridLayout">
+        <item row="0" column="0">
+         <widget class="QLabel" name="clolorLabel">
+          <property name="toolTip">
+           <string>The color of recognize frame.</string>
+          </property>
+          <property name="statusTip">
+           <string>The color of recognize frame.</string>
+          </property>
+          <property name="text">
+           <string>Color:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QLineEdit" name="colorLineEdit">
+          <property name="toolTip">
+           <string>The color of recognize frame.</string>
+          </property>
+          <property name="statusTip">
+           <string>The color of recognize frame.</string>
+          </property>
+          <property name="text">
+           <string notr="true">#FF0000</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2">
+         <widget class="QPushButton" name="colorButton">
+          <property name="toolTip">
+           <string>Select the color of recognize frame.</string>
+          </property>
+          <property name="statusTip">
+           <string>Select the color of recognize frame.</string>
+          </property>
+          <property name="text">
+           <string>Select...</string>
+          </property>
+          <property name="icon">
+           <iconset resource="resource.qrc">
+            <normaloff>:/icons/bower.png</normaloff>:/icons/bower.png</iconset>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
-      <item row="2" column="0">
+      <item row="1" column="0">
        <layout class="QHBoxLayout" name="thicknessLayout">
         <item>
          <widget class="QLabel" name="thicknessLabel">
@@ -106,7 +118,128 @@
         </item>
        </layout>
       </item>
-      <item row="6" column="0" colspan="2">
+      <item row="2" column="0">
+       <layout class="QHBoxLayout" name="offsetLayout">
+        <item>
+         <widget class="QLabel" name="offestLabel">
+          <property name="toolTip">
+           <string>The offset of recognize frame.</string>
+          </property>
+          <property name="statusTip">
+           <string>The offset of recognize frame.</string>
+          </property>
+          <property name="text">
+           <string>Offset:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="offsetSpinBox_x">
+          <property name="toolTip">
+           <string>The offset of recognize frame.</string>
+          </property>
+          <property name="statusTip">
+           <string>The offset of recognize frame.</string>
+          </property>
+          <property name="suffix">
+           <string> px</string>
+          </property>
+          <property name="prefix">
+           <string>x:</string>
+          </property>
+          <property name="minimum">
+           <number>-9999</number>
+          </property>
+          <property name="maximum">
+           <number>9999</number>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="offsetSpinBox_y">
+          <property name="toolTip">
+           <string>The offset of recognize frame.</string>
+          </property>
+          <property name="statusTip">
+           <string>The offset of recognize frame.</string>
+          </property>
+          <property name="suffix">
+           <string> px</string>
+          </property>
+          <property name="prefix">
+           <string>y:</string>
+          </property>
+          <property name="minimum">
+           <number>-9999</number>
+          </property>
+          <property name="maximum">
+           <number>9999</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="3" column="0">
+       <layout class="QHBoxLayout" name="horizontalLayout_8">
+        <item>
+         <widget class="QLabel" name="dpiLabel">
+          <property name="text">
+           <string>Dpi:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="dpiBox">
+          <property name="minimum">
+           <number>1</number>
+          </property>
+          <property name="maximum">
+           <number>1000</number>
+          </property>
+          <property name="value">
+           <number>72</number>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="unitLabel">
+          <property name="text">
+           <string>Unit:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="unitBox">
+          <item>
+           <property name="text">
+            <string>Inch</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Centimeter</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Millimeter</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Metric inch</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Pixel</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="5" column="0" colspan="2">
        <widget class="QGroupBox" name="aspectBox">
         <property name="toolTip">
          <string>The actual size of recognize frame (Not calculated expend size).</string>
@@ -115,7 +248,7 @@
          <string>The actual size of recognize frame (Not calculated expend size).</string>
         </property>
         <property name="title">
-         <string>Actual size of recognize.</string>
+         <string>Actual size of recognize</string>
         </property>
         <property name="checkable">
          <bool>true</bool>
@@ -263,7 +396,7 @@
         </layout>
        </widget>
       </item>
-      <item row="7" column="0" colspan="2">
+      <item row="6" column="0" colspan="2">
        <widget class="QGroupBox" name="marginBox">
         <property name="toolTip">
          <string>The expend size (Margin) of recognize frame.</string>
@@ -272,7 +405,7 @@
          <string>The expend size (Margin) of recognize frame.</string>
         </property>
         <property name="title">
-         <string>Expend size of recognize.</string>
+         <string>Expend size of recognize</string>
         </property>
         <property name="checkable">
          <bool>true</bool>
@@ -358,162 +491,6 @@
          </item>
         </layout>
        </widget>
-      </item>
-      <item row="1" column="0">
-       <layout class="QGridLayout" name="gridLayout">
-        <item row="0" column="0">
-         <widget class="QLabel" name="clolorLabel">
-          <property name="toolTip">
-           <string>The color of recognize frame.</string>
-          </property>
-          <property name="statusTip">
-           <string>The color of recognize frame.</string>
-          </property>
-          <property name="text">
-           <string>Color:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1">
-         <widget class="QLineEdit" name="colorLineEdit">
-          <property name="toolTip">
-           <string>The color of recognize frame.</string>
-          </property>
-          <property name="statusTip">
-           <string>The color of recognize frame.</string>
-          </property>
-          <property name="text">
-           <string notr="true">#FF0000</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="2">
-         <widget class="QPushButton" name="colorButton">
-          <property name="toolTip">
-           <string>Select the color of recognize frame.</string>
-          </property>
-          <property name="statusTip">
-           <string>Select the color of recognize frame.</string>
-          </property>
-          <property name="text">
-           <string>Select...</string>
-          </property>
-          <property name="icon">
-           <iconset resource="resource.qrc">
-            <normaloff>:/icons/bower.png</normaloff>:/icons/bower.png</iconset>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item row="4" column="0">
-       <layout class="QHBoxLayout" name="horizontalLayout_8">
-        <item>
-         <widget class="QLabel" name="dpiLabel">
-          <property name="text">
-           <string>Dpi:</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QSpinBox" name="dpiBox">
-          <property name="minimum">
-           <number>1</number>
-          </property>
-          <property name="maximum">
-           <number>1000</number>
-          </property>
-          <property name="value">
-           <number>72</number>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="unitLabel">
-          <property name="text">
-           <string>Unit:</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QComboBox" name="unitBox">
-          <item>
-           <property name="text">
-            <string>Inch</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Centimeter</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Millimeter</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Metric inch</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Pixel</string>
-           </property>
-          </item>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item row="3" column="0">
-       <layout class="QHBoxLayout" name="offsetLayout">
-        <item>
-         <widget class="QLabel" name="offestLabel">
-          <property name="toolTip">
-           <string>The offset of recognize frame.</string>
-          </property>
-          <property name="statusTip">
-           <string>The offset of recognize frame.</string>
-          </property>
-          <property name="text">
-           <string>Offset:</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QSpinBox" name="offsetSpinBox_x">
-          <property name="toolTip">
-           <string>The offset of recognize frame.</string>
-          </property>
-          <property name="statusTip">
-           <string>The offset of recognize frame.</string>
-          </property>
-          <property name="suffix">
-           <string> px</string>
-          </property>
-          <property name="prefix">
-           <string>x:</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QSpinBox" name="offsetSpinBox_y">
-          <property name="toolTip">
-           <string>The offset of recognize frame.</string>
-          </property>
-          <property name="statusTip">
-           <string>The offset of recognize frame.</string>
-          </property>
-          <property name="suffix">
-           <string> px</string>
-          </property>
-          <property name="prefix">
-           <string>y:</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
       </item>
      </layout>
     </widget>

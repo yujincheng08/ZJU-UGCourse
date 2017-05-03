@@ -1,7 +1,5 @@
 #include "mainwindow.h"
 #include "mycamera.h"
-#include <opencv/cv.h>
-#include <opencv/highgui.h>
 #include <QAction>
 #include <QMessageBox>
 #include <QFileDialog>
@@ -13,224 +11,143 @@
 #include <QSettings>
 #include <QCloseEvent>
 #include <QSound>
-#include <QtDebug>
 #include <QKeySequence>
 #include <QShortcut>
 #include <QListWidget>
+#include <QCameraInfo>
+#include <QGraphicsView>
+#include <QTranslator>
+#include <QSound>
 #include "capturelistwidget.h"
 #include "suredialog.h"
+#include "cameraview.h"
+
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),prefer(new  Preference(this)),
-	m_path("trans"),listWidget(new captureListWidget(this)),
-	cam(nullptr),camera(nullptr),error(nullptr),
-	camCount(0),camConnected(false),curCam(-1)
+    listWidget(new captureListWidget(this)),
+    camActionGroup(nullptr),error(nullptr),
+    cameraView(new CameraView(prefer,this)),
+    camConnected(false)
 {
 	setupUi(this);
 	createObjects();
 	createConnect();
-	createLangMenu();
-	refreshCam();
-	readSetting();
+    createLangMenu();
+    createCamMenu();
+    readSetting();
 	if(!autoCapture->isChecked())
-	{
-		showMessgae(-1);
-	}
-	//camera->show();*/
+        showMessage(-1);
 }
 
 MainWindow::~MainWindow()
 {
-	if(cam)
-		cvReleaseCapture(&cam);
+
 }
 
 void MainWindow::createConnect()
 {
-	//connect(actionExit,SIGNAL(triggered()),this,SLOT(close()));
+    connect(actionExit,SIGNAL(triggered()),this,SLOT(close()));
 	connect(actionAbout,SIGNAL(triggered()),this,SLOT(showAbout()));
 	connect(actionAbout_Qt,SIGNAL(triggered()),qApp,SLOT(aboutQt()));
 	connect(captureButton,SIGNAL(clicked()),this,SLOT(capture()));
-	connect(actionPreferences,SIGNAL(triggered()),prefer,SLOT(exec()));
+    connect(actionPreferences,actionPreferences->triggered,this,[this](){
+        setAutoCapture(false);
+        prefer->exec();
+        setAutoCapture(true);
+    });
 	connect(choseButton,SIGNAL(clicked()),this,SLOT(selectDir()));
-	connect(resetButton,SIGNAL(clicked()),this,SLOT(resetCounter()));
-	//connect(captureList,SIGNAL(itemSelectionChanged()),this,SLOT(debugOut()));
-}
-
-void MainWindow::connectCam()
-{
-	if(camConnected) return;
-	connect(camera,SIGNAL(goCapture()),this,SLOT(capture()));
-	connect(camera,SIGNAL(showMessage(int)),this,SLOT(showMessgae(int)));
-	connect(autoCapture,SIGNAL(toggled(bool)),camera,SLOT(setAutoCap(bool)));
-	connect(faceCheckBox,SIGNAL(toggled(bool)),camera,SLOT(showFrame(bool)));
-	connect(faceCheckBox,SIGNAL(toggled(bool)),autoCapture,SLOT(setEnabled(bool)));
-	connect(faceCheckBox,SIGNAL(toggled(bool)),this,SLOT(setAutoCap(bool)));
-	connect(new QShortcut(QKeySequence(Qt::Key_Space), this),SIGNAL(activated()),this,SLOT(capture()));
-	connect(camera,SIGNAL(camLost()),this,SLOT(camLost()));
-	camConnected = true;
-}
-
-void MainWindow::disconnectCam()
-{
-	if(!camConnected) return;
-	disconnect(camera,SIGNAL(goCapture()),this,SLOT(capture()));
-	disconnect(camera,SIGNAL(showMessage(int)),this,SLOT(showMessgae(int)));
-	disconnect(autoCapture,SIGNAL(toggled(bool)),camera,SLOT(setAutoCap(bool)));
-	disconnect(faceCheckBox,SIGNAL(toggled(bool)),camera,SLOT(showFrame(bool)));
-	disconnect(faceCheckBox,SIGNAL(toggled(bool)),autoCapture,SLOT(setEnabled(bool)));
-	disconnect(faceCheckBox,SIGNAL(toggled(bool)),this,SLOT(setAutoCap(bool)));
-	disconnect(new QShortcut(QKeySequence(Qt::Key_Space), this),SIGNAL(activated()),this,SLOT(capture()));
-	disconnect(camera,SIGNAL(camLost()),this,SLOT(camLost()));
-	camConnected = false;
-}
-
-void MainWindow::toggleCam(bool b)
-{
-	verticalLayout->removeWidget(error);
-	verticalLayout->removeWidget(camera);
-	if(b)
-	{
-		/*if(camera->isValid())
-		{
-			verticalLayout->removeWidget(error);
-			captureButton->setDisabled(false);
-			autoCapture->setDisabled(false);
-			delete error;
-			error = nullptr;
-		}
-		if(camera)
-		{
-			camera = new QCamera(cam,prefer,spinBox,this);
-			camera->setObjectName(QStringLiteral("camera"));
-		}
-		if(camera->isValid())
-			return true;
-		else
-		{
-			camera->setValid(true);
-			connectCam();
-			return true;
-		}*/
-		camera->setVisible(true);
-		error->setVisible(false);
-		verticalLayout->insertWidget(0,camera);
-		connectCam();
-		adjustSize();
-		captureButton->setDisabled(false);
-		autoCapture->setDisabled(false);
-	}
-	else
-	{
-		/*if(camera->isValid())
-		{
-			disconnectCam();
-			verticalLayout->removeWidget(camera);
-			camera->setValid(false);
-		}
-		if(error)
-			return false;
-		else
-		{
-			curCam = -1;
-
-			error = new QLabel(tr("No camera detected. Please connect a camera and then restart this appliaction."),this);
-			error->setAlignment(Qt::AlignCenter);
-			verticalLayout->insertWidget(0,error);
-			captureButton->setDisabled(true);
-			autoCapture->setDisabled(true);
-			return false;
-		}*/
-		error->setVisible(true);
-		camera->setVisible(false);
-		verticalLayout->insertWidget(0,error);
-		disconnectCam();
-		adjustSize();
-		captureButton->setDisabled(true);
-		autoCapture->setDisabled(true);
-	}
-}
-
-void MainWindow::setAutoCap(bool b)
-{
-	if(b)
-		camera->setAutoCap(faceCheckBox->isChecked()&&autoCapture->isChecked());
-	else
-		camera->setAutoCap(false);
+    connect(resetButton,SIGNAL(clicked()),this,SLOT(resetCounter()));
+    connect(faceCheckBox,SIGNAL(toggled(bool)),autoCapture,SLOT(setEnabled(bool)));
+    connect(autoCapture,SIGNAL(toggled(bool)),this,SLOT(setAutoCapture(bool)));
+    connect(faceCheckBox,SIGNAL(toggled(bool)),this,SLOT(setAutoCapture(bool)));
+    connect(faceCheckBox,faceCheckBox->toggled,cameraView,cameraView->setFrame);
+    connect(spinBox,SIGNAL(valueChanged(int)),cameraView,SLOT(setCountDown(int)));
+    connect(cameraView,cameraView->restTime,this,showMessage);
 }
 
 void MainWindow::camLost()
 {
 	QMessageBox::warning(this,tr("Error"),tr("Camera lost, please check and reconnect, then refresh camera list."));
-	refreshCam();
-	refreshCam();
 }
 
 
-void MainWindow::showMessgae(int t)
+void MainWindow::showMessage(int t)
 {
     //stopSound();
 	if(t>spinBox->value())
 		countdown->setText(tr("Waiting..."));
 	else if(t>0)
 	{
-		countdown->setText(tr("%1 second(s) left").arg(t));
-        QSound::play(":/sound/Ding.wav");
+        //QSound::play(":/sound/Ding.wav");
+
+        countdown->setText(tr("%1 second(s) left").arg(t));
+        Ding->play();
 	}
 	else if(t==0)
 	{
+        //capture();
         countdown->setText(tr("A photo has been Captured!"));
-        QSound::play(":/sound/Shot.wav");
+        //QSound::play(":/sound/Shot.wav");
+        Shot->play();
+        capture();
 	}
 	else if(t==-1)
 	{
 		countdown->setText(tr("AutoCapture is closed."));
-	}
+    }
+}
+
+void MainWindow::setAutoCapture(bool b)
+{
+    if(!b)
+        showMessage(-1);
+    cameraView->setCapture(b && autoCapture->isChecked());
 }
 
 void MainWindow::showAbout()
 {
 	QMessageBox::about( this, tr("About"),
-						tr(	"Programed with Qt5 Framework and OpenCv Libruary.\n"
-						   "Creator: Yu Jincheng.\n"
-						   "School: Xinhui No.1 Middle School.\n"
-						   "Teacher: Tan Liangyou.\n"
-						   "Complie time: 201403"));
+                        tr(	"Programed with Qt Framework and OpenCv Libruary.\n"
+                           "Creator: Jincheng Yu, Yucong Yuan, Qi Liu, Qiuru Peng.\n"
+                           "School: Zhejiang University.\n"
+                           "Teacher: Lanqing Hu.\n"
+                           "Complie time: %1").arg(__DATE__));
 }
 
 void MainWindow::capture()
 {
-	QImage image = camera->capture(faceCheckBox->isChecked());
-	image.setDotsPerMeterX(prefer->DotsPerMeter());
-	image.setDotsPerMeterY(prefer->DotsPerMeter());
-	captureButton->setDisabled(true);
-	camera->setAutoCap(false);
-	int result = 1;
-	if(prefer->waitTime()!=0)
-	{
-		sureDialog dialog(image,prefer->waitTime(),this);
-		result = dialog.exec();
-	}
-	QDir path(getFileName());
-	if(result ==sureDialog::Accepted)
-	{
-		bool pass = true;
-		if(QFile(path.path()).exists())
-			if(QMessageBox::question(this,tr("File is already existed."),
-									 tr("File is already existed.Cover it? (You can add %1 into file name "
-										"in order to change the filename automatically."))==QMessageBox::No)
-				pass = false;
-		if(pass)
-		{
-			image.save(path.path());
-			QListWidgetItem* item = new QListWidgetItem(QIcon(QPixmap::fromImage(image)),
-														path.dirName());
-			item->setData(Qt::UserRole,path.path());
-			listWidget->addItem(item);
-			counter->stepUp();
-		}
-	}
-	captureButton->setDisabled(false);
-    camera->setAutoCap(true && autoCapture->isChecked());
+    cameraView->setCapture(false);
+    QImage image = cameraView->capture(faceCheckBox->isChecked());
+    image.setDotsPerMeterX(prefer->DotsPerMeter());
+    image.setDotsPerMeterY(prefer->DotsPerMeter());
+    captureButton->setDisabled(true);
+    int result = 1;
+    if(prefer->waitTime()!=0)
+    {
+        sureDialog dialog(image,prefer->waitTime(),this);
+        result = dialog.exec();
+    }
+    QDir path(getFileName());
+    if(result ==sureDialog::Accepted)
+    {
+        bool pass = true;
+        if(QFile(path.path()).exists())
+            if(QMessageBox::question(this,tr("File is already existed."),
+                                     tr("File is already existed.Cover it? (You can add %1 into file name "
+                                        "in order to change the filename automatically."))==QMessageBox::No)
+                pass = false;
+        if(pass)
+        {
+            image.save(path.path());
+            QListWidgetItem* item = new QListWidgetItem(QIcon(QPixmap::fromImage(image)),
+                                                        path.dirName());
+            item->setData(Qt::UserRole,path.path());
+            listWidget->addItem(item);
+            counter->stepUp();
+        }
+    }
+    captureButton->setDisabled(false);
+    cameraView->setCapture(autoCapture->isChecked());
 }
 
 void MainWindow::selectDir()
@@ -253,64 +170,41 @@ void MainWindow::createLangMenu()
 	langActionGroup = new QActionGroup(this);
 	connect(langActionGroup,SIGNAL(triggered(QAction*)),this,SLOT(switchLan(QAction*)));
 	menuSetting->addMenu(lanMenu);
-#ifdef Q_OS_MAC
-    QDir dir(QCoreApplication::applicationDirPath());
-    dir.cd(m_path);
-    m_path = dir.absolutePath();
-#else
-	QDir dir(m_path);
-#endif
-	QStringList fileNames = dir.entryList(QStringList("my_*.qm"));
-	for(int i = 0; i!= fileNames.length();i++)
-	{
-		QString locale = fileNames[i];
-		locale.remove(0,locale.indexOf('_')+1);
-		locale.chop(3);
-
-		QTranslator translator;
-		translator.load(fileNames[i],m_path);
-		QString language = translator.translate("MainWindow","English");
-		QAction *action = new QAction(QString("&%1 %2").arg(i+1).arg(language),this);
-		action->setCheckable(true);
-		action->setData(locale);
-
-		lanMenu->addAction(action);
-		langActionGroup->addAction(action);
-
-		if(locale == QLocale::system().name())
-		{
-			action->setChecked(true);
-			switchLan(action);
-		}
-	}
+    QDir dir;
+    auto files = dir.entryInfoList(QStringList("afc.*.qm"));
+    dir.setPath(":/translation/");
+    files << dir.entryInfoList(QStringList("afc.*.qm"));
+    for(auto i = files.begin(); i!=files.end();++i)
+    {
+        QTranslator trans;
+        trans.load(i->absoluteFilePath());
+        QString language = trans.translate("MainWindow","English");
+        QAction *action = new QAction(QString("&%1").arg(language),this);
+        action->setCheckable(true);
+        action->setData(i->absoluteFilePath());
+        lanMenu->addAction(action);
+        langActionGroup->addAction(action);
+        if(i->fileName()==QString("afc.%1.qm").arg(QLocale::system().name()))
+        {
+            action->setChecked(true);
+            switchLan(action);
+        }
+    }
 }
 
 void MainWindow::createObjects()
 {
 
     //creat cam
-    camera = new MyCamera(cam,prefer,spinBox,this);
-    camera->setObjectName(QStringLiteral("camera"));
+    cameraView->setObjectName(QStringLiteral("camera"));
+    cameraView->setToolTip(tr("The camera"));
+    cameraView->setStatusTip(tr("The Camera"));
     error = new QLabel();
     error->setAlignment(Qt::AlignCenter);
-    /*cam = cvCreateCameraCapture(0);
-    if(cam)
-    {
-        camera = new MyCamera(cam,prefer,spinBox,this);
-        camera->setObjectName(QStringLiteral("camera"));
-        verticalLayout->insertWidget(0,camera);
-    }
-    else
-    {
-        error = new QLabel(this);
-        error->setAlignment(Qt::AlignCenter);
-        verticalLayout->insertWidget(0,error);
-        captureButton->setDisabled(true);
-        autoCapture->setDisabled(true);
-    }*/
 
 	//creat listWidget
 	verticalLayout_2->addWidget(listWidget);
+    //verticalLayout->insertWidget(0,cameraView);
 	//creat countdown
 	countdown = new QLabel(this);
 	statusBar()->addPermanentWidget(countdown);
@@ -328,7 +222,12 @@ void MainWindow::createObjects()
 	fileNameEdit->setText(tr("Untitled %1"));
 
     //sound
+    Ding = new QSound(":/sound/Ding.wav",this);
+    Shot = new QSound(":/sound/Shot.wav",this);
 
+    translator = new QTranslator(this);
+
+    language = new QString;
 }
 
 QDir MainWindow::getFileName()
@@ -346,34 +245,29 @@ QDir MainWindow::getFileName()
 
 void MainWindow::switchLan(QAction* action)
 {
-	QString locale = action->data().toString();
-	my_translate.load("my_"+locale,m_path);
-	qt_translate.load("qt_"+locale,m_path);
-	qApp->installTranslator(&my_translate);
-	qApp->installTranslator(&qt_translate);
-	translate();
+    switchLan(action->data().toString());
+}
+
+void MainWindow::switchLan(QString path)
+{
+    if(path.isEmpty())
+        return;
+    *language = path;
+    translator->load(path);
+    if(translator->isEmpty())
+        return;
+    qApp->installTranslator(translator);
+    translate();
 }
 
 void MainWindow::translate()
 {
-	lanMenu->setTitle(QApplication::translate("MainWindow","language"));
-	camMenu->setTitle(QApplication::translate("MainWindow","camera"));
-	retranslateUi(this);
-	prefer->translate();
-	listWidget->translate();
-	error->setText(tr("No camera detected. Please connect a camera and then refresh camera list."));
-	/*if(cam)
-	{
-		QString tip(tr("The camera."));
-		camera->setStatusTip(tip);
-		camera->setToolTip(tip);
-	}
-	else
-	{
-		error->setText(tr("No camera detected. Please connect a camera and then restart this appliaction."));
-	}
-	camMenu->clear();
-	createCamMenu();*/
+    lanMenu->setTitle(QApplication::translate("MainWindow","language"));
+    camMenu->setTitle(QApplication::translate("MainWindow","camera"));
+    retranslateUi(this);
+    prefer->translate();
+    listWidget->translate();
+    error->setText(tr("No camera detected. Please connect a camera and then refresh camera list."));
 }
 
 void MainWindow::readSetting()
@@ -383,13 +277,27 @@ void MainWindow::readSetting()
 	pathEditor->setText(setting.value("savePath",pathEditor->text()).toString());
 	fileNameEdit->setText(setting.value("fileName",fileNameEdit->text()).toString());
 	autoCapture->setChecked(setting.value("AutoCapture",autoCapture->isChecked()).toBool());
+
 	spinBox->setValue(setting.value("AutoCaptureTime",spinBox->value()).toInt());
+    cameraView->setCountDown(spinBox->value());
 	faceCheckBox->setChecked(setting.value("RecognizeFace",faceCheckBox->isChecked()).toBool());
 	counter->setValue(setting.value("counter",counter->value()).toInt());
 	formatBox->setCurrentIndex(setting.value("format",formatBox->currentIndex()).toInt());
 	listWidget->setItemSize(setting.value("itemSize",listWidget->itemSize()).toInt());
-	restoreGeometry(setting.value("geometry",saveGeometry()).toByteArray());
-    writeSetting();
+    restoreGeometry(setting.value("geometry",saveGeometry()).toByteArray());
+    if(!setting.value("language").isNull())
+    {
+        auto lan = setting.value("language").toString();
+        auto menu = lanMenu->actions();
+        for(auto action : menu)
+        {
+            if(action->data().toString()==lan && QFile::exists(lan))
+            {
+                action->setChecked(true);
+                switchLan(lan);
+            }
+        }
+    }
 }
 void MainWindow::writeSetting()
 {
@@ -404,84 +312,54 @@ void MainWindow::writeSetting()
 	setting.setValue("format",formatBox->currentIndex());
 	setting.setValue("itemSize",listWidget->itemSize());
 	setting.setValue("geometry", saveGeometry());
+    setting.setValue("language",*language);
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-		writeSetting();
-		event->accept();
-}
-
-int MainWindow::countCamera()
-{
-	for(int i=0;;i++)
-    {
-        CvCapture *p = cvCreateCameraCapture(i);
-        bool result = (bool)p;
-        cvReleaseCapture(&p);
-        if(!result)
-		{
-            return i;
-        }
-
-	}
+    writeSetting();
+    event->accept();
 }
 
 void MainWindow::createCamMenu()
 {
 	camMenu->clear();
-	camActionGroup = new QActionGroup(this);
-	connect(camActionGroup,SIGNAL(triggered(QAction*)),this,SLOT(switchCam(QAction*)));
-	menuSetting->addMenu(camMenu);
-	for(int i=0;i!=camCount;i++)
+    if(camActionGroup)
+        delete camActionGroup;
+    camActionGroup = new QActionGroup(this);
+    menuSetting->addMenu(camMenu);
+    auto cameraList = QCameraInfo::availableCameras();
+    auto defaultCamera = QCameraInfo::defaultCamera();
+    for(auto i = cameraList.begin(); i!= cameraList.end(); ++i)
 	{
-		QAction *action = new QAction(QString("%1#%2").arg(tr("Camera")).arg(i+1),this);
+        auto action = new QAction(i->description(),this);
 		action->setCheckable(true);
-		action->setData(i);
+        action->setData(i->deviceName().toLatin1());
 		camMenu->addAction(action);
 		camActionGroup->addAction(action);
+        connect(action,action->triggered,this,[this,action]
+        {
+            cameraView->setCamera(action->data().toByteArray());
+        });
+        if(*i == defaultCamera)
+        {
+            action->setChecked(true);
+            cameraView->setCamera(*i);
+        }
 	}
+    camMenu->addSeparator();
 	QAction *refreshCam = new QAction(tr("Refresh camera list"),this);
-	connect(refreshCam,SIGNAL(triggered()),this,SLOT(refreshCam()));
+    connect(refreshCam,refreshCam->triggered,this,[this]{createCamMenu();});
 	camMenu->addAction(refreshCam);
-}
-
-
-void MainWindow::switchCam(QAction* action)
-{
-    int camnum = action->data().toInt();
-	switchCam(camnum);
-}
-
-void MainWindow::switchCam(int num)
-{
-	if(num!= curCam && num < camCount)
-	{
-		cvReleaseCapture(&cam);
-		CvCapture *ncam = cvCreateCameraCapture(num);
-		if(ncam)
-		{
-			cam = ncam;
-			curCam = num;
-			camActionGroup->actions().at(num)->setChecked(true);
-			camera->changeCam(ncam);
-			toggleCam(true);
-		}
-	}
-}
-
-void MainWindow::refreshCam()
-{
-	camera->setValid(false);
-	curCam = -1;
-	camCount = countCamera();
-	qDebug()<<camCount;
-	createCamMenu();
-	if(camCount==0)
-	{
-		toggleCam(false);
-	}
-	else
-		switchCam(0);
+    if(camActionGroup->actions().isEmpty())
+    {
+        verticalLayout->removeWidget(cameraView);
+        verticalLayout->insertWidget(0,error);
+    }
+    else
+    {
+        verticalLayout->removeWidget(error);
+        verticalLayout->insertWidget(0,cameraView);
+    }
 }
 

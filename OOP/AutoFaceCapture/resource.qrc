@@ -1,5 +1,8 @@
 <RCC>
-    <qresource prefix="/translation"/>
+    <qresource prefix="/translation">
+        <file alias="afc.en_US.qm">trans/my_en_US.qm</file>
+        <file alias="afc.zh_CN.qm">trans/my_zh_CN.qm</file>
+    </qresource>
     <qresource prefix="/sound">
         <file>Ding.wav</file>
         <file>Shot.wav</file>
@@ -24,5 +27,8 @@
         <file alias="preference.png">icons/preference.png</file>
         <file alias="open.png">icons/open.png</file>
         <file alias="selectAll.png">icons/selectAll.png</file>
+    </qresource>
+    <qresource prefix="/xml">
+        <file>faceRecognize.xml</file>
     </qresource>
 </RCC>
