@@ -93,12 +93,12 @@ size_t search(size_t &m, int &n)
         mid = (s+e)>>1;
         //If t[mid]=0, it means it's never been set
         //Otherwise, compare the number with n
-        if((mid!=0&&t[mid]==0)||Num[t[mid]]>n)
-            //move end position
-            e = mid-1;
-        else
+        if(mid==0||t[mid]!=0||Num[t[mid]]<n)
             //move start position
             s = mid+1;
+        else
+            //move end position
+            e = mid-1;
     }
     //Eliminate elements that equals to n
     //and out of searching range
