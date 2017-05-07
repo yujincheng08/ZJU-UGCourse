@@ -49,20 +49,20 @@ private:
     int Gcd(int a, int b) const;
 };
 
-#define Exoperator(type, op, newop) \
+/*#define Exoperator(type, op, newop) \
     inline Fraction operator op (const type &num, const Fraction &fraction)\
-    { return fraction newop num; }
-Exoperator(int,+,+)
-Exoperator(int,-,-)
-Exoperator(int,*,*)
-Exoperator(int,/,/)
-Exoperator(int,==,==)
-Exoperator(int,!=,!=)
-Exoperator(int,<,>)
-Exoperator(int,>,<)
-Exoperator(int,<=,>=)
-Exoperator(int,>=,<=)
-#undef Exoperator
+    { return fraction newop num; }*/
+////Exoperator(int,+,+)
+//Exoperator(int,-,-)
+//Exoperator(int,*,*)
+//Exoperator(int,/,/)
+//Exoperator(int,==,==)
+//Exoperator(int,!=,!=)
+//Exoperator(int,<,>)
+//Exoperator(int,>,<)
+//Exoperator(int,<=,>=)
+//Exoperator(int,>=,<=)
+//#undef Exoperator
 
 class Fraction::LiteralDenominator
 {

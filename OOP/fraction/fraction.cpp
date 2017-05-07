@@ -6,8 +6,7 @@ Fraction::Fraction(int numerator, int denominator)
     if(Denominator == 0)
         throw std::range_error("Devided by zero.");
     if(Numerator==0) Denominator=1;
-    if(Denominator!=1&&Numerator!=1)
-        Reducte();
+    Reducte();
 }
 
 Fraction Fraction::operator+(const int &num) const
@@ -170,7 +169,7 @@ void Fraction::Reducte()
     }
     bool sign = Numerator < 0 ? true : false;
     if(sign) Numerator = -Numerator;
-    while(!(Numerator & 1) && !(Denominator&1))
+    while(((Numerator|Denominator)&1) == 0)
         Numerator>>=1, Denominator>>=1;
     int gcd = Gcd(Numerator, Denominator);
     if(gcd > 1)
@@ -178,12 +177,27 @@ void Fraction::Reducte()
     if(sign) Numerator = -Numerator;
 }
 
-int Fraction::Gcd(int a, int b) const
+int Fraction::Gcd(int u, int v) const
 {
-    while (a!=b)
-        if (a>b)  a=a-b;
-        else  b=b-a;
-    return a;
+    if (u == 0) return v;
+    if (v == 0) return u;
+
+    while ((u & 1) == 0)
+        u >>= 1;
+    int t;
+    do
+    {
+        while ((v & 1) == 0)
+        v >>= 1;
+        if (u > v)
+        {
+            t = v;
+            v = u;
+            u = t;
+        }
+        v = v - u;
+    } while (v != 0);
+    return u;
 }
 
 
