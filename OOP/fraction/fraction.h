@@ -38,7 +38,7 @@ public:
     bool operator>=(const Fraction &fraction) const;
     bool operator>=(const int &num) const;
     operator double() const;
-
+    operator bool() const;
     friend std::ostream &operator<<(std::ostream &out,
                                     const Fraction &fraction);
     friend std::istream &operator>>(std::istream &in,

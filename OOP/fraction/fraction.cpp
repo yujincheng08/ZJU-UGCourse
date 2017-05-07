@@ -124,6 +124,11 @@ bool Fraction::operator>=(const int &num) const
     return *this > num || *this == num;
 }
 
+Fraction::operator bool() const
+{
+    return Numerator!=0;
+}
+
 Fraction::operator double() const
 {
     return (double)Numerator/Denominator;
