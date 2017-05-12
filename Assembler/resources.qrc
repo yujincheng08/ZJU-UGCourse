@@ -1,0 +1,34 @@
+<RCC>
+    <qresource prefix="/fonts">
+        <file alias="SourceCodePro.ttf">src/SourceCodePro.ttf</file>
+    </qresource>
+    <qresource prefix="/icons">
+        <file alias="about.png">src/about.png</file>
+        <file alias="aboutMenu.png">src/aboutMenu.png</file>
+        <file alias="asm.png">src/asm.png</file>
+        <file alias="build.png">src/build.png</file>
+        <file alias="coe.png">src/coe.png</file>
+        <file alias="copy.png">src/copy.png</file>
+        <file alias="cut.png">src/cut.png</file>
+        <file alias="debug.png">src/debug.png</file>
+        <file alias="delete.png">src/delete.png</file>
+        <file alias="disassembly.png">src/disassembly.png</file>
+        <file alias="edit.png">src/edit.png</file>
+        <file alias="exit.png">src/exit.png</file>
+        <file alias="file.png">src/file.png</file>
+        <file alias="find.png">src/find.png</file>
+        <file alias="goto.png">src/goto.png</file>
+        <file alias="jumpstep.png">src/jumpstep.png</file>
+        <file alias="new.png">src/new.png</file>
+        <file alias="open.png">src/open.png</file>
+        <file alias="paste.png">src/paste.png</file>
+        <file alias="print.png">src/print.png</file>
+        <file alias="qt.png">src/qt.png</file>
+        <file alias="redo.png">src/redo.png</file>
+        <file alias="save.png">src/save.png</file>
+        <file alias="selectAll.png">src/selectAll.png</file>
+        <file alias="step.png">src/step.png</file>
+        <file alias="stop.png">src/stop.png</file>
+        <file alias="undo.png">src/undo.png</file>
+    </qresource>
+</RCC>

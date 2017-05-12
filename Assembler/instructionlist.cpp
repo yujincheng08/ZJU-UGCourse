@@ -1,0 +1,66 @@
+#include "instructionlist.h"
+#include <QList>
+
+const InstructionList Instruction::getInstuctionList()
+{
+    const static InstructionList list =
+    {
+        {"lw"	,Instruction::Type11|0x23},
+        {"lb"	,Instruction::Type11|0x20},
+        {"lbu"	,Instruction::Type11|0x24},
+        {"lh"	,Instruction::Type11|0x21},
+        {"lhu"	,Instruction::Type11|0x25},
+        {"sw"	,Instruction::Type11|0x2B},
+        {"sb"	,Instruction::Type11|0x28},
+        {"sh"	,Instruction::Type11|0x29},
+        {"add"	,Instruction::Type00|0x20},
+        {"addu"	,Instruction::Type00|0x21},
+        {"sub"	,Instruction::Type00|0x22},
+        {"subu"	,Instruction::Type00|0x23},
+        {"slt"	,Instruction::Type00|0x2A},
+        {"sltu"	,Instruction::Type00|0x2B},
+        {"and"	,Instruction::Type00|0x24},
+        {"or"	,Instruction::Type00|0x25},
+        {"xor"	,Instruction::Type00|0x26},
+        {"nor"	,Instruction::Type00|0x27},
+        {"sll"	,Instruction::Type00|0x00},
+        {"srl"	,Instruction::Type00|0x02},
+        {"sra"	,Instruction::Type00|0x03},
+        {"sllv"	,Instruction::Type00|0x04},
+        {"srlv"	,Instruction::Type00|0x06},
+        {"srav"	,Instruction::Type00|0x07},
+        {"mult"	,Instruction::Type00|0x18},
+        {"multu",Instruction::Type00|0x19},
+        {"div"	,Instruction::Type00|0x1A},
+        {"divu"	,Instruction::Type00|0x1B},
+        {"addi"	,Instruction::Type11|0x08},
+        {"addiu",Instruction::Type11|0x09},
+        {"andi"	,Instruction::Type11|0x0C},
+        {"ori"	,Instruction::Type11|0x0D},
+        {"xori"	,Instruction::Type11|0x0E},
+        {"lui"	,Instruction::Type11|0x0F},
+        {"slti"	,Instruction::Type11|0x0A},
+        {"sltiu",Instruction::Type11|0x0B},
+        {"beq"	,Instruction::Type11|0x04},
+        {"bne"	,Instruction::Type11|0x05},
+        {"blez"	,Instruction::Type11|0x06},
+        {"bgtz"	,Instruction::Type11|0x07},
+        {"bltz"	,Instruction::Type01|0x00},
+        {"bgez"	,Instruction::Type01|0x01},
+        {"j"	,Instruction::Type11|0x02},
+        {"jal"	,Instruction::Type11|0x03},
+        {"jalr"	,Instruction::Type00|0x09},
+        {"jr"	,Instruction::Type00|0x08},
+        {"mfhi"	,Instruction::Type00|0x10},
+        {"mflo"	,Instruction::Type00|0x12},
+        {"mthi"	,Instruction::Type00|0x11},
+        {"mtlo"	,Instruction::Type00|0x13},
+        {"eret"	,Instruction::Type10|0x18},
+        {"mfc0"	,Instruction::Type10|0x00},
+        {"mtc0" ,Instruction::Type10|0x04},
+        {"break",Instruction::Type00|0x0D},
+        {"syscall",Instruction::Type00|0x0C}
+    }
+    ;
+    return list;
+}
