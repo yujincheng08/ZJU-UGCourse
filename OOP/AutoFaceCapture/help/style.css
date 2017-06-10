@@ -1,0 +1,47 @@
+* {
+font-family: 'Microsoft YaHei', Î¢ÈíÑÅºÚ , ËÎÌå;
+}
+.centerDOM
+{
+	text-align:center;
+}
+.titleDOM
+{
+background-color: #f6f6f6;
+border-width: 1px;
+border-style: solid;
+border-color: #e6e6e6;
+font-weight: bold;
+word-spacing: 3px;
+margin-left:20px;
+margin-right:20px;
+padding: 5px 5px 5px 10px;
+font-size:20px;
+}
+.spanDiv {
+padding-left: 40px;
+padding-right: 40px;
+position:relative;
+overflow: hidden;
+}
+.contextDOM
+{
+line-height: 20px;
+padding-top: 5px;
+padding-bottom: 5px;
+padding-left:20px;
+font-size: 13px;
+}
+.spanImg
+{
+	vertical-align:text-top;
+	float:right;
+	padding-right:40px;
+	clear:both;
+}
+.contextDOM a,.contextDOM a:visited
+{
+	color: #0f5300;
+	font-weight: bold;
+	text-decoration: none;
+}

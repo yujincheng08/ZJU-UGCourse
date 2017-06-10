@@ -3,6 +3,7 @@
 Fraction::Fraction(int numerator, int denominator)
     :Numerator(numerator), Denominator(denominator)
 {
+    //Throw exepction
     if(Denominator == 0)
         throw std::range_error("Devided by zero.");
     if(Numerator==0) Denominator=1;
@@ -143,6 +144,7 @@ std::ostream &operator<<(std::ostream &out,const Fraction &fraction)
 
 std::istream &operator>>(std::istream &in,Fraction &fraction)
 {
+    //Get like a/b;
     char c;
     int numerator, denominator;
     in>>numerator>>c>>denominator;
@@ -164,9 +166,11 @@ void Fraction::Reducte()
 {
     if(Denominator < 0)
     {
+        //Put the sign to numerator
         Numerator = -Numerator;
         Denominator = -Denominator;
     }
+    //get sign
     bool sign = Numerator < 0 ? true : false;
     if(sign) Numerator = -Numerator;
     while(((Numerator|Denominator)&1) == 0)
@@ -177,6 +181,7 @@ void Fraction::Reducte()
     if(sign) Numerator = -Numerator;
 }
 
+//Binary gcd algorithm
 int Fraction::Gcd(int u, int v) const
 {
     if (u == 0) return v;

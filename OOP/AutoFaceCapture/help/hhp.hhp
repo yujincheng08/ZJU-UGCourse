@@ -1,0 +1,26 @@
+[OPTIONS]
+Auto Index=Yes
+Compatibility=1.1 or later
+Compiled file=hhp.chm
+Contents file=hhc.hhc
+Default Font=微软雅黑,10,0
+Default Window=main
+Default topic=Cover.html
+Display compile progress=Yes
+Error log file=c:\Users\Shana\Documents\qt-project\AutoFaceCapture\help\hlog.log
+Full-text search=Yes
+Index file=Index.hhk
+Language=0x804 中文(简体，中国)
+Title=说明帮助文档
+
+[WINDOWS]
+main="自动人脸抓拍工具 - 说明帮助","hhc.hhc","Index.hhk","Cover.html","Cover.html",,,,,0x22520,265,0x206e,[296,46,1659,935],,,,,,,0
+
+
+[FILES]
+Cover.html
+mainWindow.html
+setting.html
+
+[INFOTYPES]
+

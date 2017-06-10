@@ -19,6 +19,7 @@ void Phraser::Build(QByteArray &data)
 {
     if(!Document)
         return;
+    data.fill('\0');
     QString source = Document->toPlainText();
     source.replace(QRegularExpression("(//|#).*(\\n|$)"),"\\2");
     QRegularExpression reg

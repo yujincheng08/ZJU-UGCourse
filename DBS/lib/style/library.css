@@ -1,0 +1,308 @@
+body
+{
+	position: relative;
+	height: auto;
+}
+div#header
+{
+	margin-top: 20px;
+}
+nav#nav
+{
+	border-bottom: 1px solid #e5e5e5;
+}
+nav#nav ul + ul
+{
+	margin-left: 20px;
+}
+nav#nav ul
+{
+	padding: 0px;
+	margin-bottom: 0px;
+}
+.wp
+{
+	width: 980px;
+	margin: 0 auto;
+}
+div#main
+{
+	width: 100%;
+	padding-top: 10px;
+	padding-bottom: 80px;
+}
+label
+{
+	vertical-align: middle;
+}
+ul
+{
+	display: inline-block;
+}
+ul#menu
+{
+	display: table;
+	float: left;
+}
+ul#menu li
+{
+	display: table-cell;
+}
+ul#menu li + li
+{
+	padding-left:50px;
+}
+ul#user
+{
+	float:right;
+}
+ul#user li
+{
+	display:inline-block;
+}
+a:link, a:visited
+{
+	color: black;
+	text-decoration: none;
+}
+a:hover
+{
+	color: #00a1d6;
+}
+
+
+nav#nav ul#menu li.active a
+{
+	border-bottom: 3px solid #fd4c5d;
+	box-sizing: border-box;
+	color: #fd4c5d;
+}
+
+.clearfix:after
+{
+	content:".";
+	display:block;
+	height:0;
+	clear:both;
+	visibility:hidden
+}
+
+form
+{
+	width: 300px;
+}
+
+form#login,form#import
+{
+	margin: 100px auto;
+}
+
+.center
+{
+	margin: 0 auto;
+}
+
+input[type="submit"], button[type="submit"], button.upload
+{
+	padding-left: 0px !important;
+	background-color: #da4453;
+	color: #fff;
+	font-size: 18px;
+	cursor: pointer;
+}
+
+input[type="submit"]:hover, button[type="submit"]:hover, button.upload:hover
+{
+	background-color: #ea5463;
+}
+
+input, select, button, button.upload
+{ 
+	width: 100%;
+	padding-top: 5px;
+	height: 40px;
+	margin-top: 10px;
+	border: 1px solid #e7e7e7;
+	padding-left: 30px;
+}
+
+select
+{
+	font-size: 18px;
+}
+
+input:focus, select:focus, button:focus
+{
+	border-color: #c00 !important;
+	outline:none;
+}
+
+i.icon
+{
+	position: absolute;
+	top: 0px;
+	left: 10px;
+	color: #bbb;
+	font: normal normal normal 15px/1 FontAwesome;
+}
+
+.area
+{
+	position: relative;
+}
+
+.tip
+{
+	color: #ff9833;
+	line-height: 18px;
+	height: auto;
+    background: #fee6ce;
+    border: 1px solid #fee6ce;
+    padding: 5px 18px;
+	text-align: center;
+}
+
+.logoutIcon
+{
+	font-size: 12px;
+	padding-right: 2px;
+	padding-left: 20px;
+	color: #fd4c5d;
+}
+
+th
+{
+	cursor: pointer;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	min-width: 100px;
+	background-color: #da4453;
+	color: white;
+} 
+table tr:nth-of-type(odd)
+{
+	    background-color: #fac3c3;
+}
+
+table tr:nth-of-type(even)
+{
+	    background-color: #ffe1e1;
+}
+td
+{
+	padding:5px;
+	text-align: center;
+}
+
+.inc:after, .dec:after
+{
+	font-family: FontAwesome;
+	font-size: 12px;
+	padding-left: 2px;
+}
+
+.inc:after
+{
+	content: "\f0de";
+}
+
+.dec:after
+{
+	content: "\f0dd";
+}
+table
+{
+	margin:40px auto;
+	max-width: 980px;
+}
+
+form#search, form#addBook
+{
+	width:600px;
+}
+form#search input, form#search button,
+	form#addBook input, form#addBook button
+{
+	width: 49%;
+}
+input#searchEndYear,
+input#searchStartYear,
+input#searchStartPrice,
+input#searchEndPrice,
+input#addPrice,
+input#addStock
+{
+	width: 24% !important;
+}
+
+button.return, button.deleteCard
+{
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	background-color: #da4453;
+	border: none;
+	padding: 5px 0px;
+	color: white;
+	cursor: pointer;
+}
+
+button:focus
+{
+	outline: none;
+}
+
+input:invalid
+{
+	border: 1px solid #468847;
+	color: #c33;
+}
+
+input:invalid::-webkit-input-placeholder 
+{
+	color: #c33;
+}
+
+button.upload
+{
+	display: inline-block;
+	padding-top: 0px;
+	position: relative;
+	cursor: pointer;
+}
+
+button.upload  input {
+	position: absolute;
+	font-size: 0px;
+	right: 0;
+	top: 0;
+	opacity: 0;
+	filter: alpha(opacity=0);
+	cursor: pointer;
+	margin: 0px;
+	padding: 0px !important;
+}
+
+footer
+{
+	position: absolute;
+	bottom: 0;
+	height: 80px;
+	text-align: center;
+	width: 100%
+}
+
+footer#foot span+span
+{
+	padding-left: 20px;
+}
+
+footer#foot p
+{
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}

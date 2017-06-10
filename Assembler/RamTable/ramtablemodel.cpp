@@ -111,6 +111,6 @@ int RamTableModel::offset(const QModelIndex &index) const
 
 void RamTableModel::reset()
 {
-	beginResetModel();
+    beginResetModel();
 	endResetModel();
 }

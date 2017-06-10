@@ -1,0 +1,22 @@
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="style.css" >
+</head>
+<body>
+<a name="faceRecognize"></a>
+<h2 class="titleDOM" >人脸识别</h2>
+<div class="spanDiv"><span class="contextDOM">人脸识别，顾名思义，就是识别人脸（而非人头）。由于技术和效率的限制，识别仅限于正立的正面脸，侧脸、斜脸均不能识别。能同时识别多张脸，但只挑选面积最大的脸，因为大头照是照一个人的照片。识别出的人脸在<a href="#camera">摄像头显示区域</a>中以<a href="#recognizeFrame">识别框</a>显示出。程序左下角有<a href="#switchFrame">开关</a>以控制识别功能。对于需要框选人脸以外部分，可以通过设置<a href="setting.html#fixSize">识别框实际大小</a>和<a href="setting.html#expendSize">识别框扩展大小</a>来实现。</span></div>
+<a name="recognizeFrame"></a>
+<h2 class="titleDOM" >识别框</h2>
+<div class="spanDiv"><span class="contextDOM">在<a href="#camera">摄像头显示区域</a>中显示的框型对象。识别框用于显示出识别出的人脸。用户可以通过设置<a href="setting.html#fixSize">识别框实际大小</a>和<a href="setting.html#expendSize">识别框扩展大小</a>来自定义识别框以符合自己的需求。用户还可以<a href="setting.html#fixSize">自定义识别框形状</a>，但裁剪效果仍为矩形。</span><img class="spanImg" src="img/frame1.png"></div>
+<a name="camera"></a>
+<h2 class="titleDOM" >摄像头显示区域</h2>
+<div class="spanDiv"><span class="contextDOM">显示摄像头内容。在<a href="#switchFrame">启用识别框</a>时，会显示出<a href="#recognizeFrame">识别框</a>。<img class="spanImg" src="img/camera.png"></span></div>
+<a name="switchFrame"></a>
+<h2 class="titleDOM" >显示人脸识别框</h2>
+<div class="spanDiv"><span class="contextDOM">设置是否显示&使用识别框。选中时，在<a href="#camera">摄像头显示区域</a>显示出<a href="#recognizeFrame">识别框</a>，并且抓拍后自动裁剪照片。不选时，不启动识别功能，不显示<a href="#recognizeFrame">识别框</a>，不裁剪照片</span></div>
+<a name="autoCapture"></a>
+<h2 class="titleDOM" >自动抓拍</h2>
+<div class="spanDiv"><span class="contextDOM">在设定秒数内，如果<a href="#recognizeFrame">识别框</a>在<a href="setting.html#tolerance">容差</a>范围内稳定，则抓拍一张照片。使用该功能的前提时<a href="#switchFrame">启动人脸识别框</a>。抓拍倒计时在右下角状态栏显示，并且有声音提示。抓拍完成后，会有确认窗口弹出以审核照片质量。</span></div>
+</body>
+</html>

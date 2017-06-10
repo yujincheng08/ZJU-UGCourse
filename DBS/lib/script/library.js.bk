@@ -1,0 +1,310 @@
+$(function()
+{
+	$("form#login").submit
+	(
+		function(e)
+		{
+			$.ajax
+			({
+			type:"post",
+			url:"login",
+			data:$(this).serialize(),
+			dataType:'json',
+			success: function(result)
+			{
+				if(result['success'])
+				{
+					$("form#login").fadeOut('normal');
+					showTip('Login in success! Welecome, '+result['username'] + '!' +
+							' Jumping to homepage in 5 seconds...',
+							function()
+							{
+								setTimeout(function(){document.location.href="./";},5000);
+							});
+				}
+				else
+				{
+					showTip('Error occurs: ' + result['error']);
+				}
+			}});
+			e.preventDefault();
+		}
+	);
+
+	$("form#import").submit
+	(
+		function(e)
+		{
+			$.ajax
+			({
+			type:"POST",
+			url:"import",
+			data:new FormData(this),
+			cache:false,
+			processData:false,
+			contentType:false,
+			dataType: 'json',
+			success: function(result)
+			{
+				if(result['success'])
+					showTip('Successfully import!');
+				else
+					showTip(result['error']);
+			}
+			});
+			e.preventDefault();
+		}
+	)
+	
+	$('input#file').change
+	(
+		function(e)
+		{
+			showTip("Selected file: " + this.files[0].name);
+		}
+	)
+
+	$("form#search").submit
+	(
+		function(e)
+		{
+			$.ajax
+			({
+			type:"post",
+			url:"search",
+			data:$(this).serialize(),
+			dataType:'json',
+			success: function(result)
+			{
+				if(result['success'])
+				{
+					buildTable(result,$('table#searchTable'));
+				}
+				else
+				{
+					showTip('Error occurs: '+ result['error']);
+				}
+			}});
+			e.preventDefault();
+		}
+	)
+
+	$("form#borrow").submit
+	(
+		function(e)
+		{
+			$.ajax
+			({
+			type:"post",
+			url:"borrowBook",
+			data:$(this).serialize(),
+			dataType:'json',
+			success: function(result)
+			{
+				if(result['status'])
+					showTip('Successfully Borrowed this book!');
+				if(result['error'])
+					showTip('Error occurs: ' + result['error']);
+				buildTable(result,$('table#returnTable'));
+			}});
+			e.preventDefault();
+		}
+	)
+	
+	$("form#return").submit
+	(
+		function(e)
+		{
+			$.ajax
+			({
+			type:"post",
+			url:"returnBook",
+			data:$(this).serialize(),
+			dataType:'json',
+			success: function(result)
+			{
+				if(result['error'])
+					showTip('Error occurs: '+result['error']);
+				buildReturn(result,$('table#returnTable'));
+			}});
+			e.preventDefault();
+		}
+	)
+	function buildReturn(result, $table)
+	{
+		if(result['field'])
+			result['field']['return']='return';
+		for(var row in result['data'])
+			result['data'][row]['return']
+				='<button class="return" bid="'
+				+result['data'][row]['bid']
+				+'" cid="'+result['data'][row]['cid']
+				+'" borrow="'+result['data'][row]['borrow']
+				+'">Return</button>';
+		buildTable(result,$table);
+	}
+
+	function buildCard(result, $table)
+	{
+		result['field']['delete']='delete';
+		for(var row in result['data'])
+			result['data'][row]['delete']
+				='<button class="deleteCard" cid="'
+				+result['data'][row]['id']
+				+'">Delete</button>';
+		buildTable(result,$table);
+	}
+	
+	function buildTable(result, $table)
+	{
+		$table.fadeOut('fast',
+		function()
+		{
+		$table.children().remove();
+		$table.append('<tr>');
+		$tr = $table.children('tr:last');
+		for(var head in result['field'])
+			$tr.append("<th>"+result['field'][head]+"</th>");
+		if(result['data'])
+			for(var row in result['data'])
+			{
+				var rowStr="<tr>"
+				for(var val in result['data'][row])
+					rowStr += "<td class='"+val+"'>"+result['data'][row][val]+"</td>";
+				rowStr +="</tr>";
+				$table.append(rowStr);
+			}
+
+			
+		$('th:contains(title)').addClass('inc');
+		$table.fadeIn('slow');
+		});
+
+	}
+
+	$('table#returnTable').on('click','button.return',
+		function()
+		{
+			var data = 
+			{
+			bid : $(this).attr('bid'),
+			cid : $(this).attr('cid'),
+			borrow : $(this).attr('borrow')
+			};
+			$.ajax(
+			{
+			type:"post",
+			url:"returnBook",
+			data:data,
+			dataType:'json',
+			success: function(result)
+			{
+				if(result['status'])
+					showTip('Successfully returned this book!');
+				if(result['error'])
+					showTip('Error occurs: ' + result['error']);
+				buildReturn(result,$('table#returnTable'));
+			}});
+		}
+	);
+	
+	$('table#cardTable').on('click','button.deleteCard',
+		function()
+		{
+			var data = {id : $(this).attr('cid')};
+			$.ajax(
+			{
+			type:"post",
+			url:"card",
+			data:data,
+			dataType:'json',
+			success: function(result)
+			{
+				if(result['status'])
+					showTip('Successfully deleted this card!');
+				if(result['error'])
+					showTip('Error occurs: ' + result['error']);
+				buildCard(result,$('table#cardTable'));
+			}});
+		}
+	);
+	$('form#newCard').submit(
+		function(e)
+		{
+			$.ajax(
+			{
+			type:"post",
+			url:"card",
+			data:$(this).serialize(),
+			dataType:'json',
+			success: function(result)
+			{
+				if(result['status'])
+					showTip('Successfully add this card!');
+				if(result['error'])
+					showTip('Error occurs: ' + result['error']);
+				buildCard(result,$('table#cardTable'));
+			}});
+			this.reset();
+			e.preventDefault();
+		}
+	);
+	$('form#addBook').submit(
+		function(e)
+		{
+			$.ajax(
+			{
+			type:"post",
+			url:"import",
+			data:$(this).serialize(),
+			dataType:'json',
+			success: function(result)
+			{
+				if(result['success'])
+					showTip('Successfully add this book!');
+				else
+					showTip('Error occurs: ' + result['error']);
+			}});
+			this.reset();
+			e.preventDefault();
+		}
+	);
+
+	function compare(a,b)
+	{
+		if(isNaN(a)||isNaN(b))
+			return a.localeCompare(b);
+		else
+			return a-b
+	}
+
+	$('table').on('click','th',function(e)
+			{
+				var sortIndex = $(this).index();
+				var order = $(this).hasClass('inc');
+				$(this).parent().children().removeClass('dec').removeClass('inc');
+				$(this).addClass(order? 'dec' : 'inc');
+				var $table = $(this).parents('table');
+				var $data = $table.find('tr:not(:has(th))');
+				var result = $data.get().sort(
+						function(x,y)
+						{
+							var a = $(x).children().eq(sortIndex).text();
+							var b = $(y).children().eq(sortIndex).text();
+
+							return order? -compare(a,b) : compare(a,b);
+						});;
+				$data.remove();
+				$table.append(result);
+			});
+	function showTip(tip, callback)
+	{
+		$('#tip').hide('normal',
+			function()
+			{
+				$('#tip span').text(tip);
+				$('#tip').show('show',callback);
+			});
+	}
+
+});

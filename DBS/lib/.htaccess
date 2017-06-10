@@ -1,0 +1,6 @@
+RewriteEngine on
+RewriteCond %{SERVER_PORT} !^443$
+RewriteRule (.*) https://%{SERVER_NAME}/$1 [L,R]
+RewriteCond %{REQUEST_URI} !^.*/index.php.*$
+RewriteCond %{REQUEST_FILENAME} !^.*(js|css|png|jpg|eot|woff|woff2|ttd|svg)$
+RewriteRule "^(.*)$" index.php?action=$1

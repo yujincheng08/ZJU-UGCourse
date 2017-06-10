@@ -447,8 +447,8 @@ void MainWindow::setBase(QAction *action)
 
 void MainWindow::Build()
 {
-    ramTable->reset();
     phraser->Build(ramTable->rawData());
+    ramTable->refresh();
 }
 
 void MainWindow::open()
