@@ -53,6 +53,11 @@ public:
     virtual ~HNode();
 };
 
+template<typename T>
+class SList;
+template<typename T>
+class ConstSList;
+
 class HList
 {
 private:
@@ -141,6 +146,10 @@ public:
     TypeIterator<T> find(const Iterator &iter, const T& e);
     template<typename T>
     ConstTypeIterator<T> find(const ConstIterator &iter, const T& e) const;
+    template<typename T>
+    SList<T> typeList();
+    template<typename T>
+    const ConstSList<T> typeList() const;
     inline ~HList();
 };
 
@@ -292,6 +301,37 @@ public:
     inline const T &operator*() const;
 };
 
+template<typename T>
+class SList
+{
+    HList *const hlist;
+    friend class HList;
+public:
+    SList(HList *const list)
+        :hlist(list){}
+    HList::TypeIterator<T> begin();
+    HList::TypeIterator<T> end();
+    HList::ReverseTypeIterator<T> rbegin();
+    HList::ReverseTypeIterator<T> rend();
+    HList::ConstTypeIterator<T> begin() const;
+    HList::ConstTypeIterator<T> end() const;
+    HList::ConstReverseTypeIterator<T> rbegin() const;
+    HList::ConstReverseTypeIterator<T> rend() const;
+};
+
+template<typename T>
+class ConstSList
+{
+    const HList *const hlist;
+    friend class HList;
+public:
+    ConstSList(const HList *const list)
+        :hlist(list){}
+    HList::ConstTypeIterator<T> begin() const;
+    HList::ConstTypeIterator<T> end() const;
+    HList::ConstReverseTypeIterator<T> rbegin() const;
+    HList::ConstReverseTypeIterator<T> rend() const;
+};
 
 template<typename T>
 bool BaseNode::operator==(const T &e)
@@ -329,9 +369,6 @@ T HList::BaseIterator::Next()
             if(Node->sametype<K>())
                 break;
     return *(dynamic_cast<T*>(this));
-//    T &s = *(dynamic_cast<T*>(this));
-//    s = List->nextType<K>(s);
-//    return s;
 }
 
 template<typename T,typename K>
@@ -350,9 +387,6 @@ T HList::BaseIterator::Previous()
             if(Node->template sametype<K>())
                 break;
     return *(dynamic_cast<T*>(this));
-//    T &s = *(dynamic_cast<T*>(this));
-//    s = List->previousType<K>(s);
-//    return s;
 }
 
 template<typename T,typename K>
@@ -422,37 +456,11 @@ void HList::clear()
     Tail = tail;
 }
 
-
-//template<typename T>
-//BaseNode *HList::nextType(BaseNode *node) const
-//{
-//    for(node = node->next; node; node = node->next)
-//        if(node->template sametype<HNode<T>>())
-//            return node;
-//    return nullptr;
-//}
-
-//template<typename T>
-//BaseNode *HList::previousType(BaseNode *node) const
-//{
-//    for(node = node->previous; node && node != Head; node = node->previous)
-//        if(node->template sametype<HNode<T>>())
-//            return node;
-//    return Head;
-//}
-
 template<typename T>
 HList::TypeIterator<T> HList::nextType(const TypeIterator<T> &iter)
 {
     auto s(iter);
     return ++s;
-//    if(iter.List->Head != Head)
-//        return HList::TypeIterator<T>(*this);
-//    return HList::TypeIterator<T>(*this,nextType<T>(iter.Node));
-//    for(auto i = iter.Node->next; i; i = i->next)
-//        if(i->template sametype<HNode<T>>())
-//            return HList::TypeIterator<T>(*this,i);
-//    return
 }
 
 template<typename T>
@@ -460,13 +468,6 @@ HList::ReverseTypeIterator<T> HList::previousType(const ReverseTypeIterator<T> &
 {
     auto s(iter);
     return ++s;
-//    if(iter.List->Head != Head)
-//        return HList::ReverseTypeIterator<T>(*this,Head);
-//    return HList::ReverseTypeIterator<T>(*this,previousType<T>(iter.Node));
-//    for(auto i = iter.Node->previous; i && i != iter.List->Head; i = i->previous)
-//        if(i->template sametype<HNode<T>>())
-//            return HList::ReverseTypeIterator<T>(*this,i);
-//    return HList::ReverseTypeIterator<T>(*this,Head);
 }
 
 template<typename T>
@@ -474,9 +475,6 @@ HList::ConstTypeIterator<T> HList::nextType(const ConstTypeIterator<T> &iter) co
 {
     auto s(iter);
     return ++s;
-//    if(iter.List->Head != Head)
-//        return HList::ConstTypeIterator<T>(*this);
-//    return HList::ConstTypeIterator<T>(*this,nextType<T>(iter.Node));
 }
 
 template<typename T>
@@ -484,9 +482,6 @@ HList::ConstReverseTypeIterator<T> HList::previousType(const ConstReverseTypeIte
 {
     auto s(iter);
     return ++s;
-//    if(iter.List->Head != Head)
-//        return HList::ConstReverseTypeIterator<T>(*this,Head);
-//    return HList::ConstReverseTypeIterator<T>(*this,previousType<T>(iter.Node));
 }
 
 
@@ -621,6 +616,7 @@ HList::ConstReverseIterator HList::rend() const
     return ConstReverseIterator(*this,Head);
 }
 
+
 template<typename T>
 BaseNode *HList::find(BaseNode *start, const T&e) const
 {
@@ -749,19 +745,104 @@ T &HList::ReverseTypeIterator<T>::operator*() const
 template<typename T>
 const T HList::ConstIterator::toValue()
 {
-
+    return Node->toValue<T>();
 }
 
 template<typename T>
 const T &HList::ConstTypeIterator<T>::operator*() const
 {
-
+    return Node->toValue<T>();
 }
 
 template<typename T>
 const T &HList::ConstReverseTypeIterator<T>::operator*() const
 {
+    return Node->toValue<T>();
+}
 
+
+template<typename T>
+HList::TypeIterator<T> SList<T>::begin()
+{
+    return hlist->begin<T>();
+}
+
+template<typename T>
+HList::TypeIterator<T> SList<T>::end()
+{
+    return hlist->end<T>();
+}
+
+template<typename T>
+HList::ReverseTypeIterator<T> SList<T>::rbegin()
+{
+    return hlist->rbegin<T>();
+}
+
+template<typename T>
+HList::ReverseTypeIterator<T> SList<T>::rend()
+{
+    return hlist->rend<T>();
+}
+
+template<typename T>
+HList::ConstTypeIterator<T> SList<T>::begin() const
+{
+    return hlist->begin<T>();
+}
+
+template<typename T>
+HList::ConstTypeIterator<T> SList<T>::end() const
+{
+    return hlist->end<T>();
+}
+
+template<typename T>
+HList::ConstReverseTypeIterator<T> SList<T>::rbegin() const
+{
+    return hlist->rbegin<T>();
+}
+
+template<typename T>
+HList::ConstReverseTypeIterator<T> SList<T>::rend() const
+{
+    return hlist->rend<T>();
+}
+
+template<typename T>
+HList::ConstTypeIterator<T> ConstSList<T>::begin() const
+{
+    return hlist->begin<T>();
+}
+
+template<typename T>
+HList::ConstTypeIterator<T> ConstSList<T>::end() const
+{
+    return hlist->end<T>();
+}
+
+template<typename T>
+HList::ConstReverseTypeIterator<T> ConstSList<T>::rbegin() const
+{
+    return hlist->rbegin<T>();
+}
+
+template<typename T>
+HList::ConstReverseTypeIterator<T> ConstSList<T>::rend() const
+{
+    return hlist->rend<T>();
+}
+
+template<typename T>
+SList<T> HList::typeList()
+{
+    return SList<T>(this);
+}
+
+template<typename T>
+const ConstSList<T> HList::typeList() const
+{
+    return ConstSList<T>(this);
 }
 
 #endif // HLIST_H
