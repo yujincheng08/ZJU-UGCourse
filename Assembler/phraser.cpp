@@ -32,14 +32,14 @@ void Phraser::Build(QByteArray &data)
              ")?)?"
              "(;)?",QRegularExpression::MultilineOption);
     auto start = reg.globalMatch(source);
-    unsigned count = 0;
-    for(auto i = start; i.hasNext(); count++)
+    unsigned markCount = 0;
+    for(auto i = start; i.hasNext(); markCount++)
     {
         auto match = i.next();
         if(!match.captured("mark").isEmpty())
-            MarkList.insert(match.captured("mark"),count);
+            MarkList.insert(match.captured("mark"),markCount);
     }
-    for(count = 0; start.hasNext(); ++count)
+    for(Count = 0; start.hasNext(); ++Count)
     {
         auto match = start.next();
         QString inst = match.captured("inst");
@@ -48,7 +48,7 @@ void Phraser::Build(QByteArray &data)
         QString arg3 = match.captured("arg3");
         if(arg3.isEmpty())
             arg3 = match.captured("arg4");
-        data.replace(count * 4,4,assembler.build(inst,arg1,arg2,arg3,count,MarkList));
+        data.replace(Count * 4,4,assembler.build(inst,arg1,arg2,arg3,Count,MarkList));
     }
     emit BuildDone();
 }

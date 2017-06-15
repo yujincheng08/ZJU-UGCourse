@@ -32,7 +32,7 @@ private:
 	QAction *selectAllAction;
 
     QAction *buildAction;
-	QAction *buildAsmAction;
+    QAction *buildBinAction;
 	QAction *buildCoeAction;
 	QAction *disassemblyAction;
 
@@ -105,6 +105,7 @@ private slots:
     void setBase(QAction *action);
     bool Build();
     void BuildCoe();
+    void BuildBin();
 public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();

@@ -18,6 +18,7 @@
 #include <QPrinter>
 #include <QPrintDialog>
 #include <QDockWidget>
+#include <QTextStream>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -117,8 +118,10 @@ void MainWindow::createActions()
 	selectAllAction->setIcon(QIcon(":/icons/selectAll.png"));
 
     buildAction = new QAction(tr("Build"), this);
-    buildAsmAction = new QAction(tr("Build &Bin"),this);
-	buildAsmAction->setIcon(QIcon(":/icons/asm.png"));
+    buildAction->setIcon(QIcon(":/icons/asm.png"));
+
+    buildBinAction = new QAction(tr("Build &Bin"),this);
+    buildBinAction->setIcon(QIcon(":/icons/asm.png"));
 
 	buildCoeAction = new QAction(tr("Build &Coe"),this);
 	buildCoeAction->setIcon(QIcon(":/icons/coe.png"));
@@ -201,15 +204,15 @@ void MainWindow::createMenus()
 
 	buildMenu = menuBar()->addMenu("&Bulid");
     buildMenu->addAction(buildAction);
-	buildMenu->addAction(buildAsmAction);
+    buildMenu->addAction(buildBinAction);
 	buildMenu->addAction(buildCoeAction);
 	buildMenu->addAction(disassemblyAction);
 
-	debugMenu = menuBar()->addMenu("&Debug");
-	debugMenu->addAction(stepAction);
-	debugMenu->addAction(jumpStepAction);
-	debugMenu->addAction(runtoAction);
-	debugMenu->addAction(stopAction);
+//	debugMenu = menuBar()->addMenu("&Debug");
+//	debugMenu->addAction(stepAction);
+//	debugMenu->addAction(jumpStepAction);
+//	debugMenu->addAction(runtoAction);
+//	debugMenu->addAction(stopAction);
 
 	aboutMenu = menuBar()->addMenu("&About");
 	aboutMenu->addAction(aboutAction);
@@ -248,6 +251,7 @@ void MainWindow::createConnections()
 
     connect(buildAction,&QAction::triggered,this,&MainWindow::Build);
     connect(buildCoeAction,&QAction::triggered,this,&MainWindow::BuildCoe);
+    connect(buildBinAction,&QAction::triggered,this,&MainWindow::BuildBin);
     connect(baseGroup,&QActionGroup::triggered,this,&MainWindow::setBase);
     connect(phraser,&Phraser::BuildDone,ramTable,&RamTable::refresh);
 }
@@ -281,7 +285,7 @@ void MainWindow::createDockWindows()
 
 void MainWindow::createToolbars()
 {
-	fileToolbar = addToolBar(fileMenu->title());
+    fileToolbar = addToolBar(fileMenu->title());
 	fileToolbar->setObjectName("FileToolBar");
 	fileToolbar->addAction(newAction);
 	fileToolbar->addAction(openAction);
@@ -297,18 +301,14 @@ void MainWindow::createToolbars()
 	buildToolbar->addActions(buildMenu->actions());
 	buildToolbar->setObjectName("BuildToolBar");
 
-	debugToolbar = addToolBar(debugMenu->title());
-	debugToolbar->addActions(debugMenu->actions());
-	debugToolbar->setObjectName("DebugToolBar");
+//	debugToolbar = addToolBar(debugMenu->title());
+//	debugToolbar->addActions(debugMenu->actions());
+//	debugToolbar->setObjectName("DebugToolBar");
 
 }
 
 void MainWindow::createStatusBar()
 {
-	//status = new QLabel;
-	//status->setAlignment(Qt::AlignLeft);
-	//status->setMinimumSize(status->sizeHint());
-
 	statusBar();
 }
 
@@ -463,14 +463,47 @@ void MainWindow::BuildCoe()
     {
         QString fileName = QFileDialog::getSaveFileName(this,
                                         tr("Save COE File"),".",
-                                        tr("ASM File (*.coe)"));
+                                        tr("Coe File (*.coe)"));
+        if(!fileName.isEmpty())
+        {
+            QFile file(fileName, this);
+            file.open(QFile::WriteOnly|QFile::Truncate|QFile::Text);
+            QTextStream out(&file);
+            out<<"memory_initialization_radix=16;\n"
+                  "memory_initialization_vector=\n";
+            for(size_t i=1U; i<= phraser->count(); ++i)
+            {
+                for(size_t j=1; j<=4; ++j)
+                {
+                    unsigned char c = ramTable->rawData().at(4*i-j);
+                    out<<QString("%1").arg(c,2,16,QChar('0')).toUpper();
+                }
+                if(i!=phraser->count())
+                    out<<", ";
+                else out<<";";
+            }
+            file.close();
+        }
+    }
+}
+
+void MainWindow::BuildBin()
+{
+    if(Build())
+    {
+        QString fileName = QFileDialog::getSaveFileName(this,
+                                        tr("Save BIN File"),".",
+                                        tr("Bin File (*.bin)"));
         if(!fileName.isEmpty())
         {
             QFile file(fileName, this);
             file.open(QFile::WriteOnly|QFile::Truncate);
-            file<<"memory_initialization_radix=16;\n"
-                  "memory_initialization_vector=";
-            for()
+            for(size_t i=1U; i<= phraser->count(); ++i)
+            {
+                for(size_t j=1; j<=4; ++j)
+                    file.putChar(ramTable->rawData().at(4*i-j));
+            }
+            file.close();
         }
     }
 }
