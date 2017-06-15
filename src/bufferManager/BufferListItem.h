@@ -16,7 +16,6 @@ protected:
 public:
     virtual bool removeable() = 0;
     virtual ~BufferListItem();
-    bool deleting = false;
 };
 
 inline BufferList * const &BufferListItem::list()

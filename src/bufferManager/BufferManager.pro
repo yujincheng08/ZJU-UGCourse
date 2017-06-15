@@ -24,12 +24,12 @@ SOURCES += \
 
 OTHER_FILES += \
     README.md
-
-CONFIG(test) {
-TEMPLATE = app
-SOURCES += \
-    test.cpp
-}
-else{
 TEMPLATE = lib
-}
+#CONFIG(test) {
+#TEMPLATE = app
+#SOURCES += \
+#    test.cpp
+#}
+#else{
+#TEMPLATE = lib
+#}

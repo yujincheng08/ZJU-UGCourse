@@ -1,13 +1,12 @@
 #include "WriteThread.h"
+#include "BufferManager.h"
 void WriteThread::run()
 {
     while(!WriteList.empty())
     {
         Mutex.lock();
         auto i = WriteList.front();
-        i->write();
-        i->Dirty = false;
-        i->InList = false;
+        BufferManager::bufferManager().writeBuffer(i);
         WriteList.pop_front();
         Mutex.unlock();
     }

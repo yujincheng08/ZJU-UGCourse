@@ -28,13 +28,13 @@ public:
     using pos_type = std::streamoff;
 private:
     std::mutex Mutex;
-    QFile Stream;
+    QFile &Stream;
     pos_type FileSize;
     size_t BlockCount;
     pos_type ReadCursor = 0;
     pos_type WriteCursor = 0;
     HashMap<size_t, Buffer *> Buffers; //pos = first * bufferSize
-    File(const string &fileName);
+    File(QFile &stream);
     void Release(const pos_type &pos);
     void Insert(Buffer *const buffer);
     bool Exist(const pos_type &pos);
