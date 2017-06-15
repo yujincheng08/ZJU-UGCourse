@@ -214,7 +214,9 @@ cmd ::= SELECT select_column_list FROM table_list opt_where_clause. {
 }
 
 // insert
-cmd ::= INSERT into table_name VALUES LEFTPARENTHESIS valuelist RIGHTPARENTHESIS.
+cmd ::= INSERT into table_name VALUES LEFTPARENTHESIS valuelist RIGHTPARENTHESIS. {
+    interpreter->setActionType(Action::Insert);
+}
 
 into ::= .
 into ::= INTO.

@@ -7,6 +7,8 @@ class Column
 {
 public:
     friend class BaseInterpreter;
+    // for test only
+    friend class RecordManager;
     using Type = unsigned;
     constexpr static Type Undefined = 0U;
     constexpr static Type Int = 256U;

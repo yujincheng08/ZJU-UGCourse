@@ -5,22 +5,22 @@ TARGET = RecordManager
 DESTDIR = ../../
 
 HEADERS += \
-    RecordManager.h \
-    record.h
+    RecordManager.h
 
 SOURCES += \
-    RecordManager.cpp \
-    record.cpp
+    RecordManager.cpp
 
 OTHER_FILES += \
     README.md
 
+
 CONFIG(test) {
     DEFINES += TEST
-    TEMPLATE = lib
+    TEMPLATE = app
     SOURCES += \
         test.cpp
+   LIBS += -L../../ -lbufferManager
 }
 else{
-    TEMPLATE = app
+    TEMPLATE = lib
 }

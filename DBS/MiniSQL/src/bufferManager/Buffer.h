@@ -2,7 +2,7 @@
 #define BUFFER_H
 
 #include <QIODevice>
-#include <BufferListItem.h>
+#include "BufferListItem.h"
 #include <mutex>
 #include <cstring>
 //Buffer of a file block
@@ -57,7 +57,7 @@ inline void Buffer::changeSize(const size_t &size)
 
 inline bool Buffer::removeable()
 {
-    return Dirty == false;
+    return Dirty == false && InList == false;
 }
 
 inline size_t Buffer::bufferSize()

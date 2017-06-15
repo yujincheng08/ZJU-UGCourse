@@ -15,6 +15,17 @@ File &BufferManager::open(const string &fileName)
     return bufferManager().Open(fileName);
 }
 
+BufferManager::~BufferManager()
+{
+    readThread->terminate();
+    readThread->wait();
+    for(auto &i : Files)
+        i.second->flush();
+    writeThread->wait();
+    for(auto &i : Files)
+        delete i.second;
+}
+
 Buffer *BufferManager::buff(File *file, const Buffer::pos_type &pos, const Buffer::pos_type &size)
 {
     Mutex.lock();
@@ -25,10 +36,7 @@ Buffer *BufferManager::buff(File *file, const Buffer::pos_type &pos, const Buffe
         {
             auto last = list->last();
             if(last->removeable())
-            {
-                last->deleting = true;
                 delete last;
-            }
             else
                 break;
         }
@@ -57,19 +65,15 @@ File &BufferManager::Open(const string &fileName)
     auto i = Files.find(fileName);
     if(i == Files.end())
     {
-        File *file = new File(fileName);
+        QFile *Stream = new QFile(fileName.c_str(),this);
+        Stream->open(QFile::ReadWrite|QFile::Unbuffered);
+        File *file = new File(*Stream);
         Files.insert(std::make_pair(fileName,file));
         return *file;
     }
     else
         return *i->second;
 }
-
-void BufferManager::wait()
-{
-    writeThread->wait();
-}
-
 
 bool BufferManager::full()
 {

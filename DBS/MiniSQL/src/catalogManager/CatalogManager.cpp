@@ -459,6 +459,106 @@ bool catalogManager::DropTable()
 	cout<<"Query OK"<<endl;
 	return true;
 }
+bool catalogManager::CreateIndex(const string& Table,const string& Attr, const string& Index)
+{
+    //查找是否有表
+    if(FindTableName(Table) == false)
+    {
+        cout<<"No such table!"<<endl;
+        return false;
+    }
+
+    int num;
+    int RLen;
+    fin>>RLen>>num;
+
+    string *AName;
+    string *t;
+    bool *IsUni;
+    bool *HavInd;
+    string *IndName;
+    int Pri;
+    int i;
+
+    AName = new string[num];
+    t = new string[num];
+    IsUni = new bool[num];
+    HavInd = new bool[num];
+    IndName = new string[num];
+    //读入表信息
+    for(i = 0; i < num; i++)
+    {
+        fin>>AName[i]>>t[i]>>IsUni[i]>>HavInd[i];
+        if(HavInd[i])
+            fin>>IndName[i];
+    }
+    fin>>Pri;
+
+    int AttrInd = FindAttributeIndex(Attr);
+    if(AttrInd == -1)
+    {
+        cout<<"Create Index failed! No such Attribute!"<<endl;
+        delete[] AName;
+        delete[] t;
+        delete[] IsUni;
+        delete[] HavInd;
+        delete[] IndName;
+        return false;
+    }
+    if(HavInd[AttrInd] == true)
+    {
+        cout<<"Create Index failed! Index exists!"<<endl;
+        delete[] AName;
+        delete[] t;
+        delete[] IsUni;
+        delete[] HavInd;
+        delete[] IndName;
+        return false;
+    }
+
+    //修改信息
+    HavInd[AttrInd] = true;
+    IndName[AttrInd] = Index;
+
+    ofstream fout("tmp.txt");
+    string tmp,Name;
+    fin.seekg(0,ios::beg);
+    while(fin>>Name)
+    {
+        if(Name == Table)
+        {
+            getline(fin,tmp);
+        }
+        else
+        {
+            getline(fin,tmp);
+            fout<<Name<<tmp<<endl;
+        }
+    }
+    fout<<Table<<" "<<RLen<<" "<<num<<" ";
+    for(i = 0; i < num; i++)
+    {
+        fout<<AName[i]<<" "<<t[i]<<" "<<IsUni[i]<<" "<<HavInd[i]<<" ";
+        if(HavInd[i])
+            fout<<IndName[i]<<" ";
+    }
+    fout<<Pri<<endl;
+
+    delete[] AName;
+    delete[] t;
+    delete[] IsUni;
+    delete[] HavInd;
+    delete[] IndName;
+
+    fin.close();
+    fout.close();
+    remove(Database.c_str());
+    rename("tmp.txt",Database.c_str());
+    fin.open(Database);
+    cout<<"Query OK!"<<endl;
+    return true;
+}
+
 
 
 void catalogManager::DropDatabase()
@@ -496,6 +596,7 @@ inline catalogManager::~catalogManager()
 
 inline void catalogManager::SetTableName(const string &Name)
 {
+    Clear();
     TableName = Name;
 }
 
@@ -620,10 +721,13 @@ int main()
     s.SetAttributeInfo(AttrNum,Attr,t,IsUni,HavInd,IndName,PrimaryKey);
     //也可以传入数组
     //s.SetAttributeInfo(AttrNum,Attribute,type,IsUnique,HaveIndex,IndexName,PrimaryKey);
-	s.AddTableInfo();
+    s.AddTableInfo();
+
 	//插入信息例子2
 	s.SetTableName("student");
+    s.SetAttributeInfo(AttrNum,Attr,t,IsUni,HavInd,IndName,PrimaryKey);
 	s.AddTableInfo();
+
     //获取表信息1
 	s.GetTableInfo();
 	s.PrintInfo();
@@ -634,5 +738,9 @@ int main()
 	s.DropIndex("Teacher","AgeIndex");
 	s.SetTableName("Teacher");
 	s.PrintInfo();
+    //添加index
+    s.CreateIndex("Teacher","Age","AgeIndex");
+    s.SetTableName("Teacher");
+    s.PrintInfo();
 
 }

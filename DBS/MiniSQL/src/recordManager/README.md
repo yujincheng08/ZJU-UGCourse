@@ -11,3 +11,5 @@ static  void DeleteRecords(std::vector<File::pos_type> positions); // simply set
 static  File::pos_type InsertRecords(Record records); // append the record to file
 static  std::vector<Record> queryRecords(); // not sure about this method's parameter
 ```
+## Contract
+store a bool before each record to represent if this record is deleted

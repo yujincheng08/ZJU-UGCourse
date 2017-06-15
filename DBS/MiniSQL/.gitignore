@@ -94,3 +94,8 @@ fabric.properties
 *.autosave
 
 # End of https://www.gitignore.io/api/clion
+
+build-*
+
+*.qmake.stash
+*.tbl
