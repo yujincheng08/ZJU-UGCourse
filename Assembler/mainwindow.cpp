@@ -219,37 +219,37 @@ void MainWindow::createMenus()
 void MainWindow::createConnections()
 {
 
-	connect(exitAction,SIGNAL(triggered()),this,SLOT(close()));
+    connect(exitAction,&QAction::triggered,this,&QWidget::close);
 
 	connect(aboutQtAction,SIGNAL(triggered()),qApp,SLOT(aboutQt()));
-	connect(undoAction,SIGNAL(triggered()),editor,SLOT(undo()));
-	connect(redoAction,SIGNAL(triggered()),editor,SLOT(redo()));
-	connect(cutAction,SIGNAL(triggered()),editor,SLOT(cut()));
-	connect(copyAction,SIGNAL(triggered()),editor,SLOT(copy()));
-	connect(pasteAction,SIGNAL(triggered()),editor,SLOT(paste()));
-	connect(deleteAction,SIGNAL(triggered()),editor,SLOT(removeSelectedText()));
-	connect(selectAllAction,SIGNAL(triggered()),editor,SLOT(selectAll()));
-	connect(editor,SIGNAL(undoAvailable(bool)),undoAction,SLOT(setEnabled(bool)));
-	connect(editor,SIGNAL(redoAvailable(bool)),redoAction,SLOT(setEnabled(bool)));
-	connect(editor,SIGNAL(copyAvailable(bool)),copyAction,SLOT(setEnabled(bool)));
-	connect(editor,SIGNAL(copyAvailable(bool)),cutAction,SLOT(setEnabled(bool)));
-	connect(editor,SIGNAL(copyAvailable(bool)),deleteAction,SLOT(setEnabled(bool)));
+    connect(undoAction,&QAction::triggered,editor,&QPlainTextEdit::undo);
+    connect(redoAction,&QAction::triggered,editor,&QPlainTextEdit::redo);
+    connect(cutAction,&QAction::triggered,editor,&QPlainTextEdit::cut);
+    connect(copyAction,&QAction::triggered,editor,&QPlainTextEdit::copy);
+    connect(pasteAction,&QAction::triggered,editor,&QPlainTextEdit::paste);
+    connect(deleteAction,&QAction::triggered,editor,&Editor::removeSelectedText);
+    connect(selectAllAction,&QAction::triggered,editor,&QPlainTextEdit::selectAll);
+    connect(editor,&QPlainTextEdit::undoAvailable,undoAction,&QAction::setEnabled);
+    connect(editor,&QPlainTextEdit::redoAvailable,redoAction,&QAction::setEnabled);
+    connect(editor,&QPlainTextEdit::copyAvailable,copyAction,&QAction::setEnabled);
+    connect(editor,&QPlainTextEdit::copyAvailable,cutAction,&QAction::setEnabled);
+    connect(editor,&QPlainTextEdit::copyAvailable,deleteAction,&QAction::setEnabled);
 
-	connect(newAction,SIGNAL(triggered()),this,SLOT(newFile()));
-	connect(openAction,SIGNAL(triggered()),this,SLOT(open()));
-	connect(saveAction,SIGNAL(triggered()),this,SLOT(save()));
-	connect(saveAsAction,SIGNAL(triggered()),this,SLOT(saveAs()));
-	connect(editor,SIGNAL(modificationChanged(bool)),this,SLOT(setWindowModified(bool)));
+    connect(newAction,&QAction::triggered,this,&MainWindow::newFile);
+    connect(openAction,&QAction::triggered,this,&MainWindow::open);
+    connect(saveAction,&QAction::triggered,this,&MainWindow::save);
+    connect(saveAsAction,&QAction::triggered,this,&MainWindow::saveAs);
+    connect(editor,&QPlainTextEdit::modificationChanged,this,&QWidget::setWindowModified);
 
 	for(int i = 0; i < MaxRecentFiles; ++i)
-		connect(recentFileActions[i], SIGNAL(triggered()),this,SLOT(openRecentFile()));
+        connect(recentFileActions[i], &QAction::triggered,this,&MainWindow::openRecentFile);
 
-	connect(printAction,SIGNAL(triggered()),this,SLOT(print()));
+    connect(printAction,&QAction::triggered,this,&MainWindow::print);
 
-    connect(buildAction,SIGNAL(triggered()),this,SLOT(Build()));
-
-    connect(baseGroup,SIGNAL(triggered(QAction*)),this,SLOT(setBase(QAction*)));
-    connect(phraser,SIGNAL(BuildDone()),ramTable,SLOT(refresh()));
+    connect(buildAction,&QAction::triggered,this,&MainWindow::Build);
+    connect(buildCoeAction,&QAction::triggered,this,&MainWindow::BuildCoe);
+    connect(baseGroup,&QActionGroup::triggered,this,&MainWindow::setBase);
+    connect(phraser,&Phraser::BuildDone,ramTable,&RamTable::refresh);
 }
 
 void MainWindow::createEditor()
@@ -445,10 +445,34 @@ void MainWindow::setBase(QAction *action)
     ramTable->setBase(action->data().toInt());
 }
 
-void MainWindow::Build()
+bool MainWindow::Build()
 {
-    phraser->Build(ramTable->rawData());
-    ramTable->refresh();
+    if(save())
+    {
+        phraser->Build(ramTable->rawData());
+        ramTable->refresh();
+        return true;
+    }
+    else
+        return false;
+}
+
+void MainWindow::BuildCoe()
+{
+    if(Build())
+    {
+        QString fileName = QFileDialog::getSaveFileName(this,
+                                        tr("Save COE File"),".",
+                                        tr("ASM File (*.coe)"));
+        if(!fileName.isEmpty())
+        {
+            QFile file(fileName, this);
+            file.open(QFile::WriteOnly|QFile::Truncate);
+            file<<"memory_initialization_radix=16;\n"
+                  "memory_initialization_vector=";
+            for()
+        }
+    }
 }
 
 void MainWindow::open()

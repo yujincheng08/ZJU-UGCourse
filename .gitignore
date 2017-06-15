@@ -71,4 +71,5 @@ Thumbs.db
 *.dll
 *.exe
 
-*.pro.user*
+*.qmake.stash
+

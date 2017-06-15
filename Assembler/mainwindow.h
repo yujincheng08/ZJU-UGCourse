@@ -103,7 +103,8 @@ private:
 private slots:
 	void openRecentFile();
     void setBase(QAction *action);
-    void Build();
+    bool Build();
+    void BuildCoe();
 public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
