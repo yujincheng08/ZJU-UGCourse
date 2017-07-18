@@ -677,7 +677,7 @@ Using Qt5 Framework and OpenCv Libruary</source>
     <message>
         <location filename="../preference.ui" line="408"/>
         <source>Expend size of recognize</source>
-        <translation>识别框实际大小</translation>
+        <translation type="unfinished">识别框扩展大小</translation>
     </message>
     <message>
         <location filename="../preference.ui" line="461"/>

@@ -126,8 +126,8 @@ void MainWindow::createActions()
 	buildCoeAction = new QAction(tr("Build &Coe"),this);
 	buildCoeAction->setIcon(QIcon(":/icons/coe.png"));
 
-	disassemblyAction = new QAction(tr("&Disassembly"),this);
-	disassemblyAction->setIcon(QIcon(":/icons/disassembly.png"));
+    //disassemblyAction = new QAction(tr("&Disassembly"),this);
+    //disassemblyAction->setIcon(QIcon(":/icons/disassembly.png"));
 
 	stepAction = new QAction(tr("&Step"),this);
 	stepAction->setIcon(QIcon(":/icons/step.png"));
@@ -206,7 +206,7 @@ void MainWindow::createMenus()
     buildMenu->addAction(buildAction);
     buildMenu->addAction(buildBinAction);
 	buildMenu->addAction(buildCoeAction);
-	buildMenu->addAction(disassemblyAction);
+    //buildMenu->addAction(disassemblyAction);
 
 //	debugMenu = menuBar()->addMenu("&Debug");
 //	debugMenu->addAction(stepAction);
