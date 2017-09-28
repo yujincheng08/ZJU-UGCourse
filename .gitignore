@@ -23,7 +23,8 @@ tags
 .DS_Store
 .directory
 *.debug
-Makefile*
+# Makefile* //It should have.
+build-*
 *.prl
 *.app
 moc_*.cpp
