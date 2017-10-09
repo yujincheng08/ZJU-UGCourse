@@ -1,0 +1,21 @@
+<html>
+<head>
+    <title>Flag</title>
+    <script src='flag.js' type="text/javascript"></script>
+    <script id="vs" type="x-shader/x-vertex">
+    attribute vec2 position;
+    void main(void){
+        gl_Position = vec4(position, 0.0, 1.0);
+    }
+	</script>
+		
+	<script id="fs" type="x-shader/x-fragment">
+    void main(void){
+        gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+    }
+	</script>
+</head>
+<body>
+    <canvas id='flag' width='1000' height='500'></canvas>
+</body>
+</html>
