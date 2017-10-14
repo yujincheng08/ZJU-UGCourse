@@ -9,27 +9,24 @@ public class WordList
 
     Value thing(String name) throws SyntaxException, RunningException
     {
-        if(name.matches("-?\\d+"))
-            throw new SyntaxException("Cannot thing a number.");
         Word word = list.get(name);
         if(word == null)
-            throw new RunningException("Word " +name+ " not exist.");
+            throw new RunningException("Word " +name+ " does not exist.");
         else
             return word.getValue();
     }
 
     void make(String name, WordStream stream)
+            throws RunningException, SyntaxException
     {
         Word word = list.get(name);
-        if(word == null)
+        if(word != null)
         {
-            word = new Word(stream);
-            list.put(name, word);
+            list.remove(name);
         }
-        else
-        {
-            word.setValue(stream);
-        }
+        //word = new Word();
+        word = new Word(Interpreter.value(stream));
+        list.put(name, word);
     }
 
     Value isname(String name)
@@ -38,5 +35,14 @@ public class WordList
             return new Value("true");
         else
             return new Value("false");
+    }
+
+    void erase(String name)
+        throws RunningException
+    {
+        if(list.containsKey(name))
+            list.remove(name);
+        else
+            throw new RunningException("Word " + name + "does not exist.");
     }
 }

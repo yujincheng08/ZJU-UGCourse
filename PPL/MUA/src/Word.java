@@ -1,25 +1,24 @@
 import java.util.ArrayList;
 public class Word
 {
-    private boolean isNum;
     Value value;
     Word(WordStream stream)
+            throws RunningException, SyntaxException
     {
         value = new Value();
         setValue(stream);
     }
 
-    Word(String value)
+    Word(Value value)
     {
-        this.value = new Value();
-        isNum = false;
-        this.value.add(value);
+        this.value = value;
     }
 
     public void setValue(WordStream stream)
+            throws RunningException, SyntaxException
     {
-        isNum = false;
-        String word = stream.next();
+        //String word = stream.next();
+        String word = Interpreter.value(stream).toString();
         if(word.startsWith("["))
         {
             word = word.substring(1);
@@ -34,11 +33,7 @@ public class Word
                 value.add(word.substring(0,word.length()-1));
         }
         else
-        {
             value.add(word);
-            if(word.matches("-?\\d+(\\.\\d+)?"))
-                isNum = true;
-        }
     }
 
     public void setValue(Value value)

@@ -1,22 +1,44 @@
-import com.sun.org.apache.xpath.internal.operations.Bool;
-
 import java.lang.RuntimeException;
 import java.util.function.IntBinaryOperator;
 import java.util.function.DoubleBinaryOperator;
 public class Function
 {
-    static WordList wordList;
+    static WordList wordList = new WordList();
 
-    static Value thing(WordStream wordStream) throws RunningException, SyntaxException
+    private static String getWordName(WordStream stream)
+            throws SyntaxException, RunningException
     {
-        String name = wordStream.next();
+        Value value = Interpreter.value(stream);
+        if(value.size()!=1)
+            throw new SyntaxException("Except a word literary");
+        else
+            return value.toString();
+
+        /*
+        String name = Interpreter.value(stream).toString();
+        if(Interpreter.isWordLiterary(name))
+            return name.substring(1);
+        else
+            throw new RunningException("Except a word literary");
+            */
+    }
+
+    static Value thing(WordStream stream)
+            throws RunningException, SyntaxException
+    {
+        return thing(getWordName(stream));
+    }
+
+    static Value thing(String name)
+            throws RunningException, SyntaxException
+    {
         return wordList.thing(name);
     }
 
-    static Value isName(WordStream wordStream)
+    static Value isName(WordStream stream)
+            throws RunningException, SyntaxException
     {
-        String name = wordStream.next();
-        return wordList.isname(name);
+        return wordList.isname(getWordName(stream));
     }
 
     static Value read()
@@ -31,7 +53,8 @@ public class Function
         return new Value();
     }
 
-    static Value numericOperate(WordStream stream, IntBinaryOperator intBinaryOperator, DoubleBinaryOperator doubleBinaryOperator) throws RunningException
+    static Value numericOperate(WordStream stream, IntBinaryOperator intBinaryOperator, DoubleBinaryOperator doubleBinaryOperator)
+            throws RunningException, SyntaxException
     {
         Value first = Interpreter.value(stream);
         Value second = Interpreter.value(stream);
@@ -57,7 +80,8 @@ public class Function
         }
     }
 
-    static Value numericCompare(WordStream stream, IntBinaryComparator intBinaryComparator, DoubleBinaryComparator doubleBinaryComparator) throws RunningException
+    static Value compare(WordStream stream, IntBinaryComparator intBinaryComparator, DoubleBinaryComparator doubleBinaryComparator, StringBinaryComparator stringBinaryComparator)
+            throws RunningException, SyntaxException
     {
         Value first = Interpreter.value(stream);
         Value second = Interpreter.value(stream);
@@ -75,7 +99,7 @@ public class Function
                 return new Value(String.valueOf(doubleBinaryComparator.apply(a, b)));
             } catch (NumberFormatException f)
             {
-                throw new RuntimeException("One of the operand cannot convert to numeric.");
+                return new Value(String.valueOf(stringBinaryComparator.apply(first.toString(), second.toString())));
             }
         } catch (RuntimeException e)
         {
@@ -83,7 +107,8 @@ public class Function
         }
     }
 
-    static Value booleanOperate(WordStream stream, BooleanBinaryOperator booleanBinaryOperator) throws RunningException
+    static Value booleanOperate(WordStream stream, BooleanBinaryOperator booleanBinaryOperator)
+            throws RunningException, SyntaxException
     {
         Value first = Interpreter.value(stream);
         Value second = Interpreter.value(stream);
@@ -92,57 +117,75 @@ public class Function
         return new Value(String.valueOf(booleanBinaryOperator.apply(a, b)));
     }
 
-    static Value add(WordStream stream) throws RunningException
+    static Value add(WordStream stream)
+            throws RunningException, SyntaxException
     {
         return numericOperate(stream, (int a, int b) -> a + b, (double a, double b) -> a + b);
     }
 
-    static Value sub(WordStream stream) throws RunningException
+    static Value sub(WordStream stream)
+            throws RunningException, SyntaxException
     {
         return numericOperate(stream, (int a, int b) -> a - b, (double a, double b) -> a - b);
     }
 
-    static Value mul(WordStream stream) throws RunningException
+    static Value mul(WordStream stream)
+            throws RunningException, SyntaxException
     {
         return numericOperate(stream, (int a, int b) -> a * b, (double a, double b) -> a * b);
     }
 
-    static Value div(WordStream stream) throws RunningException
+    static Value div(WordStream stream)
+            throws RunningException, SyntaxException
     {
-        return numericOperate(stream, (int a, int b) -> a / b, (double a, double b) -> a / b);
+        try
+        {
+            return numericOperate(stream, (int a, int b) -> a / b, (double a, double b) -> a / b);
+        }catch(ArithmeticException e)
+        {
+            throw new RunningException("Cannot divided by zero");
+        }
+
     }
 
-    static Value mod(WordStream stream) throws RunningException
+    static Value mod(WordStream stream)
+            throws RunningException, SyntaxException
     {
         return numericOperate(stream, (int a, int b) -> a % b, (double a, double b) -> a % b);
     }
 
-    static Value eq(WordStream stream) throws RunningException
+    static Value eq(WordStream stream)
+            throws RunningException, SyntaxException
     {
-        return numericCompare(stream, Integer::equals, Double::equals);
+        return compare(stream, Integer::equals, Double::equals, String::equals);
     }
 
-    static Value lt(WordStream stream) throws RunningException
+    static Value lt(WordStream stream)
+            throws RunningException, SyntaxException
     {
-        return numericCompare(stream, (Integer a, Integer b) -> a.compareTo(b) < 0, (Double a, Double b) -> a.compareTo(b) < 0);
+        return compare(stream, (Integer a, Integer b) -> a.compareTo(b) < 0, (Double a, Double b) -> a.compareTo(b) < 0, (String a, String b) -> a.compareTo(b) < 0);
     }
 
-    static Value gt(WordStream stream) throws RunningException
+    static Value gt(WordStream stream)
+            throws RunningException, SyntaxException
     {
-        return numericCompare(stream, (Integer a, Integer b) -> a.compareTo(b) > 0, (Double a, Double b) -> a.compareTo(b) > 0);
+        return compare(stream, (Integer a, Integer b) -> a.compareTo(b) > 0, (Double a, Double b) -> a.compareTo(b) > 0, (String a, String b) -> a.compareTo(b) > 0);
     }
 
-    static Value and(WordStream stream) throws RunningException
+    static Value and(WordStream stream)
+            throws RunningException, SyntaxException
     {
         return booleanOperate(stream, Boolean::logicalAnd);
     }
 
-    static Value or(WordStream stream) throws RunningException
+    static Value or(WordStream stream)
+            throws RunningException, SyntaxException
     {
         return booleanOperate(stream, Boolean::logicalOr);
     }
 
-    static Value not(WordStream stream) throws RunningException
+    static Value not(WordStream stream)
+            throws RunningException, SyntaxException
     {
         Value first = Interpreter.value(stream);
         Boolean a = first.toBoolean();
@@ -150,17 +193,20 @@ public class Function
     }
 
     static void make(WordStream stream)
+            throws RunningException, SyntaxException
     {
-
+        wordList.make(getWordName(stream), stream);
     }
 
     static void erase(WordStream stream)
+            throws RunningException, SyntaxException
     {
-
+        wordList.erase(getWordName(stream));
     }
 
     static void print(WordStream stream)
+            throws RunningException, SyntaxException
     {
-
+        System.out.println(Interpreter.value(stream).toString());
     }
 }

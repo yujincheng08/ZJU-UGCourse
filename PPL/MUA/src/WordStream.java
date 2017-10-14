@@ -13,6 +13,13 @@ public class WordStream
         for (String word: words)
             stream.offer(word);
     }
+
+    WordStream(String word)
+    {
+        this();
+        stream.offer(word);
+    }
+
     WordStream()
     {
         stream = new LinkedList<>();
@@ -36,7 +43,7 @@ public class WordStream
                 String []words = line.split("\\s+");
                 for(String word : words)
                         stream.offer(word);
-                stream.offer("\n");
+                //stream.offer("\n");
             }
         }
         catch(IOException e)
