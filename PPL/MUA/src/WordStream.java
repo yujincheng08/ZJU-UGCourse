@@ -3,7 +3,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class WordStream
+class WordStream
 {
     private LinkedList<String> stream;
     private BufferedReader bufferedReader;
@@ -14,10 +14,10 @@ public class WordStream
             stream.offer(word);
     }
 
-    WordStream(String word)
+    WordStream(String line)
     {
         this();
-        stream.offer(word);
+        praseLine(line);
     }
 
     WordStream()
@@ -26,8 +26,22 @@ public class WordStream
         bufferedReader = new BufferedReader(new InputStreamReader(System.in));
     }
 
+    private void praseLine(String line)
+    {
+        if(line != null && line.length() > 0)
+        {
+            int indexOfComment = line.indexOf("//");
+            if (indexOfComment > 0) line = line.substring(0, indexOfComment);
+            String[] words = line.split("\\s+");
+            for (String word : words)
+                stream.offer(word);
+            //stream.offer("\n");
+        }
+    }
+
     private void readLine()
     {
+        System.out.print("> ");
         try
         {
             String line = bufferedReader.readLine();
@@ -35,16 +49,8 @@ public class WordStream
 //            {
 //                while(e != line.length() && line.charAt(e++)!=' ');
 //            }
-            if(line != null && line.length() > 0)
-            {
-                int indexOfComment = line.indexOf("//");
-                if(indexOfComment>0)
-                    line = line.substring(0, indexOfComment);
-                String []words = line.split("\\s+");
-                for(String word : words)
-                        stream.offer(word);
-                //stream.offer("\n");
-            }
+            praseLine(line);
+
         }
         catch(IOException e)
         {
@@ -52,7 +58,7 @@ public class WordStream
         }
     }
 
-    public String next()
+    String next()
     {
         String next = null;
         while(next == null || next.equals("\n"))
@@ -61,5 +67,10 @@ public class WordStream
             next = stream.poll();
         }
         return next;
+    }
+
+    void merge(WordStream stream)
+    {
+        this.stream.addAll(stream.stream);
     }
 }

@@ -1,9 +1,12 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.RuntimeException;
 import java.util.function.IntBinaryOperator;
 import java.util.function.DoubleBinaryOperator;
-public class Function
+class Function
 {
-    static WordList wordList = new WordList();
+    private static WordList wordList = new WordList();
 
     private static String getWordName(WordStream stream)
             throws SyntaxException, RunningException
@@ -41,19 +44,32 @@ public class Function
         return wordList.isname(getWordName(stream));
     }
 
-    static Value read()
+    static Value read(WordStream stream)
     {
-        //TODO
-        return new Value();
+        System.out.print("Input a word: ");
+        WordStream tmp = new WordStream();
+        String word = tmp.next();
+        stream.merge(tmp);
+        return new Value(word);
     }
 
     static Value readLinst()
     {
-        //TODO
-        return new Value();
+        System.out.print("Input a list: > ");
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+        try
+        {
+            String line = bufferedReader.readLine();
+            String[] list = line.split("\\s+");
+            return new Value(list);
+        }catch(IOException e)
+        {
+            e.printStackTrace();
+            return new Value();
+        }
     }
 
-    static Value numericOperate(WordStream stream, IntBinaryOperator intBinaryOperator, DoubleBinaryOperator doubleBinaryOperator)
+    private static Value numericOperate(WordStream stream, IntBinaryOperator intBinaryOperator, DoubleBinaryOperator doubleBinaryOperator)
             throws RunningException, SyntaxException
     {
         Value first = Interpreter.value(stream);
@@ -74,13 +90,10 @@ public class Function
             {
                 throw new RuntimeException("One of the operand cannot convert to numeric.");
             }
-        } catch (RuntimeException e)
-        {
-            throw e;
         }
     }
 
-    static Value compare(WordStream stream, IntBinaryComparator intBinaryComparator, DoubleBinaryComparator doubleBinaryComparator, StringBinaryComparator stringBinaryComparator)
+    private static Value compare(WordStream stream, IntBinaryComparator intBinaryComparator, DoubleBinaryComparator doubleBinaryComparator, StringBinaryComparator stringBinaryComparator)
             throws RunningException, SyntaxException
     {
         Value first = Interpreter.value(stream);
@@ -101,13 +114,10 @@ public class Function
             {
                 return new Value(String.valueOf(stringBinaryComparator.apply(first.toString(), second.toString())));
             }
-        } catch (RuntimeException e)
-        {
-            throw e;
         }
     }
 
-    static Value booleanOperate(WordStream stream, BooleanBinaryOperator booleanBinaryOperator)
+    private static Value booleanOperate(WordStream stream, BooleanBinaryOperator booleanBinaryOperator)
             throws RunningException, SyntaxException
     {
         Value first = Interpreter.value(stream);

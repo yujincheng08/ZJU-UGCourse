@@ -4,17 +4,16 @@ public class Interpreter
     public static void main(String [] args)
     {
         wordStream = new WordStream();
-        while(true)
-            interpret(wordStream);
+        interpret(wordStream);
     }
 
 
-    public static Boolean isWordLiterary(String name)
+    private static Boolean isWordLiterary(String name)
     {
         return name.startsWith("\"");
     }
 
-    public static Value value(WordStream stream)
+    static Value value(WordStream stream)
             throws RunningException, SyntaxException
     {
         String next = stream.next();
@@ -25,7 +24,7 @@ public class Interpreter
             case "isname":
                 return Function.isName(stream);
             case "read":
-                return Function.read();
+                return Function.read(stream);
             case "readlinst":
                 return Function.readLinst();
             case "add":
@@ -69,43 +68,45 @@ public class Interpreter
         }
     }
 
-    public static void interpret(WordStream stream)
+    private static void interpret(WordStream stream)
     {
-        String command = stream.next();
-        try
+        mainLoop: while(true)
         {
-            switch (command)
+            String command = stream.next();
+            try
             {
-                case "make":
-                    Function.make(stream);
-                    break;
-                case "print":
-                    Function.print(stream);
-                    break;
-                case "erase":
-                    Function.erase(stream);
-                    break;
-                case "thing":
-                    interpret(Function.thing(stream).toWordStream());
-                    break;
+                switch (command)
+                {
+                    case "make":
+                        Function.make(stream);
+                        break;
+                    case "print":
+                        Function.print(stream);
+                        break;
+                    case "erase":
+                        Function.erase(stream);
+                        break;
+                    case "thing":
+                        interpret(Function.thing(stream).toWordStream());
+                        break;
 //            case "if":
 //                break;
 //            case "run":
 //                break;
-                default:
-                    if(command.startsWith("["))
-                        interpret((new Value(command, stream).toWordStream()));
-                    else if(command.startsWith(":"))
-                        interpret(Function.thing(command.substring(1)).toWordStream());//interpret(value(stream).toWordStream());
-                    else
-                        throw new SyntaxException("Unexpected token: " + command);
+                    case "quit": case "exit":
+                        break mainLoop;
+                    default:
+                        if (command.startsWith("[")) interpret((new Value(command, stream).toWordStream()));
+                        else if (command.startsWith(":")) interpret(Function.thing(command.substring(1)).toWordStream());//interpret(value(stream).toWordStream());
+                        else throw new SyntaxException("Unexpected token: " + command);
+                }
+            } catch (RunningException e)
+            {
+                System.out.println("Runtime Error: " + e.getMessage());
+            } catch (SyntaxException e)
+            {
+                System.out.println("Syntax Error: " + e.getMessage());
             }
-        } catch(RunningException e)
-        {
-            System.out.println("Runtime Error: " + e.getMessage());
-        } catch(SyntaxException e)
-        {
-            System.out.println("Syntax Error: " + e.getMessage());
         }
     }
 }
