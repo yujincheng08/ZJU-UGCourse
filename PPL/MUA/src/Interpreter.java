@@ -94,6 +94,7 @@ public class Interpreter
 //            case "run":
 //                break;
                     case "quit": case "exit":
+                        System.out.println("Good bye!");
                         break mainLoop;
                     default:
                         if (command.startsWith("[")) interpret((new Value(command, stream).toWordStream()));
