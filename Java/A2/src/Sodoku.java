@@ -47,15 +47,6 @@ class Sodoku
         generated = false;
     }
 
-    private void initValidList(ArrayList<Integer> list)
-    {
-        list.clear();
-        for (int i = 0; i < 9; ++i)
-        {
-            list.add(i);
-        }
-    }
-
     private class ValidList extends  ArrayList<ArrayList<ArrayList<Integer>>>
     {
         ValidList()
@@ -101,7 +92,7 @@ class Sodoku
 
     private void removeFromList(ArrayList<Integer>list, int object)
     {
-        list.remove(new Integer(object))
+        list.remove(new Integer(object));
     }
 
     private void produce()
