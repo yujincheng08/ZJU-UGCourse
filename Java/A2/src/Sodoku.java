@@ -1,5 +1,6 @@
-import java.util.HashSet;
 import java.util.ArrayList;
+import java.util.HashSet;
+
 class Sodoku
 {
     private int[][] matrix = new int[9][9];
@@ -46,78 +47,120 @@ class Sodoku
         generated = false;
     }
 
-    private void produce()
+    private void initValidList(ArrayList<Integer> list)
     {
-        ArrayList<ArrayList<HashSet<Integer>>> invalid = new ArrayList<>(9);
-        int[][] available = new int[9][9];
-        int[][] filled = new int[9][9];
-        for(int i = 0; i < 9; ++i)
+        list.clear();
+        for (int i = 0; i < 9; ++i)
         {
-            invalid.add(new ArrayList<>(9));
-            for (int j = 0; j < 9; ++j)
+            list.add(i);
+        }
+    }
+
+    private class ValidList extends  ArrayList<ArrayList<ArrayList<Integer>>>
+    {
+        ValidList()
+        {
+            for (int i = 1; i < 10; ++i)
             {
-                invalid.get(i).add(new HashSet<>(9));
+                ArrayList<ArrayList<Integer>> list = new ArrayList<>(9);
+                add(list);
+                for(int j = 0; j<9; ++j)
+                {
+                    list.add(new ArrayList<>(9));
+                    resetValidList(i, j);
+                }
             }
         }
+
+        ArrayList<Integer> get(int num, int block)
+        {
+            return super.get(num-1).get(block);
+        }
+
+        void resetValidList(int num, int block)
+        {
+            ArrayList<Integer> list = get(num, block);
+            for(int i = 0; i < 9; ++i)
+                list.add(i);
+        }
+
+        void updateValidList(int num, int block, int [][] matrix)
+        {
+            resetValidList(num, block);
+            ArrayList<Integer> list = get(num, block);
+            for(int i = 0; i < 9; ++i)
+            {
+                int row = block / 3 * 3 + i / 3;
+                int column = block % 3 * 3 + i % 3;
+                if(matrix[row][column] != 0)
+                    list.remove(new Integer(i));
+            }
+
+        }
+    }
+
+    private void removeFromList(ArrayList<Integer>list, int object)
+    {
+        list.remove(new Integer(object))
+    }
+
+    private void produce()
+    {
+        ValidList valid = new ValidList();
+        int[][] filled = new int[9][9];
         if(generated)
             clear();
         for(int num = 1; num <= 9; ++num)
         {
             for(int block = 0; block < 9; ++block)
             {
-                available[num-1][block] = 10-num;
                 filled[num-1][block] = 0;
-                invalid.get(num-1).get(block).clear();
+                valid.updateValidList(num, block, matrix);
             }
             blockLoop : for(int block = 0; block < 9; ++block)
             {
-                HashSet<Integer> set = invalid.get(num-1).get(block);
+                ArrayList<Integer> list = valid.get(num,block);
                 while(true)
                 {
-                    if (available[num-1][block] == 0) {
-                        set.clear();
-                        available[num-1][block] = 10 - num;
-                        if(block==0)
+                    if (list.size() == 0)
+                    {
+                        valid.resetValidList(num, block);
+                        if (block == 0)
                         {
                             --num;
                             block = 9;
                         }
                         --block;
-                        --available[num-1][block];
-                        int pos = filled[num-1][block];
+                        int pos = filled[num - 1][block];
+                        removeFromList(valid.get(num, block), pos);
                         //System.out.println(block + " " + pos);
-                        invalid.get(num-1).get(block).add(pos);
                         int row = block / 3 * 3 + pos / 3;
                         int column = block % 3 * 3 + pos % 3;
                         matrix[row][column] = 0;
                         --block;
                         continue blockLoop;
                     }
-                    int pos = (int) (Math.random() * 9);
-                    if (!set.contains(pos))
+                    int pos = list.get((int) (Math.random() * list.size()));
+                    int row = block / 3 * 3 + pos / 3;
+                    int column = block % 3 * 3 + pos % 3;
+                    //System.out.println(num + " " + row + " " + column + " " + block + " " + available[num-1][block]);
+                    //print();
+                    if (matrix[row][column] == 0)
                     {
-                        int row = block / 3 * 3 + pos / 3;
-                        int column = block % 3 * 3 + pos % 3;
-                        //System.out.println(num + " " + row + " " + column + " " + block + " " + available[num-1][block]);
-                        //print();
-                        if (matrix[row][column] == 0)
+                        if (check(num, row, column))
                         {
-                            if (check(num, row, column))
-                            {
-                                matrix[row][column] = num;
-                                filled[num-1][block] = pos;
-                                break;
-                            }
-                            else
-                            {
-                                --available[num-1][block];
-                                set.add(pos);
-                            }
-                        }
-                        else
+                            matrix[row][column] = num;
+                            filled[num - 1][block] = pos;
+                            break;
+                        } else
                         {
-                            set.add(pos);
+                            //--available[num-1][block];
+                            //set.add(pos);
+                            removeFromList(list, pos);
                         }
+                    } else
+                    {
+                        removeFromList(list, pos);
                     }
                 }
             }
@@ -127,15 +170,15 @@ class Sodoku
 
     private void hide(int hintNum)
     {
+        ArrayList<Integer> unhidden = new ArrayList<>(81);
+        for(int i = 0; i<81; ++i)
+            unhidden.add(i);
         while(hintNum>0)
         {
-            int pos = (int)(Math.random()*81);
-
-            if(!visible[pos/9][pos%9])
-            {
-                visible[pos / 9][pos % 9] = true;
-                hintNum--;
-            }
+            int pos = unhidden.get((int)(Math.random()*unhidden.size()));
+            visible[pos / 9][pos % 9] = true;
+            removeFromList(unhidden, pos);
+            hintNum--;
         }
     }
 
