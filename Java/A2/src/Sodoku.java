@@ -1,11 +1,10 @@
 import java.util.ArrayList;
-import java.util.HashSet;
 
 class Sodoku
 {
-    private int[][] matrix = new int[9][9];
+    private final int[][] matrix = new int[9][9];
     private boolean generated = false;
-    private boolean[][] visible = new boolean[9][9];
+    private final boolean[][] visible = new boolean[9][9];
 
     void print()
     {
@@ -97,7 +96,8 @@ class Sodoku
 
     private void produce()
     {
-        ValidList valid = new ValidList();
+        ValidList valid;
+        valid = new ValidList();
         int[][] filled = new int[9][9];
         if(generated)
             clear();
