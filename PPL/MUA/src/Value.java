@@ -1,9 +1,10 @@
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Value extends ArrayList<String>
 {
-    public WordStream toWordStream()
+    WordStream toWordStream()
     {
         return new WordStream(toArray(new String[0]));
     }
@@ -78,23 +79,22 @@ public class Value extends ArrayList<String>
 
     public Value clone()
     {
-        Value value = (Value) super.clone();
-        return value;
+        return (Value) super.clone();
     }
 
-    private void checkSizeForValue(int size, String targetType)
+    private void checkSizeForValue(String targetType)
             throws RunningException
     {
         if(size() == 0)
             throw new RunningException("Cannot convert null to "+targetType+".");
-        else if(size() > size)
+        else if(size() > 1)
             throw new RunningException("Cannot convert list to "+targetType+".");
     }
 
-    public Boolean toBoolean()
+    Boolean toBoolean()
             throws RunningException
     {
-        checkSizeForValue(1, "boolean");
+        checkSizeForValue("boolean");
         String value = get(0);
         switch(value){
             case "true":
@@ -106,30 +106,38 @@ public class Value extends ArrayList<String>
         }
     }
 
-    public int toInt()
-            throws RunningException, NumberFormatException
-    {
-        checkSizeForValue(1, "integer");
-        String value = get(0);
-        return Integer.parseInt(value);
-    }
+//    public int toInt()
+//            throws RunningException, NumberFormatException
+//    {
+//        checkSizeForValue(1, "integer");
+//        String value = get(0);
+//        return Integer.parseInt(value);
+//    }
+//
+//    public double toFloat()
+//            throws RunningException, NumberFormatException
+//    {
+//        checkSizeForValue(1, "float");
+//        String value = get(0);
+//        return Double.parseDouble(value);
+//    }
 
-    public double toFloat()
+    BigDecimal toNumeric()
             throws RunningException, NumberFormatException
     {
-        checkSizeForValue(1, "float");
+        checkSizeForValue("numeric");
         String value = get(0);
-        return Double.parseDouble(value);
+        return new BigDecimal(value);
     }
 
     @Override
     public String toString()
     {
-        String result = "";
+        StringBuilder result = new StringBuilder();
         for (String value: this)
         {
-            result += value + " ";
+            result.append(value).append(" ");
         }
-        return size()>1 ? "[ " + result.trim() + " ]" : result.trim();
+        return size()>1 ? "[ " + result.toString().trim() + " ]" : result.toString().trim();
     }
 }

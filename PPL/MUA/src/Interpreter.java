@@ -1,9 +1,8 @@
 public class Interpreter
 {
-    private static WordStream wordStream;
     public static void main(String [] args)
     {
-        wordStream = new WordStream();
+        WordStream wordStream = new WordStream();
         interpret(wordStream);
     }
 

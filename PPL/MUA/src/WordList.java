@@ -1,5 +1,5 @@
 import java.util.HashMap;
-public class WordList
+class WordList
 {
     private HashMap<String, Word> list;
     WordList()

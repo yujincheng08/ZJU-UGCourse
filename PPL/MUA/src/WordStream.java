@@ -14,11 +14,11 @@ class WordStream
             stream.offer(word);
     }
 
-    WordStream(String line)
-    {
-        this();
-        praseLine(line);
-    }
+//    WordStream(String line)
+//    {
+//        this();
+//        praseLine(line);
+//    }
 
     WordStream()
     {
