@@ -1,8 +1,8 @@
 #ifndef SCENE_H
 #define SCENE_H
+#include "camera.h"
 #include <string>
 #include <vector>
-#include "camera.h"
 
 namespace GL {
 #include <GL/glew.h>
@@ -36,8 +36,9 @@ class Scene {
   void setupCallback();
 
   void loadShaders(std::string vertex, std::string fragment);
+  void moveCamera(double deltaTime);
 
- protected:
+protected:
   virtual void keyCallback(int key, int scancode, int action, int mods);
   virtual void mouseButtonCallback(int button, int action, int mods);
   virtual void cursorPosCallback(double xpos, double ypos);
@@ -46,7 +47,7 @@ class Scene {
 
   virtual void animate(double deltaTime);
 
- public:
+public:
   Scene(unsigned width = 1280u, unsigned height = 720u, std::string title = "");
   Scene(std::string title) : Scene(1280u, 720u, title) {}
   void setCamera(Camera &camera) { this->camera = camera; }
@@ -57,4 +58,4 @@ class Scene {
   void add(Mesh *mesh);
 };
 
-#endif  // SCENE_H
+#endif // SCENE_H

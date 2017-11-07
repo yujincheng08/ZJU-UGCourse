@@ -1,0 +1,13 @@
+#version 400 core
+
+in vec2 UV;
+
+out vec3 color;
+
+uniform sampler2D texture;
+
+void main(){
+    color = texture( texture, UV ).rgb;
+    // On some computer, texture may have to change to texture2D
+    //color = vec3(1.0, 0.0, 0.0);
+}

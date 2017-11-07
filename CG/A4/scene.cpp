@@ -1,4 +1,5 @@
 #include "scene.h"
+#include "sphere.h"
 #include <GLFW/glfw3.h>
 #include <fstream>
 #include <functional>
@@ -10,7 +11,6 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
-#include "sphere.h"
 using namespace glm;
 using namespace std;
 using namespace GL;
@@ -46,8 +46,13 @@ void Scene::scrollCallback(GLFWwindow *window, double xoffset, double yoffset) {
 
 void Scene::framebufferSizeCallback(GLFWwindow *window, int width, int height) {
   auto sceneIterator = callBackMap.find(window);
-  if (sceneIterator != callBackMap.end())
+  if (sceneIterator != callBackMap.end()) {
+    if (width == 0)
+      width = 1;
+    if (height == 0)
+      height = 1;
     sceneIterator->second->framebufferSizeCallback(width, height);
+  }
 }
 
 void Scene::setupCallback() {
@@ -59,31 +64,31 @@ void Scene::setupCallback() {
 }
 
 void Scene::keyCallback(int key, int, int action, int mods) {
-  double step = 0.5;
-  if (action == GLFW_PRESS || action == GLFW_REPEAT) {
-    switch (key) {
-      case GLFW_KEY_W:
-        camera.forward(step);
-        break;
-      case GLFW_KEY_S:
-        camera.backward(step);
-        break;
-      case GLFW_KEY_A:
-        camera.left(step);
-        break;
-      case GLFW_KEY_D:
-        camera.right(step);
-        break;
-      case GLFW_KEY_SPACE:
-        if (mods & GLFW_MOD_SHIFT)
-          camera.down(step);
-        else
-          camera.up(step);
-        break;
-      default:
-        break;
-    }
-  }
+  /*   double step = 0.5;
+    if (action == GLFW_PRESS || action == GLFW_REPEAT) {
+      switch (key) {
+        case GLFW_KEY_W:
+          camera.forward(step);
+          break;
+        case GLFW_KEY_S:
+          camera.backward(step);
+          break;
+        case GLFW_KEY_A:
+          camera.left(step);
+          break;
+        case GLFW_KEY_D:
+          camera.right(step);
+          break;
+        case GLFW_KEY_SPACE:
+          if (mods & GLFW_MOD_SHIFT)
+            camera.down(step);
+          else
+            camera.up(step);
+          break;
+        default:
+          break;
+      }
+    } */
 }
 
 void Scene::mouseButtonCallback(int, int action, int) {
@@ -115,8 +120,22 @@ void Scene::framebufferSizeCallback(int width, int height) {
   glViewport(0, 0, width, height);
 }
 
-void Scene::animate(double) {
-  // Do nothing here.
+void Scene::animate(double deltaTime) {}
+
+void Scene::moveCamera(double deltaTime) {
+  int step = 5;
+  if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+    camera.forward(step * deltaTime);
+  }
+  if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+    camera.backward(step * deltaTime);
+  }
+  if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+    camera.left(step * deltaTime);
+  }
+  if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+    camera.right(step * deltaTime);
+  }
 }
 
 Scene::Scene(unsigned w, unsigned h, string t) : width(w), height(h), title(t) {
@@ -148,8 +167,7 @@ Scene::Scene(unsigned w, unsigned h, string t) : width(w), height(h), title(t) {
   GLuint VertexArrayID;
   glGenVertexArrays(1, &VertexArrayID);
   glBindVertexArray(VertexArrayID);
-  loadShaders("TransformVertexShader.vertexshader",
-              "TextureFragmentShader.fragmentshader");
+  loadShaders("vertexShader", "fragmentShader");
   textureSampleID = glGetUniformLocation(programID, "texture");
   projectionMatrixID = glGetUniformLocation(programID, "ProjectionMatrix");
   viewMatrixID = glGetUniformLocation(programID, "ViewMatrix");
@@ -164,7 +182,8 @@ void Scene::setBackground(double r, double g, double b, double a) {
 }
 
 int Scene::exec() {
-  if (!initialized) return EXIT_FAILURE;
+  if (!initialized)
+    return EXIT_FAILURE;
 
   setupCallback();
   double oldTime = glfwGetTime();
@@ -173,6 +192,7 @@ int Scene::exec() {
     glUseProgram(programID);
     double newTime = glfwGetTime();
     animate(newTime - oldTime);
+    moveCamera(newTime - oldTime);
     mat4 Projction = camera.getProjectionMatrix((float)width / height);
     mat4 View = camera.getViewMatrix();
 
@@ -225,10 +245,11 @@ void Scene::loadShaders(string vertex, string fragment) {
   // Check Vertex Shader
   glGetShaderiv(VertexShaderID, GL_COMPILE_STATUS, &Result);
   glGetShaderiv(VertexShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-  if (InfoLogLength > 0) {
+  if (InfoLogLength > 0 && Result == GL_FALSE) {
     char *msg = new char[InfoLogLength + 1];
     glGetShaderInfoLog(VertexShaderID, InfoLogLength, nullptr, msg);
     cerr << msg << endl;
+    delete msg;
   }
 
   code = FragmentShaderCode.c_str();
@@ -238,7 +259,7 @@ void Scene::loadShaders(string vertex, string fragment) {
   // Check Fragment Shader
   glGetShaderiv(FragmentShaderID, GL_COMPILE_STATUS, &Result);
   glGetShaderiv(FragmentShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-  if (InfoLogLength > 0) {
+  if (InfoLogLength > 0 && Result == GL_FALSE) {
     char *msg = new char[InfoLogLength + 1];
     glGetShaderInfoLog(FragmentShaderID, InfoLogLength, nullptr, msg);
     cerr << msg << endl;
@@ -252,7 +273,7 @@ void Scene::loadShaders(string vertex, string fragment) {
 
   glGetProgramiv(ProgramID, GL_LINK_STATUS, &Result);
   glGetProgramiv(ProgramID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-  if (InfoLogLength > 0) {
+  if (InfoLogLength > 0 && Result == GL_FALSE) {
     char *msg = new char[InfoLogLength + 1];
     glGetProgramInfoLog(ProgramID, InfoLogLength, nullptr, msg);
     cerr << msg << endl;
