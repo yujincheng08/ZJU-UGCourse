@@ -11,10 +11,11 @@ class Function
             throws SyntaxException, RunningException
     {
         Value value = Interpreter.value(stream);
-        if(value.size()!=1)
-            throw new SyntaxException("Except a word literary");
+        String name = value.toString();
+        if(value.size()!=1 || !name.matches("[_a-zA-Z].*"))
+            throw new SyntaxException("Except a word literary but get "+name);
         else
-            return value.toString();
+            return name;
 
         /*
         String name = Interpreter.value(stream).toString();
