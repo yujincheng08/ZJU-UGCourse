@@ -5,8 +5,8 @@
 #include <iostream>
 
 class Camera {
-  glm::vec3 position = glm::vec3(0, 0, 5);
-  double horizontalAngle = M_PI;
+  glm::vec3 position = glm::vec3(10, 0, 0);
+  double horizontalAngle = -M_PI_2;
   double verticalAngle = 0.0;
   double fov = 45.0;
 

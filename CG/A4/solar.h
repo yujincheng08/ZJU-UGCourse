@@ -8,6 +8,8 @@ class Solar : public Scene {
   Sphere *earth;
   Sphere *mars;
   Sphere *moon;
+  Sphere *mercury;
+  Sphere *satellite;
   void animate(double deltaTime) override;
 
  public:

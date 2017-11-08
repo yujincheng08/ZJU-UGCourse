@@ -7,8 +7,7 @@ vec3 Camera::direction() {
 }
 
 vec3 Camera::right() {
-  return vec3(sin(horizontalAngle - M_PI_2), 0.0,
-              cos(horizontalAngle - M_PI_2));
+  return vec3(-cos(horizontalAngle), 0.0, sin(horizontalAngle));
 }
 
 mat4 Camera::getProjectionMatrix(double ratio, double near, double far) {

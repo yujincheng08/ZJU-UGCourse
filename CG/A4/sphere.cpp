@@ -10,59 +10,54 @@ Sphere::Sphere(uint32_t color, float radius, unsigned resolution) {
   vector<vec3> vertices;
   vector<vec2> texture;
   vector<vec3> normals;
-
-  // iniatiate the variable we are going to use
-  float X1, Y1, X2, Y2, Z1, Z2;
-  float inc1, inc2, inc3, inc4, Radius1, Radius2;
-  // unsigned count = 0u;
+  float x1, y1, x2, y2, z1, z2;
+  float delta1, delta2, delta3, delta4, radius1, radius2;
   for (unsigned w = 0; w < resolution; w++) {
     for (int h = -(resolution / 2); h < (int)(resolution / 2); h++) {
-      inc1 = (w / (float)resolution) * 2 * M_PI;
-      inc2 = ((w + 1) / (float)resolution) * 2 * M_PI;
+      delta1 = (w / (float)resolution) * 2 * M_PI;
+      delta2 = ((w + 1) / (float)resolution) * 2 * M_PI;
 
-      inc3 = (h / (float)resolution) * M_PI;
-      inc4 = ((h + 1) / (float)resolution) * M_PI;
+      delta3 = (h / (float)resolution) * M_PI;
+      delta4 = ((h + 1) / (float)resolution) * M_PI;
 
-      X1 = sin(inc1);
-      Y1 = cos(inc1);
-      X2 = sin(inc2);
-      Y2 = cos(inc2);
+      x1 = sin(delta1);
+      y1 = cos(delta1);
+      x2 = sin(delta2);
+      y2 = cos(delta2);
 
-      // store the upper and lower radius, remember everything is going to be
-      // drawn as triangles
-      Radius1 = radius * cos(inc3);
-      Radius2 = radius * cos(inc4);
+      radius1 = radius * cos(delta3);
+      radius2 = radius * cos(delta4);
 
-      Z1 = radius * sin(inc3);
-      Z2 = radius * sin(inc4);
+      z1 = radius * sin(delta3);
+      z2 = radius * sin(delta4);
 
       vec3 v;
-      v = vec3(Radius1 * X1, Z1, Radius1 * Y1);
+      v = vec3(radius1 * x1, z1, radius1 * y1);
       vertices.push_back(v);
       texture.push_back(vec2(0.0f, 0.0f));
       normals.push_back(v);
 
-      v = vec3(Radius1 * X2, Z1, Radius1 * Y2);
+      v = vec3(radius1 * x2, z1, radius1 * y2);
       vertices.push_back(v);
       texture.push_back(vec2(0.0f, 0.0f));
       normals.push_back(v);
 
-      v = vec3(Radius2 * X2, Z2, Radius2 * Y2);
+      v = vec3(radius2 * x2, z2, radius2 * y2);
       vertices.push_back(v);
       texture.push_back(vec2(0.0f, 0.0f));
       normals.push_back(v);
 
-      v = vec3(Radius1 * X1, Z1, Radius1 * Y1);
+      v = vec3(radius1 * x1, z1, radius1 * y1);
       vertices.push_back(v);
       texture.push_back(vec2(0.0f, 0.0f));
       normals.push_back(v);
 
-      v = vec3(Radius2 * X2, Z2, Radius2 * Y2);
+      v = vec3(radius2 * x2, z2, radius2 * y2);
       vertices.push_back(v);
       texture.push_back(vec2(0.0f, 0.0f));
       normals.push_back(v);
 
-      v = vec3(Radius2 * X1, Z2, Radius2 * Y1);
+      v = vec3(radius2 * x1, z2, radius2 * y1);
       vertices.push_back(v);
       texture.push_back(vec2(0.0f, 0.0f));
       normals.push_back(v);
