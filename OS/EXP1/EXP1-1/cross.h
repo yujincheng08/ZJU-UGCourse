@@ -10,6 +10,7 @@
 #include <vector>
 
 class Car;
+class Deadlock;
 
 class Cross {
   /* +-+-+
@@ -30,21 +31,13 @@ class Cross {
 
   unsigned wait = 0;
 
-  bool signalDirection(const Direction &direction);
-
   Deadlock deadlock;
 
 public:
   Cross(const std::string &sequence);
-  void lockBlocks(const Direction &direction);
-  void unlockBlocks(const Direction &direction);
-  // void tryQueue(Car *car);
   void deQueue(Car *car);
   bool lookAtRight(const Direction &direction);
-  bool signalLeft(const Direction &direction);
-  bool signalRight(const Direction &direction);
-  bool signalOpposite(const Direction &direction);
-  bool signalNext(const Direction &direction);
+  bool signalDirection(const Direction &direction, unsigned times = 1);
   void waiting();
   void gone();
 };

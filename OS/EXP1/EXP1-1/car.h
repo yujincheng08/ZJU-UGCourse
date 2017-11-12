@@ -23,8 +23,7 @@ public:
   void tellNext(Car *next);
   void arrive();
   void cross();
-  void wakeUp();
-  void force();
+  void wakeUp(unsigned times = 1);
   const Direction &getDirection() { return direction; }
 };
 #endif
