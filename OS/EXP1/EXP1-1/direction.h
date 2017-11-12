@@ -1,0 +1,24 @@
+#ifndef DIRECTION_H
+#define DIRECTION_H
+#include <ostream>
+#include <string>
+
+class Direction {
+public:
+  enum Directions : unsigned { East, South, West, North };
+
+private:
+  Directions direction;
+  Direction(const unsigned &direction);
+
+public:
+  Direction(const char &c);
+  const Direction left() const;
+  const Direction right() const;
+  const Direction opposite() const;
+  operator Directions() const;
+  operator std::string() const;
+  friend std::ostream &operator<<(std::ostream &out,
+                                  const Direction &direction);
+};
+#endif
