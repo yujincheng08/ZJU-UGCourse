@@ -4,19 +4,23 @@
 #include "mutex.h"
 #include "sem.h"
 #include "thread.h"
+#include <queue>
 
-class Cross;
+class Car;
 
 class Deadlock : public Thread {
   Semaphore self;
-  Cross *parent;
-  Mutex &global;
+  std::queue<Car *> *queue;
+  Mutex mutex;
+  unsigned wait = 0u;
 
 protected:
   void *run() override;
 
 public:
-  Deadlock(Mutex &global, Cross *parent) : global(global), parent(parent){};
+  Deadlock(std::queue<Car *> *queue) : queue(queue) {}
   void signal();
+  void waiting();
+  void gone();
 };
 #endif // DEADLOCK_H

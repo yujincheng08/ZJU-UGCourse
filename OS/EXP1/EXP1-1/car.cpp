@@ -27,19 +27,46 @@ void Car::arrive() {
 }
 
 void Car::cross() {
-  if (parent->lookAtRight(direction)) {
-    parent->waiting();
+  if (lookAtRight()) {
+    deadlock.waiting();
     self.wait();
-    parent->gone();
+    deadlock.gone();
   }
   stringstream msg;
   msg << "Car " << num << " from " << direction << " is leaving crossing"
       << endl;
   cout << msg.str();
-  parent->deQueue(this);
-  parent->signalDirection(direction.left(), 2) ||
-      parent->signalDirection(direction.opposite()) ||
-      parent->signalDirection(direction.right()) ||
-      parent->signalDirection(direction);
-  parent->signalDirection(direction);
+  deQueue();
+  signalDirection(direction.left(), 2) ||
+      signalDirection(direction.opposite()) ||
+      signalDirection(direction.right()) || signalDirection(direction);
+  signalDirection(direction);
 }
+
+void Car::deQueue() {
+  queueMutex[direction].lock();
+  queue[direction].pop();
+  queueMutex[direction].unlock();
+}
+
+bool Car::lookAtRight() {
+  auto right = direction.right();
+  queueMutex[right].lock();
+  bool result = !queue[right].empty();
+  queueMutex[right].unlock();
+  return result;
+}
+
+bool Car::signalDirection(const Direction &direction, unsigned times) {
+  queueMutex[direction].lock();
+  if (queue[direction].empty()) {
+    queueMutex[direction].unlock();
+    return false;
+  } else {
+    queue[direction].front()->wakeUp(times);
+    queueMutex[direction].unlock();
+    return true;
+  }
+}
+
+void Car::enQueue() { queue[direction].push(this); }

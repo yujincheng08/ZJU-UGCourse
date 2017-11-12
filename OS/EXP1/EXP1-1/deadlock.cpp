@@ -1,4 +1,5 @@
 #include "deadlock.h"
+#include "car.h"
 #include "cross.h"
 #include "direction.h"
 #include <iostream>
@@ -9,15 +10,30 @@ using namespace std;
 void *Deadlock::run() {
   while (true) {
     self.wait();
-    global.unlock();
+    mutex.unlock();
     stringstream msg;
     msg << "DEADLOCK: car jam detected, signaling North to go." << endl;
     cout << msg.str();
-    parent->signalDirection('n');
+    queue[Direction('n')].front()->wakeUp();
   }
 }
 
 void Deadlock::signal() {
-  global.lock();
+  mutex.lock();
   self.signal();
+}
+
+void Deadlock::waiting() {
+  mutex.lock();
+  if (++wait == 4) {
+    mutex.unlock();
+    signal();
+  }
+  mutex.unlock();
+}
+
+void Deadlock::gone() {
+  mutex.lock();
+  --wait;
+  mutex.unlock();
 }
