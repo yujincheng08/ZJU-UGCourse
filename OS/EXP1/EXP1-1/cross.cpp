@@ -20,6 +20,7 @@ Cross::Cross(const string &sequence) : deadlock(queue) {
   }
   for (auto &c : cars) {
     c->wait();
+    delete c;
   }
   deadlock.terminate();
 }

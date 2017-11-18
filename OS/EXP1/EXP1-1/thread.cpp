@@ -27,4 +27,7 @@ void Thread::terminate() {
 
 void Thread::exit(void *retval) { pthread_exit(retval); }
 
-Thread::~Thread() { wait(); }
+Thread::~Thread() {
+  wait();
+  pthread_attr_destroy(&tattr);
+}
