@@ -62,12 +62,13 @@ public class Interpreter
                 else if(next.startsWith("["))
                     return new Value(next, stream);
                 else
-                    throw new SyntaxException("Unexpect token: " + next);
+                    //throw new SyntaxException("Unexpect token: " + next);
                     //throw new RunningException("Undefined function: " + next);
+                    return Function.run(next, stream);
         }
     }
 
-    private static void interpret(WordStream stream)
+    static void interpret(WordStream stream)
     {
         mainLoop: while(true)
         {

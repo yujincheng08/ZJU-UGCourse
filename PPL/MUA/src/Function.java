@@ -69,53 +69,6 @@ class Function
         }
     }
 
-//    private static Value numericOperate(WordStream stream, IntBinaryOperator intBinaryOperator, DoubleBinaryOperator doubleBinaryOperator)
-//            throws RunningException, SyntaxException
-//    {
-//        Value first = Interpreter.value(stream);
-//        Value second = Interpreter.value(stream);
-//        try
-//        {
-//            int a = first.toInt();
-//            int b = second.toInt();
-//            return new Value(String.valueOf(intBinaryOperator.applyAsInt(a, b)));
-//        } catch (NumberFormatException e)
-//        {
-//            try
-//            {
-//                double a = first.toFloat();
-//                double b = second.toFloat();
-//                return new Value(String.valueOf(doubleBinaryOperator.applyAsDouble(a, b)));
-//            } catch (NumberFormatException f)
-//            {
-//                throw new RunningException("One of the operand cannot convert to numeric.");
-//            }
-//        }
-//    }
-//
-//    private static Value compare(WordStream stream, IntBinaryComparator intBinaryComparator, DoubleBinaryComparator doubleBinaryComparator, StringComparator stringBinaryComparator)
-//            throws RunningException, SyntaxException
-//    {
-//        Value first = Interpreter.value(stream);
-//        Value second = Interpreter.value(stream);
-//        try
-//        {
-//            int a = first.toInt();
-//            int b = second.toInt();
-//            return new Value(String.valueOf(intBinaryComparator.apply(a, b)));
-//        } catch (NumberFormatException e)
-//        {
-//            try
-//            {
-//                double a = first.toFloat();
-//                double b = second.toFloat();
-//                return new Value(String.valueOf(doubleBinaryComparator.apply(a, b)));
-//            } catch (NumberFormatException f)
-//            {
-//                return new Value(String.valueOf(stringBinaryComparator.apply(first.toString(), second.toString())));
-//            }
-//        }
-//    }
     private static Value numericOperate(WordStream stream, NumericOperator numericOperator)
             throws RunningException, SyntaxException
     {
@@ -269,5 +222,25 @@ class Function
             throws RunningException, SyntaxException
     {
         System.out.println(Interpreter.value(stream).toString());
+    }
+
+    static Value run(String functionName, WordStream stream)
+            throws RunningException, SyntaxException
+    {
+        if(wordList.contains(functionName))
+        {
+            Interpreter.value(stream);
+
+            WordList functionWordList = new WordList();
+            Interpreter.interpret(stream); //TODO:
+        }
+        else
+            throw new RunningException("Function name does not exist.");
+        return null;
+    }
+
+    static Value run(WordStream stream)
+    {
+        return null;
     }
 }

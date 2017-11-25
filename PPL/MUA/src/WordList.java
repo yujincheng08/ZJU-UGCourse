@@ -45,4 +45,9 @@ class WordList
         else
             throw new RunningException("Word " + name + "does not exist.");
     }
+
+    boolean contains(String name)
+    {
+        return list.containsKey(name);
+    }
 }

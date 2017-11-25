@@ -3,6 +3,7 @@
 
 #include <semaphore.h>
 
+//simply calling functions
 class Semaphore {
   sem_t semaphore;
 

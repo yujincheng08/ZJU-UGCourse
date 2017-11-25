@@ -20,55 +20,46 @@ public class Value extends ArrayList<String>
         this.add(value);
     }
 
+    void add(StringBuilder stringBuilder) {
+        if(stringBuilder.length() > 0)
+            add(stringBuilder.toString());
+        stringBuilder.setLength(0);
+    }
+
     Value(String first, WordStream stream)
     {
-        if(first.startsWith("["))
+        int count = 0;
+        StringBuilder value = new StringBuilder();
+        while(true)
         {
-            int count = 1;
-            first = first.substring(1);
-            while(count>0)
+            for (int i = 0; i < first.length(); ++i)
             {
-                if(first.length() == 0)
+                char c = first.charAt(i);
+                if (c == '[')
                 {
-                    first = stream.next();
-                    continue;
+                    add(value);
+                    if(++count > 1)
+                        add("[");
                 }
-                if(first.startsWith("["))
+                else if (c == ']')
                 {
-                    add("[");
-                    count++;
-                    first = first.substring(1);
-                    continue;
+                    add(value);
+                    if(count-- > 1)
+                        add("]");
                 }
-                if(first.endsWith("]"))
+                else if(c == ' ')
                 {
-                    if(count>1)
-                    {
-                        int end = first.indexOf(']');
-                        if(first.length() > 1)
-                            add(first.substring(0, end));
-                        end = first.length() - end;
-                        while(end-- > 0)
-                        {
-                            if(count > 1)
-                                add("]");
-                            count--;
-                        }
-                        if(count >0 )
-                            first = stream.next();
-                        continue;
-                    }
-                    if(count == 1)
-                    {
-                        if(first.length()>1)
-                            add(first.substring(0, first.length()-1));
-                        count--;
-                        continue;
-                    }
+                    add(value);
                 }
-                add(first);
-                first = stream.next();
+                else
+                {
+                    value.append(c);
+                }
             }
+            if(count>0)
+                first = stream.next();
+            else
+                break;
         }
     }
 

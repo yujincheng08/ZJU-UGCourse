@@ -3,6 +3,7 @@
 
 #include "pthread.h"
 
+//simply calling functions
 class Mutex {
   pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
   friend class Condiction;

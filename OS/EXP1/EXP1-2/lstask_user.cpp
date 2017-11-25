@@ -29,7 +29,6 @@ void Logger::iter() {
   string line;
   bool finished = false;
   while (getline(in, line)) {
-    cout << line << endl;
     string::size_type n;
     if ((n = line.find("lstask")) != string::npos) {
       if (finished) {
