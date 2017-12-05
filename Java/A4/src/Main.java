@@ -10,12 +10,9 @@ class Main
 {
     public static void main(String [] arg) throws Exception
     {
-        SearchEngine searchEngine = new LuceneSearchEngine();
         Crawler crawler = new JsoupCrawler()
-                .setFilter(".+://(www\\.)?(cs|cspo)\\.zju\\.edu\\.cn/.*")
-                .setSearchEngine(new SearchEngine()
-                {
-                })
+                .setFilter(".+://(www\\.)?(cs|cspo)\\.zju\\.edu\\.cn/((?!catalog_id=23471&).)*")
+                .setSearchEngine(new LuceneSearchEngine("./index"))
                 .setExtractor(new Extractor()
                 {
                     String content;
@@ -132,7 +129,8 @@ class Main
                     }
                 });
         crawler.crawl("http://www.cs.zju.edu.cn/");
-        // crawler.crawl("http://cspo.zju.edu.cn/cspo_bks/");
+        crawler.search();
+        //crawler.crawl("http://cspo.zju.edu.cn/redir.php?catalog_id=23471&offset=1313625600");
         // crawler.crawl("http://www.cs.zju.edu.cn/chinese/");
         // crawler.crawl("http://cspo.zju.edu.cn/redir.php?catalog_id=23382&object_id=701536");
     }

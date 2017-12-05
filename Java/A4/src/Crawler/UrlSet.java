@@ -17,20 +17,24 @@ public class UrlSet
             return url;
     }
 
-    int addUrl(String url)
+    boolean addUrl(String url)
     {
         url = deleteHash(url);
         if(!tracked.contains(url))
         {
             tracked.add(url);
             untracked.offer(url);
+            return true;
         }
-        return untracked.size();
+        return false;
     }
 
     String getUrl()
     {
-        return untracked.poll();
+        if(untracked.size()>0)
+            return untracked.poll();
+        else
+            return null;
     }
 
     boolean isEmpty()

@@ -1,11 +1,18 @@
 package Crawler;
+
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.TimeUnit;
+
 public abstract class Crawler
 {
+    private static int THREAD_SIZE = 16;
     private SearchEngine searchEngine;
     private String filter = ".*";
     private Extractor extractor;
     private UrlSet urlSet = new UrlSet();
-
+    private BlockThreadPoolExecutor executor = new BlockThreadPoolExecutor(THREAD_SIZE, 60L, TimeUnit.MILLISECONDS, new SynchronousQueue<>());
+    private Semaphore semaphore = new Semaphore(-1);
     public Crawler setSearchEngine(SearchEngine searchEngine)
     {
         this.searchEngine = searchEngine;
@@ -38,37 +45,67 @@ public abstract class Crawler
 
     protected void addUrl(String url)
     {
-        if(matchesFilter(url))
-            urlSet.addUrl(url);
+        if(matchesFilter(url) && urlSet.addUrl(url)) {
+            semaphore.release();
+        }
 
     }
 
-    protected String getUrl()
+    private String getUrl()
     {
-        return urlSet.getUrl();
+        return  urlSet.getUrl();
     }
 
-    protected void handleStatus(String status)
+    private synchronized void extract(String url, String content)
     {
-        System.out.print(status);
+        extractor.extract(url, content);
     }
 
-    public void crawl(String url)
+    private synchronized void addContext(String url, String title, String content)
+    {
+        searchEngine.addContext(url, title, content);
+    }
+
+    protected synchronized void outputStatus(String url, String status)
+    {
+        System.out.println("[" + semaphore.availablePermits() + "] " + url + ": " + status);
+    }
+
+    public void crawl(String startUrl)
     {
         checkDependencies();
-        addUrl(url);
-        while(!urlSet.isEmpty())
+        addUrl(startUrl);
+        while(true)
         {
-            url = getUrl();
-            System.out.print("Crawling " + url + ": ");
-            String content = handleUrl(url);
-            System.out.println();
-            if(content == null)
-                continue;
-            extractor.extract(url, content);
-            System.out.println("Title: " + extractor.getTitle());
-            System.out.println("Content: " + extractor.getContent());
+            final String url = getUrl();
+            try {
+                executor.blockSubmit(() -> {
+                    String content = handleUrl(url);
+                    if (content != null) {
+                        extract(url, content);
+                        addContext(url, extractor.getTitle(), extractor.getContent());
+                    }
+                });
+                if(urlSet.isEmpty()){
+                    executor.await();
+                    if(urlSet.isEmpty())
+                        break;
+                    else
+                        continue;
+                }
+                semaphore.acquire();
+            } catch (InterruptedException e)
+            {
+                e.printStackTrace();
+            }
         }
+        System.out.println("Ends crawling.");
+        executor.shutdown();
+    }
+
+    public void search()
+    {
+        searchEngine.search();
     }
 
     protected abstract String handleUrl(String url);
