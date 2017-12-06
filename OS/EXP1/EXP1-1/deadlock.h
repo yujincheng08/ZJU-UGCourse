@@ -9,24 +9,30 @@
 class Car;
 
 class Deadlock : public Thread {
-  // use to wait and signal
+  // Use for waiting and signaling
   Semaphore self;
-  // use to signal cars
+  // Array of queues for signaling cars
   std::queue<Car *> *queue;
-  // use to automically increase and decrease wait
-  Mutex mutex;
-  // how many cars waiting. if four, deadlock
+  // Record how many cars is waiting for the car at the right side at the crossing.
+  // If there four, deadlock occurs.
   unsigned wait = 0u;
+  // Use to atomically increase and decrease `wait`
+  Mutex mutex;
   
-  //called after starting thread
+  // Being Called after starting thread
   virtual void *run() override final;
-  //signal the deadlock to handle deadlock
+  // Signal the deadlock to handle deadlock
   void signal();
 public:
+  // @destruction: Creating a deadlock detecion object.
+  // @params queue: Array of queues to signal car when deadlock occurs.
   Deadlock(std::queue<Car *> *queue) : queue(queue) {}
-  //for cars to tell me he is waiting
+  // @description: Tell the deadlock detection thread there's a car wating. 
+  //   When a car is waiting for the car at the right side at the crossing,
+  //   it should call this function to detect if there's a deadlock.
   void waiting();
-  //for cars to tell me he has gone
+  // @description: Tell the deadlock detection thread
+  //   that the car has been signal to go from the car at the right side.
   void gone();
 };
 #endif // DEADLOCK_H

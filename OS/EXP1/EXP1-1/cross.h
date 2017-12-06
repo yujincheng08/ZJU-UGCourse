@@ -12,21 +12,23 @@
 class Car;
 
 class Cross {
-  /* +-+-+
-   * |2|1|
-   * +-+-+
-   * |3|0|
-   * +-+-+
-   */
+  // Storing all cars. For waiting all the cars to terminate.
   std::vector<Car *> cars;
 
+  // Queue of cars for each direction.
   std::queue<Car *> queue[4];
 
+  // Mutex for each direciton.
   Mutex queueMutex[4];
 
+  // Deadlock detect object.
   Deadlock deadlock;
 
 public:
+  // @destruction: Create a cross object and end when all cars cross the crossing.
+  // A cross object only initialize and start every car threads and deadlock dection threads.
+  // @params sequence: Car sequence, containing `W`, `N`, `E`, `S` charactors,
+  //   other charactors will be ignored.
   Cross(const std::string &sequence);
 };
 

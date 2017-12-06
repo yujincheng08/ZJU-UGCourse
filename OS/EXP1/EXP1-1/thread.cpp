@@ -1,23 +1,33 @@
 #include "thread.h"
 
-void *Thread::runner(void *This) { static_cast<Thread *>(This)->run(); }
+// @description: static function for starting thread to call member function.
+void *Thread::runner(void *This) {
+  void *retval;
+  retval = static_cast<Thread *>(This)->run();
+  pthread_exit(retval);
+}
 
+// Initialize pthread attribute.
 Thread::Thread() { pthread_attr_init(&tattr); }
 
 void Thread::start() {
-  // running now
+  // Set thread status.
   running = true;
+  // Create a thread.
   pthread_create(&tid, &tattr, runner, this);
 }
 
 void *Thread::wait() {
   if (running) {
     void *result;
-    // wait and get the result
+    // If the thread is running, wait until it terminates.
     pthread_join(tid, &result);
-    running = false; // not running now
+    // Update thread information.
+    running = false;
+    // Return the result.
     return result;
   } else {
+    // If not running, return `nullptr`.
     return nullptr;
   }
 }
