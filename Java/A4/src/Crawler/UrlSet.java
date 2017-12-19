@@ -41,4 +41,10 @@ public class UrlSet
     {
         return untracked.isEmpty();
     }
+
+    int size()
+    {
+        return untracked.size();
+    }
+
 }

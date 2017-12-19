@@ -156,6 +156,7 @@ Scene::Scene(unsigned w, unsigned h, string t) : width(w), height(h), title(t) {
   }
   callBackMap.insert(make_pair(window, this));
   glfwMakeContextCurrent(window);
+  glewExperimental = GL_TRUE;
   if (glewInit() != GLEW_OK) {
     cerr << "Failed to initialize GLEW" << endl;
     return;

@@ -16,7 +16,7 @@ public class JsoupCrawler extends Crawler
         for (int retry = 1; retry <= MAXTRY; retry++) {
             try {
                 Document doc;
-                doc = Jsoup.connect(url).timeout(3000).maxBodySize(10*1024*1024).get();
+                doc = Jsoup.connect(url).followRedirects(false).timeout(3000).maxBodySize(10*1024*1024).get();
                 Elements as = doc.select("a[href]");
                 for (Element a : as) {
                     String href = a.attr("abs:href");

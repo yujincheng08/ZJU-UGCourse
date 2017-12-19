@@ -11,7 +11,7 @@ public abstract class Crawler
     private String filter = ".*";
     private Extractor extractor;
     private UrlSet urlSet = new UrlSet();
-    private BlockThreadPoolExecutor executor = new BlockThreadPoolExecutor(THREAD_SIZE, 60L, TimeUnit.MILLISECONDS, new SynchronousQueue<>());
+    private BlockThreadPoolExecutor executor = new BlockThreadPoolExecutor(THREAD_SIZE, 60L, TimeUnit.MILLISECONDS);
     private Semaphore semaphore = new Semaphore(-1);
     public Crawler setSearchEngine(SearchEngine searchEngine)
     {
@@ -45,7 +45,7 @@ public abstract class Crawler
 
     protected void addUrl(String url)
     {
-        if(matchesFilter(url) && urlSet.addUrl(url)) {
+        if(url != null && matchesFilter(url) && urlSet.addUrl(url)) {
             semaphore.release();
         }
 
@@ -59,6 +59,7 @@ public abstract class Crawler
     private synchronized void extract(String url, String content)
     {
         extractor.extract(url, content);
+        addContext(url, extractor.getTitle(), extractor.getContent());
     }
 
     private synchronized void addContext(String url, String title, String content)
@@ -68,11 +69,13 @@ public abstract class Crawler
 
     protected synchronized void outputStatus(String url, String status)
     {
-        System.out.println("[" + semaphore.availablePermits() + "] " + url + ": " + status);
+        System.out.println("[" + urlSet.size() + "] " + url + ": " + status);
     }
 
     public void crawl(String startUrl)
     {
+        if(searchEngine.exists())
+            return;
         checkDependencies();
         addUrl(startUrl);
         while(true)
@@ -83,7 +86,6 @@ public abstract class Crawler
                     String content = handleUrl(url);
                     if (content != null) {
                         extract(url, content);
-                        addContext(url, extractor.getTitle(), extractor.getContent());
                     }
                 });
                 if(urlSet.isEmpty()){

@@ -54,7 +54,8 @@ class Main
                             Elements share = article.select(".share-btn");
                             for(Element e : share)
                                 e.remove();
-                            content = textWithBreaks(article);
+                            if(article.size()>0)
+                                content = textWithBreaks(article);
                         }
                         else if(url.matches("http://cspo\\.zju\\.edu\\.cn/.*"))
                         {
@@ -68,7 +69,6 @@ class Main
                                 {
                                     t = container.select(".yxbs1 a:last-child");
                                     if(t.size()>0) title = t.get(0).text();
-                                    else title = doc.title();
                                 }
                                 Elements useless = container.select(".header-yz, .yxbs1");
                                 for(Element e : useless)
@@ -129,8 +129,8 @@ class Main
                     }
                 });
         crawler.crawl("http://www.cs.zju.edu.cn/");
+        //crawler.crawl("http://cspo.zju.edu.cn/redir.php?catalog_id=13&object_id=142666");
         crawler.search();
-        //crawler.crawl("http://cspo.zju.edu.cn/redir.php?catalog_id=23471&offset=1313625600");
         // crawler.crawl("http://www.cs.zju.edu.cn/chinese/");
         // crawler.crawl("http://cspo.zju.edu.cn/redir.php?catalog_id=23382&object_id=701536");
     }

@@ -7,7 +7,7 @@ out vec3 color;
 uniform sampler2D texture;
 
 void main(){
-    color = texture( texture, UV ).rgb;
+    color = texture2D( texture, UV ).rgb;
     // On some computer, texture may have to change to texture2D
     //color = vec3(1.0, 0.0, 0.0);
 }
