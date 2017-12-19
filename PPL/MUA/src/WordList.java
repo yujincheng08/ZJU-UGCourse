@@ -1,59 +1,141 @@
+import java.io.*;
 import java.util.HashMap;
+import java.util.Map;
 
-class WordList
-{
-    private HashMap<String, Word> list;
-    WordList()
-    {
+class WordList {
+    static final String outputWordName = "0";
+    static final String testWordName = "1";
+    private HashMap<String, Value> list;
+
+    WordList() {
         list = new HashMap<>();
     }
 
-    Value thing(String name) throws SyntaxException, RunningException
-    {
-        Word word = list.get(name);
-        if(word == null)
-            throw new RunningException("Word " +name+ " does not exist.");
+    Value thing(String name) throws RunningException {
+        Value value = list.get(name);
+        if (value == null)
+            throw new RunningException("Word " + name + " does not exist.");
         else
-            return word.getValue();
+            return value;
     }
 
-    void make(String name, Value value)
-    {
-        list.put(name, new Word(value));
+    void make(String name, Value value) {
+        list.put(name, value);
     }
 
     void make(String name, WordStream stream)
-            throws RunningException, SyntaxException
-    {
-        Word word = list.get(name);
+            throws RunningException, SyntaxException {
+        Value value = list.get(name);
         //word = new Word();
-        Word newWord = new Word(Interpreter.value(stream, this));
-        if(word != null)
-        {
+        Value newValue = Interpreter.value(stream, this);
+        if (value != null) {
             list.remove(name);
         }
-        list.put(name, newWord);
+        list.put(name, newValue);
     }
 
-    Value isname(String name)
-    {
-        if(list.containsKey(name))
-            return new Value("true");
+    Value isname(String name) {
+        if (list.containsKey(name))
+            return Value.TRUE;
         else
-            return new Value("false");
+            return Value.FALSE;
     }
 
     void erase(String name)
-        throws RunningException
-    {
-        if(list.containsKey(name))
+            throws RunningException {
+        if (list.containsKey(name))
             list.remove(name);
         else
             throw new RunningException("Word " + name + "does not exist.");
     }
 
-    boolean contains(String name)
-    {
+    void save(String path)
+            throws RunningException {
+        Value output = null;
+        Value test = null;
+        if (list.containsKey(outputWordName)) {
+            output = list.get(outputWordName);
+            list.remove(outputWordName);
+        }
+        if (list.containsKey(testWordName)) {
+            test = list.get(testWordName);
+            list.remove(testWordName);
+        }
+        File file = new File(path);
+        try {
+            if (!file.exists())
+                //noinspection ResultOfMethodCallIgnored
+                file.createNewFile();
+            FileOutputStream fileOutputStream = new FileOutputStream(file);
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+            objectOutputStream.writeObject(list);
+        } catch (FileNotFoundException e) {
+            throw new RunningException("File " + path + " not exists.");
+        } catch (IOException e) {
+            throw new RunningException(e.toString());
+        } finally {
+            if (output != null)
+                list.put(outputWordName, output);
+            if (test != null)
+                list.put(testWordName, test);
+        }
+    }
+
+    void load(String path)
+            throws RunningException {
+        Value output = null;
+        Value test = null;
+        if (list.containsKey(outputWordName))
+            output = list.get(outputWordName);
+        if (list.containsKey(testWordName))
+            test = list.get(testWordName);
+        File file = new File(path);
+        try {
+            FileInputStream fileInputStream = new FileInputStream(file);
+            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+            //noinspection unchecked
+            list = (HashMap<String, Value>) objectInputStream.readObject();
+        } catch (FileNotFoundException e) {
+            throw new RunningException("File " + path + " not exists.");
+        } catch (ClassNotFoundException e) {
+            throw new RunningException(path + " is not a valid file");
+        } catch (IOException e) {
+            throw new RunningException(e.getMessage());
+        }
+        if (output != null)
+            list.put(outputWordName, output);
+        if (test != null)
+            list.put(testWordName, test);
+    }
+
+    void clear() {
+        Value output = null;
+        Value test = null;
+        if (list.containsKey(outputWordName))
+            output = list.get(outputWordName);
+        if (list.containsKey(testWordName))
+            test = list.get(testWordName);
+        list.clear();
+        if (output != null)
+            list.put(outputWordName, output);
+        if (test != null)
+            list.put(testWordName, test);
+    }
+
+    void print() {
+        for (Map.Entry<String, Value> entry : list.entrySet()) {
+            String key = entry.getKey();
+            switch (key) {
+                case outputWordName:
+                case testWordName:
+                    break;
+                default:
+                    System.out.println(key + " : " + entry.getValue());
+            }
+        }
+    }
+
+    boolean contains(String name) {
         return list.containsKey(name);
     }
 

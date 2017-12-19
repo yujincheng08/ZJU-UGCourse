@@ -4,33 +4,31 @@ import java.io.IOException;
 import jline.console.ConsoleReader;
 import jline.console.completer.AnsiStringsCompleter;
 
-class WordStream
-{
+class WordStream {
     private LinkedList<String> stream;
     private ConsoleReader consoleReader;
     private static AnsiStringsCompleter ansiStringsCompleter = new AnsiStringsCompleter(
             "make", "thing", "erase", "isname", "print",
             "read", "readlinst", "add", "sub", "mul", "div",
             "mod", "eq", "gt", "lt", "and", "or", "not", "repeat", "output", "stop");
-    static final String DELIMITER = "\\s+|((?<=\\[)|(?=\\[))|((?<=])|(?=]))|((?<=\\())|((?=\\())|((?<=\\)))|((?=\\)))|(?=\\+)|(?=-)|((?<=\\*)|(?=\\*))|((?<=/)|(?=/))";
+    static private final String DELIMITER = "\\s+|((?<=\\[)|(?=\\[))|((?<=])|(?=]))";
+
+    //|((?<=\\())|((?=\\())|((?<=\\)))|((?=\\)))|(?=\\+)|(?=-)|((?<=\\*)|(?=\\*))|((?<=/)|(?=/))";
     //|((?<=\\+)|(?=\\+))|((?<=-)|(?=-))|((?<=\\*)|(?=\\*))|((?<=/)|(?=/))|((?<=%)|(?=%))";
-    WordStream(String word)
-    {
-        this(word, true);
-    }
-    WordStream(String word, boolean readFromStdin)
-    {
+    WordStream(String word, boolean readFromStdin) {
         this(readFromStdin);
         stream.offer(word);
     }
-    WordStream(String [] words)
-    {
+
+    @SuppressWarnings("unused")
+    WordStream(String[] words) {
         this(words, true);
     }
-    WordStream(String [] words, boolean readFromStdin)
-    {
+
+    @SuppressWarnings("WeakerAccess")
+    WordStream(String[] words, boolean readFromStdin) {
         this(readFromStdin);
-        for (String word: words)
+        for (String word : words)
             stream.offer(word);
     }
 
@@ -40,43 +38,36 @@ class WordStream
 //        praseLine(line);
 //    }
 
-    WordStream(boolean readFromStdin)
-    {
+    WordStream(boolean readFromStdin) {
         stream = new LinkedList<>();
-        if(readFromStdin)
+        if (readFromStdin)
             try {
                 consoleReader = new ConsoleReader();
                 consoleReader.setPrompt("MUA> ");
                 consoleReader.addCompleter(ansiStringsCompleter);
-            }catch (IOException e)
-            {
+            } catch (IOException e) {
                 throw new RuntimeException("Error open terminal");
             }
     }
 
-    WordStream()
-    {
+    WordStream() {
         this(true);
     }
 
-    private void praseLine(String line)
-    {
-        if(line != null && line.length() > 0)
-        {
+    private void praseLine(String line) {
+        if (line != null && line.length() > 0) {
             int indexOfComment = line.indexOf("//");
             if (indexOfComment > 0) line = line.substring(0, indexOfComment);
             String[] words = line.split(DELIMITER);
             for (String word : words)
-                if(word.length() > 0)
+                if (word.length() > 0)
                     stream.offer(word);
             //stream.offer("\n");
         }
     }
 
-    private void readLine()
-    {
-        try
-        {
+    private void readLine() {
+        try {
             String line = consoleReader.readLine();
 //            for (int s = 0, e = 0; s != line.length(); s = e)
 //            {
@@ -84,33 +75,48 @@ class WordStream
 //            }
             praseLine(line);
 
-        }
-        catch(IOException e)
-        {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    String next()
-    {
+    String next(boolean keep) {
         String next = stream.poll();
-        while(consoleReader != null && (next == null || next.equals("\n")) )
-        {
+        while (consoleReader != null && (next == null || next.equals("\n"))) {
             while (stream.isEmpty()) readLine();
             next = stream.poll();
         }
-        return next;
+        if (keep || next == null)
+            return next;
+        else {
+            String[] list = next.split("((?<=\\())|((?=\\())|((?<=\\)))|((?=\\)))|(?=\\+)|(?=-)|((?<=\\*)|(?=\\*))|((?<=/)|(?=/))");
+            for (int i = list.length - 1; i > 0; --i)
+                stream.push(list[i]);
+            return list[0];
+        }
     }
 
-    WordStream merge(WordStream stream)
-    {
+    String next() {
+        return next(false);
+    }
+
+    @SuppressWarnings("UnusedReturnValue")
+    WordStream merge(WordStream stream) {
         this.stream.addAll(stream.stream);
         return this;
     }
 
-    WordStream putBack(String word)
-    {
+    WordStream putBack(String word) {
         stream.addFirst(word);
+        return this;
+    }
+
+    @SuppressWarnings("UnusedReturnValue")
+    WordStream putBack(WordStream stream) {
+        //noinspection unchecked
+        LinkedList<String> tmp = (LinkedList<String>) stream.stream.clone();
+        tmp.addAll(this.stream);
+        this.stream = tmp;
         return this;
     }
 }
