@@ -106,6 +106,12 @@ class WordStream {
         return this;
     }
 
+    WordStream merge(String word)
+    {
+        this.stream.add(word);
+        return this;
+    }
+
     WordStream putBack(String word) {
         stream.addFirst(word);
         return this;

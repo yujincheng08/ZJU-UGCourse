@@ -11,7 +11,7 @@ class Function {
             throws SyntaxException, RunningException {
         Value value = Interpreter.value(stream, wordList);
         String name = value.toString();
-        if (value.size() != 1 || !name.matches("[_a-zA-Z].*"))
+        if (value.isList() || !name.matches("[_a-zA-Z].*"))
             throw new SyntaxException("Except a word literary but get " + name);
         else
             return name;
@@ -204,6 +204,7 @@ class Function {
     }
 
     private static BigDecimal bigDecimalSqrt(BigDecimal c) {
+        //noinspection BigDecimalMethodWithoutRoundingCalled
         return bigDecimalSqrt(c, BigDecimal.ONE, BigDecimal.ONE.divide(BigDecimal.TEN.pow(300))).setScale(16, BigDecimal.ROUND_HALF_EVEN);
     }
 
@@ -362,12 +363,11 @@ class Function {
             for (Value arg : functionArg) {
                 if (arg.isList())
                     throw new RunningException("List is not a valid argument.");
-                localWordList.make(arg.toString(), stream);
+                Value v = Interpreter.value(stream, wordList);
+                localWordList.make(arg.toString(), v);
             }
 
-            //Interpreter.value(functionBody.toWordStream(), localWordList);
-
-            Interpreter.interpret(functionBody.toWordStream(), localWordList);// TODO
+            Interpreter.interpret(functionBody.toWordStream(), localWordList);
             if (localWordList.contains(WordList.outputWordName))
                 return localWordList.thing(WordList.outputWordName);
             else
@@ -447,6 +447,29 @@ class Function {
 
     static void poall(WordList wordList) {
         wordList.print();
+    }
+
+    static void If(WordStream stream, WordList wordList)
+            throws RunningException, SyntaxException
+    {
+        Value value = Interpreter.value(stream, wordList);
+        if (!value.isBool())
+            throw new RunningException("Expected boolean value, but got " + value.toString());
+        Value trueSection = Interpreter.value(stream, wordList);
+        Value falseSection = Interpreter.value(stream, wordList);
+        if(!trueSection.isList())
+            throw new RunningException("Expected a list, but got " + trueSection.toString());
+        if(!falseSection.isList())
+            throw new RunningException("Expected a list, but got " + falseSection.toString());
+        switch (value.toString())
+        {
+            case "true":
+                stream.putBack(trueSection.toWordStream());
+                break;
+            case "false":
+                stream.putBack(falseSection.toWordStream());
+                break;
+        }
     }
 
 }

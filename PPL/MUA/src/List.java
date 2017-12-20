@@ -54,7 +54,11 @@ class List extends Value {
     WordStream toWordStream() {
         WordStream stream = new WordStream(false);
         for (Value v : value) {
+            if(v.isList())
+                stream.merge("[");
             stream.merge(v.toWordStream());
+            if(v.isList())
+                stream.merge("]");
         }
         return stream;
     }

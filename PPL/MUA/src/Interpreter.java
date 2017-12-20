@@ -190,6 +190,9 @@ public class Interpreter {
                     case "poall":
                         Function.poall(localWordList);
                         break;
+                    case "if":
+                        Function.If(stream, localWordList);
+                        break;
 //            case "if":
 //                break;
 //            case "run":
