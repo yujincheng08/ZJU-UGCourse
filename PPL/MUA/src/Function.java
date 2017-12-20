@@ -193,7 +193,7 @@ class Function {
         BigDecimal f = ni.pow(2).subtract(n);
         BigDecimal df = ni.multiply(new BigDecimal(2));
         BigDecimal f_df = f.divide(df, 300, BigDecimal.ROUND_HALF_DOWN);
-        ni = ni.add(f_df.negate());
+        ni = ni.subtract(f_df);
         BigDecimal currentSquare = ni.pow(2);
         BigDecimal currentPrecision = currentSquare.subtract(n);
         currentPrecision = currentPrecision.abs();
@@ -204,7 +204,7 @@ class Function {
     }
 
     private static BigDecimal bigDecimalSqrt(BigDecimal c) {
-        return bigDecimalSqrt(c, BigDecimal.ONE, BigDecimal.ONE.divide(BigDecimal.TEN.pow(16), BigDecimal.ROUND_HALF_EVEN));
+        return bigDecimalSqrt(c, BigDecimal.ONE, BigDecimal.ONE.divide(BigDecimal.TEN.pow(300))).setScale(16, BigDecimal.ROUND_HALF_EVEN);
     }
 
     static Value sqrt(WordStream stream, WordList wordList)
