@@ -1,15 +1,12 @@
 public class Interpreter {
+    static WordList globalWordList = new WordList();
     public static void main(String[] args) {
-        WordList globalWordList = new WordList();
         WordStream wordStream = new WordStream();
-        interpret(wordStream, globalWordList);
-        if (globalWordList.contains(WordList.outputWordName)) {
-            try {
-                System.out.println("Program exited with " + globalWordList.thing(WordList.outputWordName).toString());
-            } catch (Throwable e) {
-                e.printStackTrace();
-            }
+        //noinspection InfiniteLoopStatement
+        while(true) {
+            interpret(wordStream, globalWordList);
         }
+
     }
 
 
@@ -67,7 +64,6 @@ public class Interpreter {
             case "list":
                 return Function.list(stream, localWordList);
             case "sentence":
-            case "se":
                 return Function.sentence(stream, localWordList);
             case "join":
                 return Function.join(stream, localWordList);
@@ -116,25 +112,26 @@ public class Interpreter {
         return val;
     }
 
+    private static void run(WordStream stream, Value list)
+    {
+        System.out.println("Running: " + list.toString());
+        stream.putBack(list.toWordStream());
+    }
+
     private static void printResult(WordStream stream, WordList wordList)
             throws RunningException, SyntaxException {
         String operator = stream.next();
         if (operator == null)
             throw new RunningException("Expected a value but got null");
-        if (operator.equals("[")) interpret((new List(stream).toWordStream()), wordList);
+        if (operator.equals("[")) run(stream ,new List(stream));
         else if (operator.startsWith(":"))
-            interpret(Function.thing(operator.substring(1), wordList).toWordStream(), wordList);
+            run(stream, Function.thing(operator.substring(1), wordList));
         else {
             Value val = getValue(operator, stream, wordList); //Function calls
             if (val != null) {
-                stream = val.toWordStream();
-                operator = stream.next();
                 if (val.isList())
-                    interpret(stream.putBack(operator), wordList);
-                else if (operator.startsWith(":"))
-                    interpret(Function.thing(operator.substring(1), wordList).toWordStream(), wordList);
+                    run(stream, val);
                 else System.out.println(val.toString());
-
             }
         }
     }
@@ -166,15 +163,15 @@ public class Interpreter {
                     case "repeat":
                         Function.repeat(stream, localWordList);
                         break;
-                    case "test":
-                        Function.test(stream, localWordList);
-                        break;
-                    case "iftrue":
-                        Function.iftrue(stream, localWordList);
-                        break;
-                    case "iffalse":
-                        Function.iffalse(stream, localWordList);
-                        break;
+//                    case "test":
+//                        Function.test(stream, localWordList);
+//                        break;
+//                    case "iftrue":
+//                        Function.iftrue(stream, localWordList);
+//                        break;
+//                    case "iffalse":
+//                        Function.iffalse(stream, localWordList);
+//                        break;
                     case "wait":
                         Function.wait(stream, localWordList);
                         break;
@@ -193,10 +190,12 @@ public class Interpreter {
                     case "if":
                         Function.If(stream, localWordList);
                         break;
-//            case "if":
-//                break;
-//            case "run":
-//                break;
+                    case "run":
+                        Function.run(stream, localWordList);
+                        break;
+                    case "export":
+                        Function.export(localWordList);
+                        break;
                     case "stop":
                         break mainLoop;
                     default:
