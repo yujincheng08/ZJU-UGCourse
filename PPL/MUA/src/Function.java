@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Map;
 
 import static java.lang.Thread.sleep;
 
@@ -259,6 +260,8 @@ class Function {
             throws RunningException, SyntaxException {
         Value first = Interpreter.value(stream, wordList);
         Value second = Interpreter.value(stream, wordList);
+        if(first.isList() || second.isList())
+            throw new RunningException("Word can only concatenate two words.");
         return new Word(first.toString() + second.toString());
     }
 
@@ -280,7 +283,7 @@ class Function {
             throws RunningException, SyntaxException {
         Value first = Interpreter.value(stream, wordList);
         Value second = Interpreter.value(stream, wordList);
-        return List.list(first, second);
+        return List.join(first, second);
     }
 
     static Value item(WordStream stream, WordList wordList)
@@ -320,7 +323,7 @@ class Function {
             throws RunningException, SyntaxException {
         Value first = Interpreter.value(stream, wordList);
         BigDecimal value = first.toNumeric();
-        return new Word(value.setScale(0, BigDecimal.ROUND_DOWN));
+        return new Word(value.setScale(0, BigDecimal.ROUND_FLOOR));
     }
 
     static void make(WordStream stream, WordList wordList)
@@ -376,42 +379,61 @@ class Function {
             throw new RunningException("Unexpected token: " + functionName);
     }
 
+    static void run(WordStream stream, WordList wordList)
+            throws RunningException, SyntaxException
+    {
+        Value runBody = Interpreter.value(stream, wordList);
+        if(!runBody.isList())
+            throw new RunningException("Only list can be run.");
+        stream.putBack(runBody.toWordStream());
+    }
+
     static void repeat(WordStream stream, WordList wordList)
             throws RunningException, SyntaxException {
         Value timesValue = Interpreter.value(stream, wordList);
         BigInteger times = timesValue.toInt();
         Value loopBody = Interpreter.value(stream, wordList);
+        if(!loopBody.isList())
+            throw new RunningException("Only list can be repeated.");
+        WordStream loopBodyStream = loopBody.toWordStream();
         for (BigInteger i = BigInteger.ZERO; i.compareTo(times) < 0; i = i.add(BigInteger.ONE))
-            Interpreter.interpret(loopBody.toWordStream(), wordList);
+            stream.putBack(loopBodyStream);
     }
 
-    static void test(WordStream stream, WordList wordList)
-            throws RunningException, SyntaxException {
-        Value value = Interpreter.value(stream, wordList);
-        if (!value.isBool())
-            throw new RunningException("Expected boolean value, but got " + value.toString());
-        wordList.make(WordList.testWordName, value);
+    static void export(WordList wordList)
+    {
+        for(Map.Entry<String, Value> entry : wordList)
+            if(!entry.getKey().equals(WordList.outputWordName))
+                Interpreter.globalWordList.make(entry.getKey(), entry.getValue());
     }
 
-    static void iftrue(WordStream stream, WordList wordList)
-            throws RunningException, SyntaxException {
-        Value test = wordList.thing(WordList.testWordName);
-        Value value = Interpreter.value(stream, wordList);
-        if (!value.isList())
-            throw new RunningException("Expected a list, but got " + value.toString());
-        if (test != null && test.toString().equals("true"))
-            stream.putBack(value.toWordStream());
-    }
-
-    static void iffalse(WordStream stream, WordList wordList)
-            throws RunningException, SyntaxException {
-        Value test = wordList.thing(WordList.testWordName);
-        Value value = Interpreter.value(stream, wordList);
-        if (!value.isList())
-            throw new RunningException("Expected a list, but got " + value.toString());
-        if (test.toString().equals("false"))
-            stream.putBack(value.toWordStream());
-    }
+//    static void test(WordStream stream, WordList wordList)
+//            throws RunningException, SyntaxException {
+//        Value value = Interpreter.value(stream, wordList);
+//        if (!value.isBool())
+//            throw new RunningException("Expected boolean value, but got " + value.toString());
+//        wordList.make(WordList.testWordName, value);
+//    }
+//
+//    static void iftrue(WordStream stream, WordList wordList)
+//            throws RunningException, SyntaxException {
+//        Value test = wordList.thing(WordList.testWordName);
+//        Value value = Interpreter.value(stream, wordList);
+//        if (!value.isList())
+//            throw new RunningException("Expected a list, but got " + value.toString());
+//        if (test != null && test.toString().equals("true"))
+//            stream.putBack(value.toWordStream());
+//    }
+//
+//    static void iffalse(WordStream stream, WordList wordList)
+//            throws RunningException, SyntaxException {
+//        Value test = wordList.thing(WordList.testWordName);
+//        Value value = Interpreter.value(stream, wordList);
+//        if (!value.isList())
+//            throw new RunningException("Expected a list, but got " + value.toString());
+//        if (test.toString().equals("false"))
+//            stream.putBack(value.toWordStream());
+//    }
 
     static void wait(WordStream stream, WordList wordList)
             throws RunningException, SyntaxException {

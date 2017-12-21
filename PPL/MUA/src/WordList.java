@@ -1,10 +1,11 @@
 import java.io.*;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
-class WordList {
+class WordList implements Iterable<Map.Entry<String, Value>>{
     static final String outputWordName = "0";
-    static final String testWordName = "1";
+    // static final String testWordName = "1";
     private HashMap<String, Value> list;
 
     WordList() {
@@ -52,15 +53,15 @@ class WordList {
     void save(String path)
             throws RunningException {
         Value output = null;
-        Value test = null;
+//        Value test = null;
         if (list.containsKey(outputWordName)) {
             output = list.get(outputWordName);
             list.remove(outputWordName);
         }
-        if (list.containsKey(testWordName)) {
-            test = list.get(testWordName);
-            list.remove(testWordName);
-        }
+//        if (list.containsKey(testWordName)) {
+//            test = list.get(testWordName);
+//            list.remove(testWordName);
+//        }
         File file = new File(path);
         try {
             if (!file.exists())
@@ -76,25 +77,26 @@ class WordList {
         } finally {
             if (output != null)
                 list.put(outputWordName, output);
-            if (test != null)
-                list.put(testWordName, test);
+//            if (test != null)
+//                list.put(testWordName, test);
         }
     }
 
     void load(String path)
             throws RunningException {
         Value output = null;
-        Value test = null;
-        if (list.containsKey(outputWordName))
-            output = list.get(outputWordName);
-        if (list.containsKey(testWordName))
-            test = list.get(testWordName);
+//        Value test = null;
+//        if (list.containsKey(outputWordName))
+//            output = list.get(outputWordName);
+//        if (list.containsKey(testWordName))
+//            test = list.get(testWordName);
         File file = new File(path);
+        HashMap<String, Value> newList = null;
         try {
             FileInputStream fileInputStream = new FileInputStream(file);
             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
             //noinspection unchecked
-            list = (HashMap<String, Value>) objectInputStream.readObject();
+            newList = (HashMap<String, Value>) objectInputStream.readObject();
         } catch (FileNotFoundException e) {
             throw new RunningException("File " + path + " not exists.");
         } catch (ClassNotFoundException e) {
@@ -102,32 +104,34 @@ class WordList {
         } catch (IOException e) {
             throw new RunningException(e.getMessage());
         }
-        if (output != null)
-            list.put(outputWordName, output);
-        if (test != null)
-            list.put(testWordName, test);
+        for(Map.Entry<String, Value> entry : newList.entrySet())
+            make(entry.getKey(), entry.getValue());
+//        if (output != null)
+//            list.put(outputWordName, output);
+//        if (test != null)
+//            list.put(testWordName, test);
     }
 
     void clear() {
         Value output = null;
-        Value test = null;
+//        Value test = null;
         if (list.containsKey(outputWordName))
             output = list.get(outputWordName);
-        if (list.containsKey(testWordName))
-            test = list.get(testWordName);
+//        if (list.containsKey(testWordName))
+//            test = list.get(testWordName);
         list.clear();
         if (output != null)
             list.put(outputWordName, output);
-        if (test != null)
-            list.put(testWordName, test);
+//        if (test != null)
+//            list.put(testWordName, test);
     }
 
     void print() {
-        for (Map.Entry<String, Value> entry : list.entrySet()) {
+        for (Map.Entry<String, Value> entry : this) {
             String key = entry.getKey();
             switch (key) {
                 case outputWordName:
-                case testWordName:
+//                case testWordName:
                     break;
                 default:
                     System.out.println(key + " : " + entry.getValue());
@@ -139,4 +143,8 @@ class WordList {
         return list.containsKey(name);
     }
 
+    @Override
+    public Iterator<Map.Entry<String, Value>> iterator() {
+        return list.entrySet().iterator();
+    }
 }

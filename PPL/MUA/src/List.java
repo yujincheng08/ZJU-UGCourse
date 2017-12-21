@@ -41,6 +41,14 @@ class List extends Value {
         return value;
     }
 
+    static List join(Value first, Value second) {
+        List value = new List();
+        for (Value v : first)
+            value.value.add(v);
+        value.value.add(second);
+        return value;
+    }
+
     static List sentence(Value first, Value second) {
         List value = new List();
         for (Value v : first)
@@ -151,10 +159,13 @@ class List extends Value {
     @Override
     public String toString() {
         StringJoiner stringJoiner = new StringJoiner(" ");
-        stringJoiner.add("[");
-        for (Value v : this)
+        for (Value v : this) {
+            if(v.isList())
+                stringJoiner.add("[");
             stringJoiner.add(v.toString());
-        stringJoiner.add("]");
+            if(v.isList())
+                stringJoiner.add("]");
+        }
         return stringJoiner.toString();
     }
 }
