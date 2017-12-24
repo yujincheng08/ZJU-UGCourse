@@ -31,7 +31,7 @@ Highlighter::Highlighter(QTextDocument *parent)
 
 
 	numFormat.setForeground(Qt::darkMagenta);
-	rule.pattern = "\\b[a-fA-F0-9]+\\b";
+    rule.pattern = "\\b(0x|0X)?[a-fA-F0-9]+\\b";
 	rule.format = numFormat;
 	highlightingRules.append(rule);
 

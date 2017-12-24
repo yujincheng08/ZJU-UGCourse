@@ -196,8 +196,11 @@ quint32 Assembler::buildRI(
 	getAndCheckReg(rs,regIndex);
 	result |= regIndex << 21;
 	getAndCheckReg(rt,regIndex);
-	result |= regIndex << 16;
-	result |= (quint16)imme.toUInt();
+    result |= regIndex << 16;
+    if(imme.startsWith("0x"))
+            result |= (quint16)imme.toInt(nullptr, 16);
+        else
+        result |= (quint16)imme.toUInt();
 	result |= (quint32)OpCode << 26;
 	return result;
 }

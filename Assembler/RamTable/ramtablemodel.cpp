@@ -1,4 +1,4 @@
-#include "RamTableModel.h"
+#include "ramtablemodel.h"
 #include <QByteArray>
 RamTableModel::RamTableModel(QObject *parent)
 	:QAbstractTableModel(parent),Data(1048576,0)
