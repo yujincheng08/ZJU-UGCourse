@@ -10,28 +10,27 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.LoginFormController">
-   <children>
-       <VBox layoutX="125.0" layoutY="60.0" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0"
-             AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-           <AnchorPane fx:id="banner" prefHeight="287.0" prefWidth="600.0"/>
-           <HBox prefHeight="199.0" prefWidth="600.0">
-               <ImageView fx:id="avatar" fitHeight="150.0" fitWidth="144.0" pickOnBounds="true" preserveRatio="true"/>
-               <VBox prefHeight="211.0" prefWidth="303.0">
-                   <TextField fx:id="account" promptText="Account"/>
-                   <PasswordField fx:id="password" promptText="Password"/>
-                   <HBox prefHeight="24.0" prefWidth="303.0">
-                       <CheckBox fx:id="savePassword" mnemonicParsing="false" text="Save Password"/>
-                       <CheckBox fx:id="autoLogin" mnemonicParsing="false" text="Auto Login"/>
-                   </HBox>
-                   <Button fx:id="loginButton" mnemonicParsing="false" onMouseClicked="#login" prefWidth="444.0"
-                           text="Login"/>
-               </VBox>
-               <VBox>
-                   <Hyperlink fx:id="register" text="Register"/>
-                   <Hyperlink fx:id="forgotPassword" text="Forgot Password"/>
-               </VBox>
-           </HBox>
-       </VBox>
-   </children>
+<AnchorPane fx:id="root" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.60"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.LoginFormController">
+    <VBox layoutX="125.0" layoutY="60.0" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0"
+          AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <AnchorPane fx:id="banner" prefHeight="287.0" prefWidth="600.0"/>
+        <HBox prefHeight="199.0" prefWidth="600.0">
+            <ImageView fx:id="avatar" fitHeight="150.0" fitWidth="144.0" pickOnBounds="true" preserveRatio="true"/>
+            <VBox prefHeight="211.0" prefWidth="303.0">
+                <TextField fx:id="account" promptText="Account"/>
+                <PasswordField fx:id="password" promptText="Password"/>
+                <HBox prefHeight="24.0" prefWidth="303.0">
+                    <CheckBox fx:id="savePassword" mnemonicParsing="false" text="Save Password"/>
+                    <CheckBox fx:id="autoLogin" mnemonicParsing="false" text="Auto Login"/>
+                </HBox>
+                <Button fx:id="loginButton" mnemonicParsing="false" prefWidth="444.0"
+                        text="Login"/>
+            </VBox>
+            <VBox>
+                <Hyperlink fx:id="register" text="Register"/>
+                <Hyperlink fx:id="forgotPassword" text="Forgot Password"/>
+            </VBox>
+        </HBox>
+    </VBox>
 </AnchorPane>

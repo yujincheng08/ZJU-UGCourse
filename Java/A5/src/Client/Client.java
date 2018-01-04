@@ -16,8 +16,8 @@ public class Client extends Application {
     {
         mainController.setPrimaryStage(primaryStage);
 
-        mainController.loadStage(mainWindowName, mainWindowResource);
-        mainController.loadStage(loginFormName, loginFormResource);
+        mainController.registerStage(mainWindowName, mainWindowResource);
+        mainController.registerStage(loginFormName, loginFormResource);
 
         mainController.showStage(loginFormName);
     }

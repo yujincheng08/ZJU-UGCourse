@@ -1,0 +1,19 @@
+package proto;
+option java_outer_classname = "LoginMessageProto";
+message LoginMessage {
+    enum Type {
+        LOGIN = 0;
+        REGISTER = 1;
+    }
+    enum Status {
+        SUCCESS = 0;
+        FAIL = 1;
+    }
+    optional Type type = 1;
+    optional string account = 2;
+    optional string password = 3;
+    optional string prompt = 4;
+    optional Status status = 5;
+    optional string nickName = 6;
+    optional string email = 7;
+}
