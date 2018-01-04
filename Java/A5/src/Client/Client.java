@@ -1,4 +1,5 @@
 package Client;
+
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -12,8 +13,7 @@ public class Client extends Application {
     private static final String loginFormResource = "LoginForm.fxml";
 
     @Override
-    public void start(Stage primaryStage)
-    {
+    public void start(Stage primaryStage) {
         mainController.setPrimaryStage(primaryStage);
 
         mainController.registerStage(mainWindowName, mainWindowResource);
@@ -22,8 +22,7 @@ public class Client extends Application {
         mainController.showStage(loginFormName);
     }
 
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) {
         launch(args);
     }
 }

@@ -66,7 +66,7 @@ public final class MessageProto {
       super(builder);
     }
     private Message() {
-      type_ = 1;
+      type_ = 0;
     }
 
     @java.lang.Override
@@ -167,23 +167,23 @@ public final class MessageProto {
     public enum Type
         implements com.google.protobuf.ProtocolMessageEnum {
       /**
-       * <code>LoginMessage = 1;</code>
+       * <code>LoginMessage = 0;</code>
        */
-      LoginMessage(1),
+      LoginMessage(0),
       /**
-       * <code>ChatMessage = 2;</code>
+       * <code>ChatMessage = 1;</code>
        */
-      ChatMessage(2),
+      ChatMessage(1),
       ;
 
       /**
-       * <code>LoginMessage = 1;</code>
+       * <code>LoginMessage = 0;</code>
        */
-      public static final int LoginMessage_VALUE = 1;
+      public static final int LoginMessage_VALUE = 0;
       /**
-       * <code>ChatMessage = 2;</code>
+       * <code>ChatMessage = 1;</code>
        */
-      public static final int ChatMessage_VALUE = 2;
+      public static final int ChatMessage_VALUE = 1;
 
 
       public final int getNumber() {
@@ -200,8 +200,8 @@ public final class MessageProto {
 
       public static Type forNumber(int value) {
         switch (value) {
-          case 1: return LoginMessage;
-          case 2: return ChatMessage;
+          case 0: return LoginMessage;
+          case 1: return ChatMessage;
           default: return null;
         }
       }
@@ -545,7 +545,7 @@ public final class MessageProto {
       }
       public Builder clear() {
         super.clear();
-        type_ = 1;
+        type_ = 0;
         bitField0_ = (bitField0_ & ~0x00000001);
         if (chatMessageBuilder_ == null) {
           chatMessage_ = null;
@@ -690,7 +690,7 @@ public final class MessageProto {
       }
       private int bitField0_;
 
-      private int type_ = 1;
+      private int type_ = 0;
       /**
        * <code>required .proto.Message.Type type = 1;</code>
        */
@@ -721,7 +721,7 @@ public final class MessageProto {
        */
       public Builder clearType() {
         bitField0_ = (bitField0_ & ~0x00000001);
-        type_ = 1;
+        type_ = 0;
         onChanged();
         return this;
       }
@@ -1029,8 +1029,8 @@ public final class MessageProto {
       "\253\001\n\007Message\022!\n\004type\030\001 \002(\0162\023.proto.Messag" +
       "e.Type\022\'\n\013chatMessage\030\002 \001(\0132\022.proto.Chat" +
       "Message\022)\n\014loginMessage\030\003 \001(\0132\023.proto.Lo" +
-      "ginMessage\")\n\004Type\022\020\n\014LoginMessage\020\001\022\017\n\013" +
-      "ChatMessage\020\002B\016B\014MessageProto"
+      "ginMessage\")\n\004Type\022\020\n\014LoginMessage\020\000\022\017\n\013" +
+      "ChatMessage\020\001B\016B\014MessageProto"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {

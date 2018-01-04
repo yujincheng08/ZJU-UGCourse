@@ -54,15 +54,27 @@ public class MainController
     }
 
     public Stage loadStage(String name, String resource, StageStyle... styles)
-            throws IOException
-    {
+            throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource(resource));
         Pane tmpPane = loader.load();
 
-        Scene tmpScene = new Scene(tmpPane);
-        tmpScene.setUserData(loader.getController());
         Stage tmpStage = new Stage();
+        Scene tmpScene = new Scene(tmpPane);
         tmpStage.setScene(tmpScene);
+        StageController stageController = loader.getController();
+        stageController.setMainController(this, name);
+
+        tmpStage.setOnShown(e -> {
+            stageController.stageOnShown(e);
+            shownStageCount++;
+        });
+        tmpStage.setOnShowing(stageController::stageOnShowing);
+        tmpStage.setOnHiding(stageController::stageOnHiding);
+        tmpStage.setOnHidden(e -> {
+            stageController.stageOnHidden(e);
+            if (--shownStageCount == 0)
+                webSocket.close();
+        });
         for (StageStyle style : styles)
             tmpStage.initStyle(style);
         tmpStage.setTitle(name);
@@ -77,17 +89,7 @@ public class MainController
 
             Stage tmpStage = loadStage(name, resource, styles);
             this.addStage(name, tmpStage);
-            StageController stageController = (StageController)tmpStage.getScene().getUserData();
-            stageController.setMainController(this, name);
 
-            tmpStage.setOnShown(e -> {stageController.stageOnShown(e); shownStageCount++;});
-            tmpStage.setOnShowing(stageController::stageOnShowing);
-            tmpStage.setOnHiding(stageController::stageOnHiding);
-            tmpStage.setOnHidden(e-> {
-                stageController.stageOnHidden(e);
-                if(--shownStageCount == 0)
-                    webSocket.close();
-            });
 
             return true;
         }catch(Exception e){

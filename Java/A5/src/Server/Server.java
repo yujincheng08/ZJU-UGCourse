@@ -9,21 +9,31 @@ import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 import proto.LoginMessageProto.LoginMessage;
 import proto.MessageProto.Message;
-
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
+import java.sql.SQLException;
 import java.util.Collections;
 
 public class Server extends WebSocketServer{
     private static int clientCount = 0;
-    private
+    private DBManager dbManager;
 
     Server(int port, Draft d) {
         super(new InetSocketAddress(port), Collections.singletonList(d));
+        try {
+            dbManager = new DBManager("server.db");
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
     }
 
     Server(InetSocketAddress inetSocketAddress, Draft d) {
         super(inetSocketAddress, Collections.singletonList(d));
+        try {
+            dbManager = new DBManager("server.db");
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
     }
 
 
@@ -47,8 +57,9 @@ public class Server extends WebSocketServer{
         webSocket.send(s);
     }
 
-    private boolean login(String account, String password){
-        return account.equals("123") && password.equals("123");
+    private boolean login(long userID, String password)
+            throws SQLException {
+        return dbManager.login(userID, password);
     }
 
     private void webSocketSend(WebSocket conn, LoginMessage loginMessage){
@@ -63,19 +74,52 @@ public class Server extends WebSocketServer{
     private LoginMessage login(LoginMessage loginMessage) {
         String prompt = "";
         boolean success = false;
-        if (!loginMessage.hasAccount())
-            prompt = "Account cannot be empty.";
-        else if (!loginMessage.hasPassword())
-            prompt = "Password cannot be empty.";
-        else if (!login(loginMessage.getAccount(), loginMessage.getPassword()))
-            prompt = "Account and password do not match.";
-        else
-            success = true;
+        try {
+            if (!loginMessage.hasAccount())
+                prompt = "Account cannot be empty.";
+            else if (!loginMessage.hasPassword())
+                prompt = "Password cannot be empty.";
+            else if (!login(loginMessage.getAccount(), loginMessage.getPassword()))
+                prompt = "Account and password do not match.";
+            else
+                success = true;
+        }catch (SQLException e) {
+            prompt = e.getMessage();
+        }
         LoginMessage.Builder builder = LoginMessage.newBuilder();
         builder.setType(LoginMessage.Type.LOGIN);
         if (!prompt.isEmpty())
             builder.setPrompt(prompt);
         builder.setStatus(success ? LoginMessage.Status.SUCCESS : LoginMessage.Status.FAIL);
+        return builder.build();
+    }
+
+    private long register(String password, String nickName, String email)
+        throws SQLException {
+        return dbManager.register(password, nickName, email);
+    }
+
+    private LoginMessage register(LoginMessage loginMessage) {
+        String prompt = "";
+        long key = -1;
+        try{
+            if (!loginMessage.hasPassword())
+                prompt = "Password cannot be empty";
+            else if(!loginMessage.hasEmail())
+                prompt = "Email address cannot be empty";
+            else if(!loginMessage.hasNickName())
+                prompt = "Nick name cannot be empty";
+            else
+                key = register(loginMessage.getPassword(), loginMessage.getNickName(), loginMessage.getEmail());
+        }catch (SQLException e) {
+            prompt = e.getMessage();
+        }
+        LoginMessage.Builder builder = LoginMessage.newBuilder();
+        builder.setType(LoginMessage.Type.REGISTER);
+        builder.setAccount(key);
+        if (!prompt.isEmpty())
+            builder.setPrompt(prompt);
+        builder.setStatus(key > -1 ? LoginMessage.Status.SUCCESS : LoginMessage.Status.FAIL);
         return builder.build();
     }
 
@@ -86,7 +130,7 @@ public class Server extends WebSocketServer{
                 case LOGIN:
                     return login(loginMessage);
                 case REGISTER:
-                    break;
+                    return register(loginMessage);
             }
         }
         return null;

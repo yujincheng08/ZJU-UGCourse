@@ -28,18 +28,13 @@ public final class LoginMessageProto {
     proto.LoginMessageProto.LoginMessage.Type getType();
 
     /**
-     * <code>optional string account = 2;</code>
+     * <code>optional int64 account = 2;</code>
      */
     boolean hasAccount();
     /**
-     * <code>optional string account = 2;</code>
+     * <code>optional int64 account = 2;</code>
      */
-    java.lang.String getAccount();
-    /**
-     * <code>optional string account = 2;</code>
-     */
-    com.google.protobuf.ByteString
-        getAccountBytes();
+    long getAccount();
 
     /**
      * <code>optional string password = 3;</code>
@@ -120,7 +115,7 @@ public final class LoginMessageProto {
     }
     private LoginMessage() {
       type_ = 0;
-      account_ = "";
+      account_ = 0L;
       password_ = "";
       prompt_ = "";
       status_ = 0;
@@ -170,10 +165,9 @@ public final class LoginMessageProto {
               }
               break;
             }
-            case 18: {
-              com.google.protobuf.ByteString bs = input.readBytes();
+            case 16: {
               bitField0_ |= 0x00000002;
-              account_ = bs;
+              account_ = input.readInt64();
               break;
             }
             case 26: {
@@ -433,45 +427,18 @@ public final class LoginMessageProto {
     }
 
     public static final int ACCOUNT_FIELD_NUMBER = 2;
-    private volatile java.lang.Object account_;
+    private long account_;
     /**
-     * <code>optional string account = 2;</code>
+     * <code>optional int64 account = 2;</code>
      */
     public boolean hasAccount() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
     /**
-     * <code>optional string account = 2;</code>
+     * <code>optional int64 account = 2;</code>
      */
-    public java.lang.String getAccount() {
-      java.lang.Object ref = account_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          account_ = s;
-        }
-        return s;
-      }
-    }
-    /**
-     * <code>optional string account = 2;</code>
-     */
-    public com.google.protobuf.ByteString
-        getAccountBytes() {
-      java.lang.Object ref = account_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        account_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
+    public long getAccount() {
+      return account_;
     }
 
     public static final int PASSWORD_FIELD_NUMBER = 3;
@@ -674,7 +641,7 @@ public final class LoginMessageProto {
         output.writeEnum(1, type_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, account_);
+        output.writeInt64(2, account_);
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 3, password_);
@@ -704,7 +671,8 @@ public final class LoginMessageProto {
           .computeEnumSize(1, type_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, account_);
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(2, account_);
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, password_);
@@ -744,8 +712,8 @@ public final class LoginMessageProto {
       }
       result = result && (hasAccount() == other.hasAccount());
       if (hasAccount()) {
-        result = result && getAccount()
-            .equals(other.getAccount());
+        result = result && (getAccount()
+            == other.getAccount());
       }
       result = result && (hasPassword() == other.hasPassword());
       if (hasPassword()) {
@@ -788,7 +756,8 @@ public final class LoginMessageProto {
       }
       if (hasAccount()) {
         hash = (37 * hash) + ACCOUNT_FIELD_NUMBER;
-        hash = (53 * hash) + getAccount().hashCode();
+        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+            getAccount());
       }
       if (hasPassword()) {
         hash = (37 * hash) + PASSWORD_FIELD_NUMBER;
@@ -941,7 +910,7 @@ public final class LoginMessageProto {
         super.clear();
         type_ = 0;
         bitField0_ = (bitField0_ & ~0x00000001);
-        account_ = "";
+        account_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000002);
         password_ = "";
         bitField0_ = (bitField0_ & ~0x00000004);
@@ -1051,9 +1020,7 @@ public final class LoginMessageProto {
           setType(other.getType());
         }
         if (other.hasAccount()) {
-          bitField0_ |= 0x00000002;
-          account_ = other.account_;
-          onChanged();
+          setAccount(other.getAccount());
         }
         if (other.hasPassword()) {
           bitField0_ |= 0x00000004;
@@ -1142,78 +1109,34 @@ public final class LoginMessageProto {
         return this;
       }
 
-      private java.lang.Object account_ = "";
+      private long account_ ;
       /**
-       * <code>optional string account = 2;</code>
+       * <code>optional int64 account = 2;</code>
        */
       public boolean hasAccount() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       /**
-       * <code>optional string account = 2;</code>
+       * <code>optional int64 account = 2;</code>
        */
-      public java.lang.String getAccount() {
-        java.lang.Object ref = account_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            account_ = s;
-          }
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
+      public long getAccount() {
+        return account_;
       }
       /**
-       * <code>optional string account = 2;</code>
+       * <code>optional int64 account = 2;</code>
        */
-      public com.google.protobuf.ByteString
-          getAccountBytes() {
-        java.lang.Object ref = account_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          account_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>optional string account = 2;</code>
-       */
-      public Builder setAccount(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000002;
+      public Builder setAccount(long value) {
+        bitField0_ |= 0x00000002;
         account_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional string account = 2;</code>
+       * <code>optional int64 account = 2;</code>
        */
       public Builder clearAccount() {
         bitField0_ = (bitField0_ & ~0x00000002);
-        account_ = getDefaultInstance().getAccount();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string account = 2;</code>
-       */
-      public Builder setAccountBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000002;
-        account_ = value;
+        account_ = 0L;
         onChanged();
         return this;
       }
@@ -1622,7 +1545,7 @@ public final class LoginMessageProto {
     java.lang.String[] descriptorData = {
       "\n\030proto/LoginMessage.proto\022\005proto\"\370\001\n\014Lo" +
       "ginMessage\022&\n\004type\030\001 \001(\0162\030.proto.LoginMe" +
-      "ssage.Type\022\017\n\007account\030\002 \001(\t\022\020\n\010password\030" +
+      "ssage.Type\022\017\n\007account\030\002 \001(\003\022\020\n\010password\030" +
       "\003 \001(\t\022\016\n\006prompt\030\004 \001(\t\022*\n\006status\030\005 \001(\0162\032." +
       "proto.LoginMessage.Status\022\020\n\010nickName\030\006 " +
       "\001(\t\022\r\n\005email\030\007 \001(\t\"\037\n\004Type\022\t\n\005LOGIN\020\000\022\014\n" +

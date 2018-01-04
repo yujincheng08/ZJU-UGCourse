@@ -19,46 +19,31 @@ public final class ChatMessageProto {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>required string timestamp = 1;</code>
+     * <code>required int64 timestamp = 1;</code>
      */
     boolean hasTimestamp();
     /**
-     * <code>required string timestamp = 1;</code>
+     * <code>required int64 timestamp = 1;</code>
      */
-    java.lang.String getTimestamp();
-    /**
-     * <code>required string timestamp = 1;</code>
-     */
-    com.google.protobuf.ByteString
-        getTimestampBytes();
+    long getTimestamp();
 
     /**
-     * <code>optional string userID = 2;</code>
+     * <code>optional int64 userID = 2;</code>
      */
     boolean hasUserID();
     /**
-     * <code>optional string userID = 2;</code>
+     * <code>optional int64 userID = 2;</code>
      */
-    java.lang.String getUserID();
-    /**
-     * <code>optional string userID = 2;</code>
-     */
-    com.google.protobuf.ByteString
-        getUserIDBytes();
+    long getUserID();
 
     /**
-     * <code>optional string groupID = 3;</code>
+     * <code>optional int64 groupID = 3;</code>
      */
     boolean hasGroupID();
     /**
-     * <code>optional string groupID = 3;</code>
+     * <code>optional int64 groupID = 3;</code>
      */
-    java.lang.String getGroupID();
-    /**
-     * <code>optional string groupID = 3;</code>
-     */
-    com.google.protobuf.ByteString
-        getGroupIDBytes();
+    long getGroupID();
 
     /**
      * <code>optional string content = 4;</code>
@@ -96,9 +81,9 @@ public final class ChatMessageProto {
       super(builder);
     }
     private ChatMessage() {
-      timestamp_ = "";
-      userID_ = "";
-      groupID_ = "";
+      timestamp_ = 0L;
+      userID_ = 0L;
+      groupID_ = 0L;
       content_ = "";
       image_ = com.google.protobuf.ByteString.EMPTY;
     }
@@ -134,22 +119,19 @@ public final class ChatMessageProto {
               }
               break;
             }
-            case 10: {
-              com.google.protobuf.ByteString bs = input.readBytes();
+            case 8: {
               bitField0_ |= 0x00000001;
-              timestamp_ = bs;
+              timestamp_ = input.readInt64();
               break;
             }
-            case 18: {
-              com.google.protobuf.ByteString bs = input.readBytes();
+            case 16: {
               bitField0_ |= 0x00000002;
-              userID_ = bs;
+              userID_ = input.readInt64();
               break;
             }
-            case 26: {
-              com.google.protobuf.ByteString bs = input.readBytes();
+            case 24: {
               bitField0_ |= 0x00000004;
-              groupID_ = bs;
+              groupID_ = input.readInt64();
               break;
             }
             case 34: {
@@ -189,129 +171,48 @@ public final class ChatMessageProto {
 
     private int bitField0_;
     public static final int TIMESTAMP_FIELD_NUMBER = 1;
-    private volatile java.lang.Object timestamp_;
+    private long timestamp_;
     /**
-     * <code>required string timestamp = 1;</code>
+     * <code>required int64 timestamp = 1;</code>
      */
     public boolean hasTimestamp() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
-     * <code>required string timestamp = 1;</code>
+     * <code>required int64 timestamp = 1;</code>
      */
-    public java.lang.String getTimestamp() {
-      java.lang.Object ref = timestamp_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          timestamp_ = s;
-        }
-        return s;
-      }
-    }
-    /**
-     * <code>required string timestamp = 1;</code>
-     */
-    public com.google.protobuf.ByteString
-        getTimestampBytes() {
-      java.lang.Object ref = timestamp_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        timestamp_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
+    public long getTimestamp() {
+      return timestamp_;
     }
 
     public static final int USERID_FIELD_NUMBER = 2;
-    private volatile java.lang.Object userID_;
+    private long userID_;
     /**
-     * <code>optional string userID = 2;</code>
+     * <code>optional int64 userID = 2;</code>
      */
     public boolean hasUserID() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
     /**
-     * <code>optional string userID = 2;</code>
+     * <code>optional int64 userID = 2;</code>
      */
-    public java.lang.String getUserID() {
-      java.lang.Object ref = userID_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          userID_ = s;
-        }
-        return s;
-      }
-    }
-    /**
-     * <code>optional string userID = 2;</code>
-     */
-    public com.google.protobuf.ByteString
-        getUserIDBytes() {
-      java.lang.Object ref = userID_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        userID_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
+    public long getUserID() {
+      return userID_;
     }
 
     public static final int GROUPID_FIELD_NUMBER = 3;
-    private volatile java.lang.Object groupID_;
+    private long groupID_;
     /**
-     * <code>optional string groupID = 3;</code>
+     * <code>optional int64 groupID = 3;</code>
      */
     public boolean hasGroupID() {
       return ((bitField0_ & 0x00000004) == 0x00000004);
     }
     /**
-     * <code>optional string groupID = 3;</code>
+     * <code>optional int64 groupID = 3;</code>
      */
-    public java.lang.String getGroupID() {
-      java.lang.Object ref = groupID_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          groupID_ = s;
-        }
-        return s;
-      }
-    }
-    /**
-     * <code>optional string groupID = 3;</code>
-     */
-    public com.google.protobuf.ByteString
-        getGroupIDBytes() {
-      java.lang.Object ref = groupID_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        groupID_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
+    public long getGroupID() {
+      return groupID_;
     }
 
     public static final int CONTENT_FIELD_NUMBER = 4;
@@ -388,13 +289,13 @@ public final class ChatMessageProto {
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, timestamp_);
+        output.writeInt64(1, timestamp_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, userID_);
+        output.writeInt64(2, userID_);
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, groupID_);
+        output.writeInt64(3, groupID_);
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 4, content_);
@@ -411,13 +312,16 @@ public final class ChatMessageProto {
 
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, timestamp_);
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(1, timestamp_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, userID_);
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(2, userID_);
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, groupID_);
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(3, groupID_);
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, content_);
@@ -444,18 +348,18 @@ public final class ChatMessageProto {
       boolean result = true;
       result = result && (hasTimestamp() == other.hasTimestamp());
       if (hasTimestamp()) {
-        result = result && getTimestamp()
-            .equals(other.getTimestamp());
+        result = result && (getTimestamp()
+            == other.getTimestamp());
       }
       result = result && (hasUserID() == other.hasUserID());
       if (hasUserID()) {
-        result = result && getUserID()
-            .equals(other.getUserID());
+        result = result && (getUserID()
+            == other.getUserID());
       }
       result = result && (hasGroupID() == other.hasGroupID());
       if (hasGroupID()) {
-        result = result && getGroupID()
-            .equals(other.getGroupID());
+        result = result && (getGroupID()
+            == other.getGroupID());
       }
       result = result && (hasContent() == other.hasContent());
       if (hasContent()) {
@@ -480,15 +384,18 @@ public final class ChatMessageProto {
       hash = (19 * hash) + getDescriptor().hashCode();
       if (hasTimestamp()) {
         hash = (37 * hash) + TIMESTAMP_FIELD_NUMBER;
-        hash = (53 * hash) + getTimestamp().hashCode();
+        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+            getTimestamp());
       }
       if (hasUserID()) {
         hash = (37 * hash) + USERID_FIELD_NUMBER;
-        hash = (53 * hash) + getUserID().hashCode();
+        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+            getUserID());
       }
       if (hasGroupID()) {
         hash = (37 * hash) + GROUPID_FIELD_NUMBER;
-        hash = (53 * hash) + getGroupID().hashCode();
+        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+            getGroupID());
       }
       if (hasContent()) {
         hash = (37 * hash) + CONTENT_FIELD_NUMBER;
@@ -627,11 +534,11 @@ public final class ChatMessageProto {
       }
       public Builder clear() {
         super.clear();
-        timestamp_ = "";
+        timestamp_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000001);
-        userID_ = "";
+        userID_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000002);
-        groupID_ = "";
+        groupID_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000004);
         content_ = "";
         bitField0_ = (bitField0_ & ~0x00000008);
@@ -724,19 +631,13 @@ public final class ChatMessageProto {
       public Builder mergeFrom(proto.ChatMessageProto.ChatMessage other) {
         if (other == proto.ChatMessageProto.ChatMessage.getDefaultInstance()) return this;
         if (other.hasTimestamp()) {
-          bitField0_ |= 0x00000001;
-          timestamp_ = other.timestamp_;
-          onChanged();
+          setTimestamp(other.getTimestamp());
         }
         if (other.hasUserID()) {
-          bitField0_ |= 0x00000002;
-          userID_ = other.userID_;
-          onChanged();
+          setUserID(other.getUserID());
         }
         if (other.hasGroupID()) {
-          bitField0_ |= 0x00000004;
-          groupID_ = other.groupID_;
-          onChanged();
+          setGroupID(other.getGroupID());
         }
         if (other.hasContent()) {
           bitField0_ |= 0x00000008;
@@ -777,230 +678,98 @@ public final class ChatMessageProto {
       }
       private int bitField0_;
 
-      private java.lang.Object timestamp_ = "";
+      private long timestamp_ ;
       /**
-       * <code>required string timestamp = 1;</code>
+       * <code>required int64 timestamp = 1;</code>
        */
       public boolean hasTimestamp() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
-       * <code>required string timestamp = 1;</code>
+       * <code>required int64 timestamp = 1;</code>
        */
-      public java.lang.String getTimestamp() {
-        java.lang.Object ref = timestamp_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            timestamp_ = s;
-          }
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
+      public long getTimestamp() {
+        return timestamp_;
       }
       /**
-       * <code>required string timestamp = 1;</code>
+       * <code>required int64 timestamp = 1;</code>
        */
-      public com.google.protobuf.ByteString
-          getTimestampBytes() {
-        java.lang.Object ref = timestamp_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          timestamp_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>required string timestamp = 1;</code>
-       */
-      public Builder setTimestamp(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000001;
+      public Builder setTimestamp(long value) {
+        bitField0_ |= 0x00000001;
         timestamp_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>required string timestamp = 1;</code>
+       * <code>required int64 timestamp = 1;</code>
        */
       public Builder clearTimestamp() {
         bitField0_ = (bitField0_ & ~0x00000001);
-        timestamp_ = getDefaultInstance().getTimestamp();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>required string timestamp = 1;</code>
-       */
-      public Builder setTimestampBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000001;
-        timestamp_ = value;
+        timestamp_ = 0L;
         onChanged();
         return this;
       }
 
-      private java.lang.Object userID_ = "";
+      private long userID_ ;
       /**
-       * <code>optional string userID = 2;</code>
+       * <code>optional int64 userID = 2;</code>
        */
       public boolean hasUserID() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       /**
-       * <code>optional string userID = 2;</code>
+       * <code>optional int64 userID = 2;</code>
        */
-      public java.lang.String getUserID() {
-        java.lang.Object ref = userID_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            userID_ = s;
-          }
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
+      public long getUserID() {
+        return userID_;
       }
       /**
-       * <code>optional string userID = 2;</code>
+       * <code>optional int64 userID = 2;</code>
        */
-      public com.google.protobuf.ByteString
-          getUserIDBytes() {
-        java.lang.Object ref = userID_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          userID_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>optional string userID = 2;</code>
-       */
-      public Builder setUserID(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000002;
+      public Builder setUserID(long value) {
+        bitField0_ |= 0x00000002;
         userID_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional string userID = 2;</code>
+       * <code>optional int64 userID = 2;</code>
        */
       public Builder clearUserID() {
         bitField0_ = (bitField0_ & ~0x00000002);
-        userID_ = getDefaultInstance().getUserID();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string userID = 2;</code>
-       */
-      public Builder setUserIDBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000002;
-        userID_ = value;
+        userID_ = 0L;
         onChanged();
         return this;
       }
 
-      private java.lang.Object groupID_ = "";
+      private long groupID_ ;
       /**
-       * <code>optional string groupID = 3;</code>
+       * <code>optional int64 groupID = 3;</code>
        */
       public boolean hasGroupID() {
         return ((bitField0_ & 0x00000004) == 0x00000004);
       }
       /**
-       * <code>optional string groupID = 3;</code>
+       * <code>optional int64 groupID = 3;</code>
        */
-      public java.lang.String getGroupID() {
-        java.lang.Object ref = groupID_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            groupID_ = s;
-          }
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
+      public long getGroupID() {
+        return groupID_;
       }
       /**
-       * <code>optional string groupID = 3;</code>
+       * <code>optional int64 groupID = 3;</code>
        */
-      public com.google.protobuf.ByteString
-          getGroupIDBytes() {
-        java.lang.Object ref = groupID_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          groupID_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>optional string groupID = 3;</code>
-       */
-      public Builder setGroupID(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000004;
+      public Builder setGroupID(long value) {
+        bitField0_ |= 0x00000004;
         groupID_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional string groupID = 3;</code>
+       * <code>optional int64 groupID = 3;</code>
        */
       public Builder clearGroupID() {
         bitField0_ = (bitField0_ & ~0x00000004);
-        groupID_ = getDefaultInstance().getGroupID();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string groupID = 3;</code>
-       */
-      public Builder setGroupIDBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000004;
-        groupID_ = value;
+        groupID_ = 0L;
         onChanged();
         return this;
       }
@@ -1179,8 +948,8 @@ public final class ChatMessageProto {
   static {
     java.lang.String[] descriptorData = {
       "\n\027proto/ChatMessage.proto\022\005proto\"a\n\013Chat" +
-      "Message\022\021\n\ttimestamp\030\001 \002(\t\022\016\n\006userID\030\002 \001" +
-      "(\t\022\017\n\007groupID\030\003 \001(\t\022\017\n\007content\030\004 \001(\t\022\r\n\005" +
+      "Message\022\021\n\ttimestamp\030\001 \002(\003\022\016\n\006userID\030\002 \001" +
+      "(\003\022\017\n\007groupID\030\003 \001(\003\022\017\n\007content\030\004 \001(\t\022\r\n\005" +
       "image\030\005 \001(\014B\022B\020ChatMessageProto"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =

@@ -12,11 +12,8 @@ import org.java_websocket.handshake.ServerHandshake;
 import proto.LoginMessageProto.LoginMessage;
 import proto.MessageProto.Message;
 
-import java.math.BigInteger;
 import java.net.URL;
 import java.nio.ByteBuffer;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ResourceBundle;
 
 public class LoginFormController implements StageController, WebSocketHandler, Initializable
@@ -24,34 +21,16 @@ public class LoginFormController implements StageController, WebSocketHandler, I
     private static final String registerFormName = "RegisterName";
     private static final String registerFormResource = "RegisterForm.fxml";
 
-    public CheckBox savePassword;
-    public Button loginButton;
-    public TextField account;
-    public PasswordField password;
-    public CheckBox autoLogin;
-    public AnchorPane root;
-    public Hyperlink register;
+    @FXML private CheckBox savePassword;
+    @FXML private Button loginButton;
+    @FXML private TextField account;
+    @FXML private PasswordField password;
+    @FXML private CheckBox autoLogin;
+    @FXML private AnchorPane root;
+    @FXML private Hyperlink register;
     private MainController mainController;
     private String stageName;
     private WebSocketHandler backupHandler;
-
-    private String MD5Encoder(String str)
-    {
-        try {
-            MessageDigest md5 = MessageDigest.getInstance("MD5");
-            byte[] digest = md5.digest(str.getBytes());
-            BigInteger bigInteger = new BigInteger(1, digest);
-            StringBuilder hash = new StringBuilder(bigInteger.toString(16));
-            while(hash.length()<32)
-                hash.insert(0, "0");
-            return hash.toString();
-        }catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-
 
     @Override
     public void setMainController(MainController mainController, String currentStageName)
@@ -63,16 +42,24 @@ public class LoginFormController implements StageController, WebSocketHandler, I
 
     @FXML protected void login()
     {
-        String account = this.account.getText().trim();
+        String prompt = null;
         String password = this.password.getText();
-        if(account.length()==0 || password.length() == 0)
-            AlertHelper.show("Input Error", "Please input valid account and password", Alert.AlertType.ERROR);
+        long account = 0;
+        try {
+            account = Long.parseLong(this.account.getText().trim());
+        }catch(NumberFormatException e) {
+            prompt = "Account can only be numbers.";
+        }
+        if(password.length() == 0)
+            prompt = "Password cannot be empty.";
+        if(prompt != null)
+            AlertHelper.show("Input Invalid", prompt, Alert.AlertType.ERROR);
         else
         {
             LoginMessage.Builder builder = LoginMessage.newBuilder();
             builder.setType(LoginMessage.Type.LOGIN);
             builder.setAccount(account);
-            builder.setPassword(MD5Encoder(password));
+            builder.setPassword(MD5Encoder.encode(password));
             mainController.webSocketSend(builder.build());
         }
     }
@@ -95,7 +82,11 @@ public class LoginFormController implements StageController, WebSocketHandler, I
             if(message.hasType() && message.getType() == Message.Type.LoginMessage
                     && message.hasLoginMessage()) {
                 LoginMessage loginMessage = message.getLoginMessage();
-                if (loginMessage.hasStatus() && loginMessage.getStatus() == LoginMessage.Status.SUCCESS)
+                //noinspection StatementWithEmptyBody
+                if(!loginMessage.hasType() || loginMessage.getType() != LoginMessage.Type.LOGIN) {
+                    //do nothing
+                }
+                else if (loginMessage.hasStatus() && loginMessage.getStatus() == LoginMessage.Status.SUCCESS )
                     mainController.showStage("MainWindow", stageName);
                 else {
                     String prompt;

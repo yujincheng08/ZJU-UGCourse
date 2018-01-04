@@ -1,9 +1,10 @@
+syntax = "proto2";
 package proto;
 option java_outer_classname = "ChatMessageProto";
 message ChatMessage {
-    required string timestamp = 1;
-    optional string userID = 2;
-    optional string groupID = 3;
+    required int64 timestamp = 1;
+    optional int64 userID = 2;
+    optional int64 groupID = 3;
     optional string content = 4;
     optional bytes image = 5;
 }

@@ -72,16 +72,18 @@
                         <phase>generate-sources</phase>
                         <configuration>
                             <target>
-                                <property name="protoc.filename" value="protoc-${protobuf.version}-${os.detected.classifier}.exe"/>
+                                <property name="protoc.filename"
+                                          value="protoc-${protobuf.version}-${os.detected.classifier}.exe"/>
                                 <property name="protoc.filepath" value="${project.build.directory}/${protoc.filename}"/>
                                 <chmod file="${protoc.filepath}" perm="ugo+rx"/>
-                                <mkdir dir="${protobuf.output.directory}" />
+                                <mkdir dir="${protobuf.output.directory}"/>
                                 <path id="protobuf.input.filepaths.path">
                                     <fileset dir="${protobuf.input.directory}">
                                         <include name="**/*.proto"/>
                                     </fileset>
                                 </path>
-                                <pathconvert pathsep=" " property="protobuf.input.filepaths" refid="protobuf.input.filepaths.path"/>
+                                <pathconvert pathsep=" " property="protobuf.input.filepaths"
+                                             refid="protobuf.input.filepaths.path"/>
                                 <exec executable="echo" failonerror="false">
                                     <arg line="${protobuf.input.filepaths}"/>
                                 </exec>

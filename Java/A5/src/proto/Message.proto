@@ -1,3 +1,5 @@
+syntax = "proto2";
+
 package proto;
 option java_outer_classname = "MessageProto";
 import "proto/ChatMessage.proto";
@@ -5,8 +7,8 @@ import "proto/LoginMessage.proto";
 
 message Message{
     enum Type{
-        LoginMessage = 1;
-        ChatMessage = 2;
+        LoginMessage = 0;
+        ChatMessage = 1;
     }
     required Type type = 1;
     optional ChatMessage chatMessage = 2;

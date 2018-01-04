@@ -1,6 +1,5 @@
 package Client;
 
-
 import org.java_websocket.handshake.ServerHandshake;
 
 public class MainWindowController implements StageController, WebSocketHandler
