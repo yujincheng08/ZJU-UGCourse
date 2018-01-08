@@ -7,6 +7,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.WindowEvent;
 import org.java_websocket.handshake.ServerHandshake;
@@ -50,6 +52,13 @@ public class RegisterFormController implements StageController, WebSocketHandler
     public void initialize(URL url, ResourceBundle resourceBundle) {
         cancelButton.setOnAction(e->root.getScene().getWindow().hide());
         registerButton.setOnAction(e->register());
+        registerButton.setDefaultButton(true);
+        root.addEventHandler(KeyEvent.KEY_PRESSED, ev -> {
+            if (ev.getCode() == KeyCode.ENTER) {
+                registerButton.fire();
+                ev.consume();
+            }
+        });
     }
 
     private void register() {
@@ -84,17 +93,18 @@ public class RegisterFormController implements StageController, WebSocketHandler
                 //noinspection StatementWithEmptyBody
                 if(!loginMessage.hasType() || loginMessage.getType() != LoginMessage.Type.REGISTER){
                 }
-                else if (loginMessage.hasStatus() && loginMessage.hasAccount() && loginMessage.getStatus() == LoginMessage.Status.SUCCESS)
+                else if (loginMessage.hasStatus() && loginMessage.hasAccount() && loginMessage.getStatus() == LoginMessage.Status.SUCCESS) {
                     AlertHelper.show("Register success",
                             "Your id is " + loginMessage.getAccount() + ". Please well remember it.", Alert.AlertType.INFORMATION);
+                    cancelButton.fire();
+                }
                 else {
                     String prompt;
                     if (loginMessage.hasPrompt())
                         prompt = loginMessage.getPrompt();
                     else
                         prompt = "Unknown error. Please retry.";
-                    AlertHelper.show("Login failed", prompt, Alert.AlertType.ERROR);
-                    cancelButton.fire();
+                    AlertHelper.show("Register failed", prompt, Alert.AlertType.ERROR);
                 }
             }
         }catch(InvalidProtocolBufferException e) {

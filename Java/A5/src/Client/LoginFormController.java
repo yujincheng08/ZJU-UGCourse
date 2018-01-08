@@ -16,46 +16,50 @@ import java.net.URL;
 import java.nio.ByteBuffer;
 import java.util.ResourceBundle;
 
-public class LoginFormController implements StageController, WebSocketHandler, Initializable
-{
-    private static final String registerFormName = "RegisterName";
+public class LoginFormController implements StageController, WebSocketHandler, Initializable {
+    private static final String registerFormName = "RegisterForm";
     private static final String registerFormResource = "RegisterForm.fxml";
 
-    @FXML private CheckBox savePassword;
-    @FXML private Button loginButton;
-    @FXML private TextField account;
-    @FXML private PasswordField password;
-    @FXML private CheckBox autoLogin;
-    @FXML private AnchorPane root;
-    @FXML private Hyperlink register;
+    @FXML
+    private CheckBox savePassword;
+    @FXML
+    private Button loginButton;
+    @FXML
+    private TextField account;
+    @FXML
+    private PasswordField password;
+    @FXML
+    private CheckBox autoLogin;
+    @FXML
+    private AnchorPane root;
+    @FXML
+    private Hyperlink register;
     private MainController mainController;
     private String stageName;
     private WebSocketHandler backupHandler;
 
     @Override
-    public void setMainController(MainController mainController, String currentStageName)
-    {
+    public void setMainController(MainController mainController, String currentStageName) {
         this.mainController = mainController;
         this.stageName = currentStageName;
 
     }
 
-    @FXML protected void login()
-    {
+    @FXML
+    protected void login() {
         String prompt = null;
         String password = this.password.getText();
         long account = 0;
         try {
             account = Long.parseLong(this.account.getText().trim());
-        }catch(NumberFormatException e) {
+        } catch (NumberFormatException e) {
             prompt = "Account can only be numbers.";
         }
-        if(password.length() == 0)
+        if (password.length() == 0)
             prompt = "Password cannot be empty.";
-        if(prompt != null)
+        if (prompt != null)
             AlertHelper.show("Input Invalid", prompt, Alert.AlertType.ERROR);
-        else
-        {
+        else {
             LoginMessage.Builder builder = LoginMessage.newBuilder();
             builder.setType(LoginMessage.Type.LOGIN);
             builder.setAccount(account);
@@ -79,14 +83,13 @@ public class LoginFormController implements StageController, WebSocketHandler, I
     public void onMessage(ByteBuffer bytes) {
         try {
             Message message = Message.parseFrom(bytes.array());
-            if(message.hasType() && message.getType() == Message.Type.LoginMessage
+            if (message.hasType() && message.getType() == Message.Type.LoginMessage
                     && message.hasLoginMessage()) {
                 LoginMessage loginMessage = message.getLoginMessage();
                 //noinspection StatementWithEmptyBody
-                if(!loginMessage.hasType() || loginMessage.getType() != LoginMessage.Type.LOGIN) {
+                if (!loginMessage.hasType() || loginMessage.getType() != LoginMessage.Type.LOGIN) {
                     //do nothing
-                }
-                else if (loginMessage.hasStatus() && loginMessage.getStatus() == LoginMessage.Status.SUCCESS )
+                } else if (loginMessage.hasStatus() && loginMessage.getStatus() == LoginMessage.Status.SUCCESS)
                     mainController.showStage("MainWindow", stageName);
                 else {
                     String prompt;
@@ -97,7 +100,7 @@ public class LoginFormController implements StageController, WebSocketHandler, I
                     AlertHelper.show("Login failed", prompt, Alert.AlertType.ERROR);
                 }
             }
-        }catch(InvalidProtocolBufferException e) {
+        } catch (InvalidProtocolBufferException e) {
             e.printStackTrace();
         }
 
@@ -113,19 +116,18 @@ public class LoginFormController implements StageController, WebSocketHandler, I
 
     }
 
-    private void showRegisterDialog()
-    {
+    private void showRegisterDialog() {
         mainController.showDialog(registerFormName, registerFormResource, stageName);
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-         autoLogin.selectedProperty().addListener((ov, o, n) -> {
-            if(n)
+        autoLogin.selectedProperty().addListener((ov, o, n) -> {
+            if (n)
                 savePassword.setSelected(true);
         });
         savePassword.selectedProperty().addListener((ov, o, n) -> {
-            if(!n)
+            if (!n)
                 autoLogin.setSelected(false);
         });
         root.addEventHandler(KeyEvent.KEY_PRESSED, ev -> {
@@ -134,8 +136,8 @@ public class LoginFormController implements StageController, WebSocketHandler, I
                 ev.consume();
             }
         });
-        loginButton.setOnAction(e-> login());
+        loginButton.setOnAction(e -> login());
         loginButton.setDefaultButton(true);
-        register.setOnAction(e-> showRegisterDialog());
+        register.setOnAction(e -> showRegisterDialog());
     }
 }

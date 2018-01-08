@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+
+<HBox xmlns="http://javafx.com/javafx/8.0.86" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.FriendListItemController">
+    <ImageView fx:id="avatar" fitHeight="39.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" />
+    <Label fx:id="nickName" text="Label" />
+</HBox>

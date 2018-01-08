@@ -1,5 +1,8 @@
 class TwoWayDict(dict):
-    __key_map = dict()
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.__key_map = dict()
 
     def __setitem__(self, key, value):
         self.__key_map[value] = key
