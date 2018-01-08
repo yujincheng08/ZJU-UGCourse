@@ -74,14 +74,6 @@ class Recommend:
     def __item_adjusted(self, i, j, mean):
         vector_i = self.__train_matrix[:, i] - mean
         vector_j = self.__train_matrix[:, j] - mean
-        '''
-        idx = np.intersect1d(np.flatnonzero(vector_i), np.flatnonzero(vector_j))
-        if idx.__len__() == 0:
-            return 0
-        mean = mean[idx]
-        vector_i = vector_i[idx] - mean
-        vector_j = vector_j[idx] - mean
-        '''
         sq_len = np.sum(np.square(vector_i)) * np.sum(np.square(vector_j))
         if sq_len == 0:
             return 0
@@ -105,13 +97,6 @@ class Recommend:
     def __item_correlation(self, i, j, mean):
         vector_i = self.__train_matrix[:, i] - mean[i]
         vector_j = self.__train_matrix[:, j] - mean[j]
-        '''
-        idx = np.intersect1d(np.flatnonzero(vector_i), np.flatnonzero(vector_j))
-        if idx.__len__() == 0:
-            return 0
-        vector_i = vector_i[idx] - mean[i]
-        vector_j = vector_j[idx] - mean[j]
-        '''
         sq_len = np.sum(np.square(vector_i)) * np.sum(np.square(vector_j))
 
         if sq_len == 0:
