@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+elementFormDefault="qualified">
+
+<xs:element name="root"/>
+
+<xs:element name="project">
+<xs:complexType>
+<xs:sequence>
+    <xs:element ref="abstract"/>
+    <xs:element ref="leader"/>
+    <xs:element ref="member" maxOccurs="unbounded"/>
+</xs:sequence>
+<xs:attribute name="name" type="xs:string"/>
+</xs:complexType>
+</xs:element>
+
+<xs:element name="abstract" type="xs:string"/>
+<xs:element name="leader">
+<xs:complexType>
+<xs:sequence>
+    <xs:element ref="person"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="member">
+<xs:complexType>
+<xs:sequence>
+    <xs:element ref="person"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="person" type="persontype"/>
+<xs:complexType name="persontype">
+  <xs:all>
+    <xs:element name="name" type="xs:string"/>
+    <xs:element name="stuid" type="xs:integer"/>
+    <xs:element name="duty" type="xs:string"/>
+    <xs:element ref="gender"/>
+  </xs:all>
+</xs:complexType>
+<xs:element name="gender" type="gendertype"/>
+<xs:complexType name="gendertype">
+<xs:choice>
+    <xs:element ref="male"/>
+    <xs:element ref="female"/>
+</xs:choice>
+</xs:complexType>
+<xs:element name="male" />
+<xs:element name="female" />
+</xs:schema>

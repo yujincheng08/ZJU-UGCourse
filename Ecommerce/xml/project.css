@@ -1,0 +1,53 @@
+.projectname{
+    display: block;
+    font-size: 20px;
+    font-family: "SimHei";
+    text-align: center;
+    width: 100%;
+}
+
+body {
+    padding: 5% 20%;
+    font-family: "SimSun";
+    font-size: 14px;
+}
+.abstract, .members {
+    width: 100%;
+    padding-left: 20px;
+}
+.abstract:before, .members:before {
+    display: inline-block;
+    font-weight: 600;
+    width: 100%;
+    text-indent: -20px;
+    text-align: left;
+}
+
+.abstract:before {
+    content: 'Abstract: ';
+}
+
+.members:before {
+    content: 'Members: ';
+}
+
+th {
+    background-color: #da4453;
+    color: white;
+}
+
+table {
+    font-size: 14px;
+    display: inline-table;
+    text-align: center;
+}
+
+table tr:nth-of-type(odd)
+{
+    background-color: #fac3c3;
+}
+
+table tr:nth-of-type(even)
+{
+    background-color: #ffe1e1;
+}

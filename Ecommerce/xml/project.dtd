@@ -1,0 +1,13 @@
+<!ELEMENT root ANY>
+<!ELEMENT project (abstract, leader, member*)>
+<!ATTLIST project name CDATA #REQUIRED>
+<!ELEMENT abstract (#PCDATA)>
+<!ELEMENT leader (person)>
+<!ELEMENT member (person)>
+<!ELEMENT person (name, stuid, duty, gender)>
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT stuid (#PCDATA)>
+<!ELEMENT duty (#PCDATA)>
+<!ELEMENT gender (male|female)>
+<!ELEMENT male EMPTY>
+<!ELEMENT female EMPTY>

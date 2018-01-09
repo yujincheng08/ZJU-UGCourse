@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="project.xsl"?>
+<root xsi:noNamespaceSchemaLocation="project.xsd"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns:xi="http://www.w3.org/2001/XInclude">
+<xi:include href="project.xml" parse="xml" xpointer="xpointer(//project)"/>
+</root>

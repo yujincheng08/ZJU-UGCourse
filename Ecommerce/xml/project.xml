@@ -1,0 +1,29 @@
+<project name="教育直播平台">
+    <abstract>
+        WELL
+    </abstract>
+    <leader>
+        <person>
+            <name>袁玉聪</name>
+            <stuid>3150104420</stuid>
+            <duty>Do anything</duty>
+            <gender><male/></gender>
+        </person>
+    </leader>
+    <member>
+        <person>
+            <name>余锦成</name>
+            <stuid>3150101155</stuid>
+            <duty>Do nothing</duty>
+            <gender><male/></gender>
+        </person>
+    </member>
+    <member>
+        <person>
+            <name>袁玉聪</name>
+            <stuid>3150101345</stuid>
+            <duty>Do nothing</duty>
+            <gender><female/></gender>
+        </person>
+    </member>
+</project>
