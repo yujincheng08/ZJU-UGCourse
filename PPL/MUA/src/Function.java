@@ -8,9 +8,9 @@ import java.util.Map;
 import static java.lang.Thread.sleep;
 
 class Function {
-    private static String getWordName(WordStream stream, WordList wordList)
+    private static String getWordName(WordStream stream)
             throws SyntaxException, RunningException {
-        Value value = Interpreter.value(stream, wordList);
+        Value value = Interpreter.value(stream);
         String name = value.toString();
         if (value.isList() || !name.matches("[_a-zA-Z].*"))
             throw new SyntaxException("Except a word literary but get " + name);
@@ -18,19 +18,19 @@ class Function {
             return name;
     }
 
-    static Value thing(WordStream stream, WordList wordList)
+    static Value thing(WordStream stream)
             throws RunningException, SyntaxException {
-        return thing(getWordName(stream, wordList), wordList);
+        return thing(getWordName(stream));
     }
 
-    static Value thing(String name, WordList wordList)
+    static Value thing(String name)
             throws RunningException {
-        return wordList.thing(name);
+        return Interpreter.wordList.thing(name);
     }
 
-    static Value isName(WordStream stream, WordList wordList)
+    static Value isName(WordStream stream)
             throws RunningException, SyntaxException {
-        return wordList.isname(getWordName(stream, wordList));
+        return Interpreter.wordList.isname(getWordName(stream));
     }
 
     static Value read(WordStream stream) {
@@ -61,17 +61,17 @@ class Function {
         return new Word(numericOperator.apply(a, b));
     }
 
-    private static Value numericOperate(WordStream stream, NumericOperator numericOperator, WordList wordList)
+    private static Value numericOperate(WordStream stream, NumericOperator numericOperator)
             throws RunningException, SyntaxException {
-        Value first = Interpreter.value(stream, wordList);
-        Value second = Interpreter.value(stream, wordList);
+        Value first = Interpreter.value(stream);
+        Value second = Interpreter.value(stream);
         return numericOperate(first, second, numericOperator);
     }
 
-    private static Value compare(WordStream stream, NumericComparator numericComparator, StringComparator stringComparator, WordList wordList)
+    private static Value compare(WordStream stream, NumericComparator numericComparator, StringComparator stringComparator)
             throws RunningException, SyntaxException {
-        Value first = Interpreter.value(stream, wordList);
-        Value second = Interpreter.value(stream, wordList);
+        Value first = Interpreter.value(stream);
+        Value second = Interpreter.value(stream);
         if (first.isNumber() && second.isNumber()) {
             BigDecimal a = first.toNumeric();
             BigDecimal b = second.toNumeric();
@@ -83,93 +83,93 @@ class Function {
         }
     }
 
-    private static Value booleanOperate(WordStream stream, BooleanBinaryOperator booleanBinaryOperator, WordList wordList)
+    private static Value booleanOperate(WordStream stream, BooleanBinaryOperator booleanBinaryOperator)
             throws RunningException, SyntaxException {
-        Value first = Interpreter.value(stream, wordList);
-        Value second = Interpreter.value(stream, wordList);
+        Value first = Interpreter.value(stream);
+        Value second = Interpreter.value(stream);
         Boolean a = first.toBoolean();
         Boolean b = second.toBoolean();
         return new Word(String.valueOf(booleanBinaryOperator.apply(a, b)));
     }
 
-    static Value add(WordStream stream, WordList wordList)
+    static Value add(WordStream stream)
             throws RunningException, SyntaxException {
         //return numericOperate(stream, (int a, int b) -> a + b, (double a, double b) -> a + b);
-        return numericOperate(stream, BigDecimal::add, wordList);
+        return numericOperate(stream, BigDecimal::add);
     }
 
-    static Value sub(WordStream stream, WordList wordList)
+    static Value sub(WordStream stream)
             throws RunningException, SyntaxException {
         //return numericOperate(stream, (int a, int b) -> a - b, (double a, double b) -> a - b);
-        return numericOperate(stream, BigDecimal::subtract, wordList);
+        return numericOperate(stream, BigDecimal::subtract);
     }
 
-    static Value mul(WordStream stream, WordList wordList)
+    static Value mul(WordStream stream)
             throws RunningException, SyntaxException {
         //return numericOperate(stream, (int a, int b) -> a * b, (double a, double b) -> a * b);
-        return numericOperate(stream, BigDecimal::multiply, wordList);
+        return numericOperate(stream, BigDecimal::multiply);
     }
 
-    static Value div(WordStream stream, WordList wordList)
+    static Value div(WordStream stream)
             throws RunningException, SyntaxException {
         try {
             //return numericOperate(stream, (int a, int b) -> a / b, (double a, double b) -> a / b);
-            return numericOperate(stream, (BigDecimal a, BigDecimal b) -> a.divide(b, 16, BigDecimal.ROUND_HALF_EVEN), wordList);
+            return numericOperate(stream, (BigDecimal a, BigDecimal b) -> a.divide(b, 16, BigDecimal.ROUND_HALF_EVEN));
         } catch (ArithmeticException e) {
             throw new RunningException("Cannot divided by zero");
         }
 
     }
 
-    static Value mod(WordStream stream, WordList wordList)
+    static Value mod(WordStream stream)
             throws RunningException, SyntaxException {
         //return numericOperate(stream, (int a, int b) -> a % b, (double a, double b) -> a % b);
         try {
-            return numericOperate(stream, BigDecimal::remainder, wordList);
+            return numericOperate(stream, BigDecimal::remainder);
         } catch (ArithmeticException e) {
             throw new RunningException("Cannot divided by zero");
         }
 
     }
 
-    static Value eq(WordStream stream, WordList wordList)
+    static Value eq(WordStream stream)
             throws RunningException, SyntaxException {
         //return compare(stream, Integer::equals, Double::equals, String::equals);
-        return compare(stream, BigDecimal::equals, String::equals, wordList);
+        return compare(stream, BigDecimal::equals, String::equals);
     }
 
-    static Value lt(WordStream stream, WordList wordList)
+    static Value lt(WordStream stream)
             throws RunningException, SyntaxException {
         //return compare(stream, (Integer a, Integer b) -> a.compareTo(b) < 0, (Double a, Double b) -> a.compareTo(b) < 0, (String a, String b) -> a.compareTo(b) < 0);
-        return compare(stream, (BigDecimal a, BigDecimal b) -> a.compareTo(b) < 0, (String a, String b) -> a.compareTo(b) < 0, wordList);
+        return compare(stream, (BigDecimal a, BigDecimal b) -> a.compareTo(b) < 0, (String a, String b) -> a.compareTo(b) < 0);
     }
 
-    static Value gt(WordStream stream, WordList wordList)
+    static Value gt(WordStream stream)
             throws RunningException, SyntaxException {
         //return compare(stream, (Integer a, Integer b) -> a.compareTo(b) > 0, (Double a, Double b) -> a.compareTo(b) > 0, (String a, String b) -> a.compareTo(b) > 0);
-        return compare(stream, (BigDecimal a, BigDecimal b) -> a.compareTo(b) > 0, (String a, String b) -> a.compareTo(b) > 0, wordList);
+        return compare(stream, (BigDecimal a, BigDecimal b) -> a.compareTo(b) > 0, (String a, String b) -> a.compareTo(b) > 0);
     }
 
-    static Value and(WordStream stream, WordList wordList)
+    static Value and(WordStream stream)
             throws RunningException, SyntaxException {
-        return booleanOperate(stream, Boolean::logicalAnd, wordList);
+        return booleanOperate(stream, Boolean::logicalAnd);
     }
 
-    static Value or(WordStream stream, WordList wordList)
+    static Value or(WordStream stream)
             throws RunningException, SyntaxException {
-        return booleanOperate(stream, Boolean::logicalOr, wordList);
+        return booleanOperate(stream, Boolean::logicalOr);
     }
 
-    static Value not(WordStream stream, WordList wordList)
+    static Value not(WordStream stream)
             throws RunningException, SyntaxException {
-        Value first = Interpreter.value(stream, wordList);
+        Value first = Interpreter.value(stream);
         Boolean a = first.toBoolean();
         return new Word(String.valueOf(!a));
     }
 
-    static Value random(WordStream stream, WordList wordList)
+    static Value random(WordStream stream)
             throws RunningException, SyntaxException {
-        Value first = Interpreter.value(stream, wordList);
+        Value first = Interpreter.value(stream);
         try {
             BigDecimal max = first.toNumeric();
             if (max.compareTo(new BigDecimal("0")) <= 0)
@@ -201,9 +201,9 @@ class Function {
         return bigDecimalSqrt(c, BigDecimal.ONE, BigDecimal.ONE.divide(BigDecimal.TEN.pow(300))).setScale(16, BigDecimal.ROUND_HALF_EVEN);
     }
 
-    static Value sqrt(WordStream stream, WordList wordList)
+    static Value sqrt(WordStream stream)
             throws RunningException, SyntaxException {
-        Value first = Interpreter.value(stream, wordList);
+        Value first = Interpreter.value(stream);
         BigDecimal a = first.toNumeric();
         if (a.compareTo(BigDecimal.ZERO) < 0)
             throw new RunningException(first.toString() + " is less than zero.");
@@ -211,36 +211,36 @@ class Function {
 
     }
 
-    static Value isnumber(WordStream stream, WordList wordList)
+    static Value isnumber(WordStream stream)
             throws RunningException, SyntaxException {
-        Value first = Interpreter.value(stream, wordList);
+        Value first = Interpreter.value(stream);
         if (first.isNumber())
             return Value.TRUE;
         else
             return Value.FALSE;
     }
 
-    static Value islist(WordStream stream, WordList wordList)
+    static Value islist(WordStream stream)
             throws RunningException, SyntaxException {
-        Value first = Interpreter.value(stream, wordList);
+        Value first = Interpreter.value(stream);
         if (first.isList())
             return Value.TRUE;
         else
             return Value.FALSE;
     }
 
-    static Value isbool(WordStream stream, WordList wordList)
+    static Value isbool(WordStream stream)
             throws RunningException, SyntaxException {
-        Value first = Interpreter.value(stream, wordList);
+        Value first = Interpreter.value(stream);
         if (first.isBool())
             return Value.TRUE;
         else
             return Value.FALSE;
     }
 
-    static Value isempty(WordStream stream, WordList wordList)
+    static Value isempty(WordStream stream)
             throws RunningException, SyntaxException {
-        Value first = Interpreter.value(stream, wordList);
+        Value first = Interpreter.value(stream);
         if (first.isEmpty())
             return Value.TRUE;
         else
@@ -248,103 +248,103 @@ class Function {
     }
 
 
-    static Value word(WordStream stream, WordList wordList)
+    static Value word(WordStream stream)
             throws RunningException, SyntaxException {
-        Value first = Interpreter.value(stream, wordList);
-        Value second = Interpreter.value(stream, wordList);
+        Value first = Interpreter.value(stream);
+        Value second = Interpreter.value(stream);
         if(first.isList() || second.isList())
             throw new RunningException("Word can only concatenate two words.");
         return new Word(first.toString() + second.toString());
     }
 
-    static Value list(WordStream stream, WordList wordList)
+    static Value list(WordStream stream)
             throws RunningException, SyntaxException {
-        Value first = Interpreter.value(stream, wordList);
-        Value second = Interpreter.value(stream, wordList);
+        Value first = Interpreter.value(stream);
+        Value second = Interpreter.value(stream);
         return List.list(first, second);
     }
 
-    static Value sentence(WordStream stream, WordList wordList)
+    static Value sentence(WordStream stream)
             throws RunningException, SyntaxException {
-        Value first = Interpreter.value(stream, wordList);
-        Value second = Interpreter.value(stream, wordList);
+        Value first = Interpreter.value(stream);
+        Value second = Interpreter.value(stream);
         return List.sentence(first, second);
     }
 
-    static Value join(WordStream stream, WordList wordList)
+    static Value join(WordStream stream)
             throws RunningException, SyntaxException {
-        Value first = Interpreter.value(stream, wordList);
-        Value second = Interpreter.value(stream, wordList);
+        Value first = Interpreter.value(stream);
+        Value second = Interpreter.value(stream);
         return List.join(first, second);
     }
 
-    static Value item(WordStream stream, WordList wordList)
+    static Value item(WordStream stream)
             throws RunningException, SyntaxException {
-        Value first = Interpreter.value(stream, wordList);
-        Value second = Interpreter.value(stream, wordList);
+        Value first = Interpreter.value(stream);
+        Value second = Interpreter.value(stream);
         BigInteger index = first.toInt();
         return second.item(index);
     }
 
 
-    static Value first(WordStream stream, WordList wordList)
+    static Value first(WordStream stream)
             throws RunningException, SyntaxException {
-        Value first = Interpreter.value(stream, wordList);
+        Value first = Interpreter.value(stream);
         return first.item(BigInteger.ZERO);
     }
 
-    static Value last(WordStream stream, WordList wordList)
+    static Value last(WordStream stream)
             throws RunningException, SyntaxException {
-        Value first = Interpreter.value(stream, wordList);
+        Value first = Interpreter.value(stream);
         return first.item(BigInteger.valueOf(first.size() - 1));
     }
 
-    static Value butfirst(WordStream stream, WordList wordList)
+    static Value butfirst(WordStream stream)
             throws RunningException, SyntaxException {
-        Value first = Interpreter.value(stream, wordList);
+        Value first = Interpreter.value(stream);
         return first.but(0);
     }
 
-    static Value butlast(WordStream stream, WordList wordList)
+    static Value butlast(WordStream stream)
             throws RunningException, SyntaxException {
-        Value first = Interpreter.value(stream, wordList);
+        Value first = Interpreter.value(stream);
         return first.but(first.size() - 1);
     }
 
-    static Value Int(WordStream stream, WordList wordList)
+    static Value Int(WordStream stream)
             throws RunningException, SyntaxException {
-        Value first = Interpreter.value(stream, wordList);
+        Value first = Interpreter.value(stream);
         BigDecimal value = first.toNumeric();
         return new Word(value.setScale(0, BigDecimal.ROUND_FLOOR));
     }
 
-    static void make(WordStream stream, WordList wordList)
+    static void make(WordStream stream)
             throws RunningException, SyntaxException {
-        wordList.make(getWordName(stream, wordList), stream);
+        Interpreter.wordList.make(getWordName(stream), stream);
     }
 
-    static void erase(WordStream stream, WordList wordList)
+    static void erase(WordStream stream)
             throws RunningException, SyntaxException {
-        wordList.erase(getWordName(stream, wordList));
+        Interpreter.wordList.erase(getWordName(stream));
     }
 
-    static void print(WordStream stream, WordList wordList)
+    static void print(WordStream stream)
             throws RunningException, SyntaxException {
-        System.out.println(Interpreter.value(stream, wordList).toString());
+        System.out.println(Interpreter.value(stream).toString());
     }
 
-    static void output(WordStream stream, WordList wordList)
+    static void output(WordStream stream)
             throws RunningException, SyntaxException {
-        wordList.make(WordList.outputWordName, stream);
+        Interpreter.wordList.make(WordList.outputWordName, stream);
     }
 
-    static Value run(String functionName, WordStream stream, WordList wordList)
+    static Value run(String functionName, WordStream stream)
             throws RunningException, SyntaxException {
-        if (wordList.contains(functionName)) {
-            Value function = wordList.thing(functionName);
+        if (Interpreter.wordList.contains(functionName)) {
+            Value function = Interpreter.wordList.thing(functionName);
             if (!function.isList() || function.isEmpty())
                 throw new RunningException(functionName + " is not a function");
-            wordList.make(functionName, function);
+            Interpreter.wordList.make(functionName, function);
             Value functionArg = function.item(0);
             if (functionArg == null || !functionArg.isList())
                 throw new RunningException(functionName + " is not a function");
@@ -355,44 +355,42 @@ class Function {
             if (dummy != null)
                 throw new RunningException(functionName + " is not a function");
             try {
-                wordList.newSpace();
+                Interpreter.wordList.newSpace();
                 for (Value arg : functionArg) {
                     if (arg.isList()) {
                         throw new RunningException("List is not a valid argument.");
                     }
-                    Value v = Interpreter.value(stream, wordList);
-                    wordList.make(arg.toString(), v);
+                    Value v = Interpreter.value(stream);
+                    Interpreter.wordList.make(arg.toString(), v);
                 }
-                Interpreter.interpret(functionBody.toWordStream(), wordList);
-                if (wordList.contains(WordList.outputWordName)) {
-                    return wordList.getOutput();
+                Interpreter.interpret(functionBody.toWordStream());
+                if (Interpreter.wordList.contains(WordList.outputWordName)) {
+                    return Interpreter.wordList.getOutput();
                 } else {
                     return null;
                 }
-            }catch(RunningException | SyntaxException e){
-                throw e;
-            }finally {
-                wordList.endSpace();
+            } finally {
+                Interpreter.wordList.endSpace();
             }
 
         } else
             throw new RunningException("Unexpected token: " + functionName);
     }
 
-    static void run(WordStream stream, WordList wordList)
+    static void run(WordStream stream)
             throws RunningException, SyntaxException
     {
-        Value runBody = Interpreter.value(stream, wordList);
+        Value runBody = Interpreter.value(stream);
         if(!runBody.isList())
             throw new RunningException("Only list can be run.");
         stream.putBack(runBody.toWordStream());
     }
 
-    static void repeat(WordStream stream, WordList wordList)
+    static void repeat(WordStream stream)
             throws RunningException, SyntaxException {
-        Value timesValue = Interpreter.value(stream, wordList);
+        Value timesValue = Interpreter.value(stream);
         BigInteger times = timesValue.toInt();
-        Value loopBody = Interpreter.value(stream, wordList);
+        Value loopBody = Interpreter.value(stream);
         if(!loopBody.isList())
             throw new RunningException("Only list can be repeated.");
         WordStream loopBodyStream = loopBody.toWordStream();
@@ -400,16 +398,16 @@ class Function {
             stream.putBack(loopBodyStream);
     }
 
-    static void export(WordList wordList)
+    static void export()
     {
-        for(Map.Entry<String, Value> entry : wordList)
+        for(Map.Entry<String, Value> entry : Interpreter.wordList)
             if(!entry.getKey().equals(WordList.outputWordName))
-                Interpreter.globalWordList.make(entry.getKey(), entry.getValue());
+                Interpreter.wordList.export(entry.getKey(), entry.getValue());
     }
 
-    static void wait(WordStream stream, WordList wordList)
+    static void wait(WordStream stream)
             throws RunningException, SyntaxException {
-        Value timeValue = Interpreter.value(stream, wordList);
+        Value timeValue = Interpreter.value(stream);
         long i = timeValue.toInt().longValue();
         try {
             sleep(i);
@@ -418,39 +416,39 @@ class Function {
         }
     }
 
-    static void save(WordStream stream, WordList wordList)
+    static void save(WordStream stream)
             throws RunningException, SyntaxException {
-        Value path = Interpreter.value(stream, wordList);
+        Value path = Interpreter.value(stream);
         if (path.isList())
             throw new RunningException("List is not a valid file name");
-        wordList.save(path.toString());
+        Interpreter.wordList.save(path.toString());
     }
 
-    static void load(WordStream stream, WordList wordList)
+    static void load(WordStream stream)
             throws RunningException, SyntaxException {
-        Value path = Interpreter.value(stream, wordList);
+        Value path = Interpreter.value(stream);
         if (path.isList())
             throw new RunningException("List is not a valid file name");
-        wordList.load(path.toString());
+        Interpreter.wordList.load(path.toString());
     }
 
-    static void erall(WordList wordList) {
-        wordList.clear();
+    static void erall() {
+        Interpreter.wordList.clear();
 
     }
 
-    static void poall(WordList wordList) {
-        wordList.print();
+    static void poall() {
+        Interpreter.wordList.print();
     }
 
-    static void If(WordStream stream, WordList wordList)
+    static void If(WordStream stream)
             throws RunningException, SyntaxException
     {
-        Value value = Interpreter.value(stream, wordList);
+        Value value = Interpreter.value(stream);
         if (!value.isBool())
             throw new RunningException("Expected boolean value, but got " + value.toString());
-        Value trueSection = Interpreter.value(stream, wordList);
-        Value falseSection = Interpreter.value(stream, wordList);
+        Value trueSection = Interpreter.value(stream);
+        Value falseSection = Interpreter.value(stream);
         if(!trueSection.isList())
             throw new RunningException("Expected a list, but got " + trueSection.toString());
         if(!falseSection.isList())

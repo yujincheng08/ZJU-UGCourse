@@ -61,7 +61,7 @@ class Word extends Value {
         }
     }
 
-    Word(WordStream stream, WordList wordList)
+    Word(WordStream stream)
             throws RunningException, SyntaxException {
         Stack<Value> valueStack = new Stack<>();
         Stack<String> opStack = new Stack<>();
@@ -97,7 +97,7 @@ class Word extends Value {
                             popExpressionStack(valueStack, opStack, 0);
                             break;
                         default:
-                            Value result = Interpreter.value(stream.putBack(c), wordList);
+                            Value result = Interpreter.value(stream.putBack(c));
                             if (valueSign < 0)
                                 result = Function.numericOperate(ZERO, result, BigDecimal::subtract);
                             valueStack.push(result);

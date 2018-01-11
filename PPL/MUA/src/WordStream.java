@@ -106,6 +106,7 @@ class WordStream {
         return this;
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     WordStream merge(String word)
     {
         this.stream.add(word);

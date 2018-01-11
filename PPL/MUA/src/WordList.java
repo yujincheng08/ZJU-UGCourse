@@ -23,8 +23,12 @@ class WordList implements Iterable<Map.Entry<String, Value>>{
         list.pop();
     }
 
-    public HashMap<String, Value> current() {
+    private HashMap<String, Value> current() {
         return list.peek();
+    }
+
+    public void export(String name, Value value) {
+        root.put(name, value);
     }
 
     Value thing(String name) throws RunningException {
@@ -48,7 +52,7 @@ class WordList implements Iterable<Map.Entry<String, Value>>{
             throws RunningException, SyntaxException {
         Value value = current().get(name);
         //word = new Word();
-        Value newValue = Interpreter.value(stream, this);
+        Value newValue = Interpreter.value(stream);
         if (value != null) {
             current().remove(name);
         }
@@ -104,14 +108,8 @@ class WordList implements Iterable<Map.Entry<String, Value>>{
 
     void load(String path)
             throws RunningException {
-        Value output = null;
-//        Value test = null;
-//        if (list.containsKey(outputWordName))
-//            output = list.get(outputWordName);
-//        if (list.containsKey(testWordName))
-//            test = list.get(testWordName);
         File file = new File(path);
-        HashMap<String, Value> newList = null;
+        HashMap<String, Value> newList;
         try {
             FileInputStream fileInputStream = new FileInputStream(file);
             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);

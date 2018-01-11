@@ -1,10 +1,10 @@
 public class Interpreter {
-    static WordList globalWordList = new WordList();
+    static WordList wordList = new WordList();
     public static void main(String[] args) {
         WordStream wordStream = new WordStream();
         //noinspection InfiniteLoopStatement
         while(true) {
-            interpret(wordStream, globalWordList);
+            interpret(wordStream);
         }
 
     }
@@ -14,78 +14,78 @@ public class Interpreter {
         return name.startsWith("\"");
     }
 
-    private static Value getValue(String operator, WordStream stream, WordList localWordList)
+    private static Value getValue(String operator, WordStream stream)
             throws RunningException, SyntaxException {
         switch (operator) {
             case "thing":
-                return Function.thing(stream, localWordList);
+                return Function.thing(stream);
             case "isname":
-                return Function.isName(stream, localWordList);
+                return Function.isName(stream);
             case "read":
                 return Function.read(stream);
             case "readlinst":
                 return Function.readLinst();
             case "add":
-                return Function.add(stream, localWordList);
+                return Function.add(stream);
             case "sub":
-                return Function.sub(stream, localWordList);
+                return Function.sub(stream);
             case "mul":
-                return Function.mul(stream, localWordList);
+                return Function.mul(stream);
             case "div":
-                return Function.div(stream, localWordList);
+                return Function.div(stream);
             case "mod":
-                return Function.mod(stream, localWordList);
+                return Function.mod(stream);
             case "eq":
-                return Function.eq(stream, localWordList);
+                return Function.eq(stream);
             case "gt":
-                return Function.gt(stream, localWordList);
+                return Function.gt(stream);
             case "lt":
-                return Function.lt(stream, localWordList);
+                return Function.lt(stream);
             case "and":
-                return Function.and(stream, localWordList);
+                return Function.and(stream);
             case "or":
-                return Function.or(stream, localWordList);
+                return Function.or(stream);
             case "not":
-                return Function.not(stream, localWordList);
+                return Function.not(stream);
             case "random":
-                return Function.random(stream, localWordList);
+                return Function.random(stream);
             case "sqrt":
-                return Function.sqrt(stream, localWordList);
+                return Function.sqrt(stream);
             case "isnumber":
-                return Function.isnumber(stream, localWordList);
+                return Function.isnumber(stream);
             case "isbool":
-                return Function.isbool(stream, localWordList);
+                return Function.isbool(stream);
             case "islist":
-                return Function.islist(stream, localWordList);
+                return Function.islist(stream);
             case "isempty":
-                return Function.isempty(stream, localWordList);
+                return Function.isempty(stream);
             case "word":
-                return Function.word(stream, localWordList);
+                return Function.word(stream);
             case "list":
-                return Function.list(stream, localWordList);
+                return Function.list(stream);
             case "sentence":
-                return Function.sentence(stream, localWordList);
+                return Function.sentence(stream);
             case "join":
-                return Function.join(stream, localWordList);
+                return Function.join(stream);
             case "first":
-                return Function.first(stream, localWordList);
+                return Function.first(stream);
             case "last":
-                return Function.last(stream, localWordList);
+                return Function.last(stream);
             case "butfirst":
-                return Function.butfirst(stream, localWordList);
+                return Function.butfirst(stream);
             case "butlast":
-                return Function.butlast(stream, localWordList);
+                return Function.butlast(stream);
             case "item":
-                return Function.item(stream, localWordList);
+                return Function.item(stream);
             case "int":
-                return Function.Int(stream, localWordList);
+                return Function.Int(stream);
             /*
             case "pi":
                 return new Value("3.1415926535897932");
              */
             default:
                 if (operator.startsWith(":"))
-                    return Function.thing(operator.substring(1), localWordList);
+                    return Function.thing(operator.substring(1));
                 else if (isWordLiterary(operator))
                     return new Word(operator.substring(1));
                 else if (operator.matches("[+-]?\\d+(\\.\\d+)?"))
@@ -93,20 +93,20 @@ public class Interpreter {
                 else if (operator.equals("["))
                     return new List(stream);
                 else if (operator.startsWith("("))
-                    return new Word(stream.putBack(operator), localWordList);
+                    return new Word(stream.putBack(operator));
                 else
                     //throw new SyntaxException("Unexpect token: " + next);
                     //throw new RunningException("Undefined function: " + next);
-                    return Function.run(operator, stream, localWordList);
+                    return Function.run(operator, stream);
         }
     }
 
-    static Value value(WordStream stream, WordList wordList)
+    static Value value(WordStream stream)
             throws RunningException, SyntaxException {
         String operator = stream.next();
         if (operator == null)
             throw new RunningException("Expected a value but got null");
-        Value val = getValue(operator, stream, wordList);
+        Value val = getValue(operator, stream);
         if (val == null)
             throw new RunningException(operator + " does not return a value");
         return val;
@@ -118,16 +118,16 @@ public class Interpreter {
         stream.putBack(list.toWordStream());
     }
 
-    private static void printResult(WordStream stream, WordList wordList)
+    private static void printResult(WordStream stream)
             throws RunningException, SyntaxException {
         String operator = stream.next();
         if (operator == null)
             throw new RunningException("Expected a value but got null");
         if (operator.equals("[")) run(stream ,new List(stream));
         else if (operator.startsWith(":"))
-            run(stream, Function.thing(operator.substring(1), wordList));
+            run(stream, Function.thing(operator.substring(1)));
         else {
-            Value val = getValue(operator, stream, wordList); //Function calls
+            Value val = getValue(operator, stream); //Function calls
             if (val != null) {
                 if (val.isList())
                     run(stream, val);
@@ -136,7 +136,7 @@ public class Interpreter {
         }
     }
 
-    static void interpret(WordStream stream, WordList localWordList) {
+    static void interpret(WordStream stream){
         mainLoop:
         while (true) {
             String command = stream.next();
@@ -146,22 +146,22 @@ public class Interpreter {
                 }
                 switch (command) {
                     case "make":
-                        Function.make(stream, localWordList);
+                        Function.make(stream);
                         break;
                     case "print":
-                        Function.print(stream, localWordList);
+                        Function.print(stream);
                         break;
                     case "erase":
-                        Function.erase(stream, localWordList);
+                        Function.erase(stream);
                         break;
                     case "thing":
-                        interpret(Function.thing(stream, localWordList).toWordStream(), localWordList);
+                        interpret(Function.thing(stream).toWordStream());
                         break;
                     case "output":
-                        Function.output(stream, localWordList);
+                        Function.output(stream);
                         break;
                     case "repeat":
-                        Function.repeat(stream, localWordList);
+                        Function.repeat(stream);
                         break;
 //                    case "test":
 //                        Function.test(stream, localWordList);
@@ -173,35 +173,35 @@ public class Interpreter {
 //                        Function.iffalse(stream, localWordList);
 //                        break;
                     case "wait":
-                        Function.wait(stream, localWordList);
+                        Function.wait(stream);
                         break;
                     case "save":
-                        Function.save(stream, localWordList);
+                        Function.save(stream);
                         break;
                     case "load":
-                        Function.load(stream, localWordList);
+                        Function.load(stream);
                         break;
                     case "erall":
-                        Function.erall(localWordList);
+                        Function.erall();
                         break;
                     case "poall":
-                        Function.poall(localWordList);
+                        Function.poall();
                         break;
                     case "if":
-                        Function.If(stream, localWordList);
+                        Function.If(stream);
                         break;
                     case "run":
-                        Function.run(stream, localWordList);
+                        Function.run(stream);
                         break;
                     case "export":
-                        Function.export(localWordList);
+                        Function.export();
                         break;
                     case "stop":
                         break mainLoop;
                     default:
                         //else Function.run(command, stream);
                         //interpret(value(stream).toWordStream());
-                        printResult(stream.putBack(command), localWordList);
+                        printResult(stream.putBack(command));
                         //else throw new SyntaxException("Unexpected token: " + command);
                 }
             } catch (RunningException e) {
