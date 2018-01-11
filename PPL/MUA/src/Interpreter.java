@@ -95,8 +95,6 @@ public class Interpreter {
                 else if (operator.startsWith("("))
                     return new Word(stream.putBack(operator));
                 else
-                    //throw new SyntaxException("Unexpect token: " + next);
-                    //throw new RunningException("Undefined function: " + next);
                     return Function.run(operator, stream);
         }
     }
@@ -163,15 +161,6 @@ public class Interpreter {
                     case "repeat":
                         Function.repeat(stream);
                         break;
-//                    case "test":
-//                        Function.test(stream, localWordList);
-//                        break;
-//                    case "iftrue":
-//                        Function.iftrue(stream, localWordList);
-//                        break;
-//                    case "iffalse":
-//                        Function.iffalse(stream, localWordList);
-//                        break;
                     case "wait":
                         Function.wait(stream);
                         break;
@@ -199,10 +188,7 @@ public class Interpreter {
                     case "stop":
                         break mainLoop;
                     default:
-                        //else Function.run(command, stream);
-                        //interpret(value(stream).toWordStream());
                         printResult(stream.putBack(command));
-                        //else throw new SyntaxException("Unexpected token: " + command);
                 }
             } catch (RunningException e) {
                 System.out.println("Runtime Error: " + e.getMessage());

@@ -94,26 +94,22 @@ class Function {
 
     static Value add(WordStream stream)
             throws RunningException, SyntaxException {
-        //return numericOperate(stream, (int a, int b) -> a + b, (double a, double b) -> a + b);
         return numericOperate(stream, BigDecimal::add);
     }
 
     static Value sub(WordStream stream)
             throws RunningException, SyntaxException {
-        //return numericOperate(stream, (int a, int b) -> a - b, (double a, double b) -> a - b);
         return numericOperate(stream, BigDecimal::subtract);
     }
 
     static Value mul(WordStream stream)
             throws RunningException, SyntaxException {
-        //return numericOperate(stream, (int a, int b) -> a * b, (double a, double b) -> a * b);
         return numericOperate(stream, BigDecimal::multiply);
     }
 
     static Value div(WordStream stream)
             throws RunningException, SyntaxException {
         try {
-            //return numericOperate(stream, (int a, int b) -> a / b, (double a, double b) -> a / b);
             return numericOperate(stream, (BigDecimal a, BigDecimal b) -> a.divide(b, 16, BigDecimal.ROUND_HALF_EVEN));
         } catch (ArithmeticException e) {
             throw new RunningException("Cannot divided by zero");
@@ -123,7 +119,6 @@ class Function {
 
     static Value mod(WordStream stream)
             throws RunningException, SyntaxException {
-        //return numericOperate(stream, (int a, int b) -> a % b, (double a, double b) -> a % b);
         try {
             return numericOperate(stream, BigDecimal::remainder);
         } catch (ArithmeticException e) {
@@ -134,19 +129,16 @@ class Function {
 
     static Value eq(WordStream stream)
             throws RunningException, SyntaxException {
-        //return compare(stream, Integer::equals, Double::equals, String::equals);
         return compare(stream, BigDecimal::equals, String::equals);
     }
 
     static Value lt(WordStream stream)
             throws RunningException, SyntaxException {
-        //return compare(stream, (Integer a, Integer b) -> a.compareTo(b) < 0, (Double a, Double b) -> a.compareTo(b) < 0, (String a, String b) -> a.compareTo(b) < 0);
         return compare(stream, (BigDecimal a, BigDecimal b) -> a.compareTo(b) < 0, (String a, String b) -> a.compareTo(b) < 0);
     }
 
     static Value gt(WordStream stream)
             throws RunningException, SyntaxException {
-        //return compare(stream, (Integer a, Integer b) -> a.compareTo(b) > 0, (Double a, Double b) -> a.compareTo(b) > 0, (String a, String b) -> a.compareTo(b) > 0);
         return compare(stream, (BigDecimal a, BigDecimal b) -> a.compareTo(b) > 0, (String a, String b) -> a.compareTo(b) > 0);
     }
 

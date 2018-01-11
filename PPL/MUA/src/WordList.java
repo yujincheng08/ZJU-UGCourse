@@ -6,7 +6,6 @@ import java.util.Map;
 
 class WordList implements Iterable<Map.Entry<String, Value>>{
     static final String outputWordName = "0";
-    // static final String testWordName = "1";
     private Stack<HashMap<String, Value>> list;
     private HashMap<String, Value> root;
     WordList() {
@@ -77,15 +76,10 @@ class WordList implements Iterable<Map.Entry<String, Value>>{
     void save(String path)
             throws RunningException {
         Value output = null;
-//        Value test = null;
         if (current().containsKey(outputWordName)) {
             output = current().get(outputWordName);
             current().remove(outputWordName);
         }
-//        if (list.containsKey(testWordName)) {
-//            test = list.get(testWordName);
-//            list.remove(testWordName);
-//        }
         File file = new File(path);
         try {
             if (!file.exists())
@@ -101,8 +95,6 @@ class WordList implements Iterable<Map.Entry<String, Value>>{
         } finally {
             if (output != null)
                 current().put(outputWordName, output);
-//            if (test != null)
-//                list.put(testWordName, test);
         }
     }
 
@@ -124,24 +116,15 @@ class WordList implements Iterable<Map.Entry<String, Value>>{
         }
         for(Map.Entry<String, Value> entry : newList.entrySet())
             make(entry.getKey(), entry.getValue());
-//        if (output != null)
-//            list.put(outputWordName, output);
-//        if (test != null)
-//            list.put(testWordName, test);
     }
 
     void clear() {
         Value output = null;
-//        Value test = null;
         if (current().containsKey(outputWordName))
             output = current().get(outputWordName);
-//        if (list.containsKey(testWordName))
-//            test = list.get(testWordName);
         current().clear();
         if (output != null)
             current().put(outputWordName, output);
-//        if (test != null)
-//            list.put(testWordName, test);
     }
 
     void print() {
@@ -149,7 +132,6 @@ class WordList implements Iterable<Map.Entry<String, Value>>{
             String key = entry.getKey();
             switch (key) {
                 case outputWordName:
-//                case testWordName:
                     break;
                 default:
                     System.out.println(key + " : " + entry.getValue());
