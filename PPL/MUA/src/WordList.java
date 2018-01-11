@@ -1,19 +1,39 @@
 import java.io.*;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Stack;
 import java.util.Map;
 
 class WordList implements Iterable<Map.Entry<String, Value>>{
     static final String outputWordName = "0";
     // static final String testWordName = "1";
-    private HashMap<String, Value> list;
-
+    private Stack<HashMap<String, Value>> list;
+    private HashMap<String, Value> root;
     WordList() {
-        list = new HashMap<>();
+        root = new HashMap<>();
+        list = new Stack<>();
+        list.push(root);
+    }
+
+    public void newSpace() {
+        list.push(new HashMap<>());
+    }
+
+    public void endSpace() {
+        list.pop();
+    }
+
+    public HashMap<String, Value> current() {
+        return list.peek();
     }
 
     Value thing(String name) throws RunningException {
-        Value value = list.get(name);
+        Value value = null;
+        for(int i = list.size() - 1; i>=0; --i){
+            value = list.get(i).get(name);
+            if(value != null)
+                break;
+        }
         if (value == null)
             throw new RunningException("Word " + name + " does not exist.");
         else
@@ -21,22 +41,22 @@ class WordList implements Iterable<Map.Entry<String, Value>>{
     }
 
     void make(String name, Value value) {
-        list.put(name, value);
+        current().put(name, value);
     }
 
     void make(String name, WordStream stream)
             throws RunningException, SyntaxException {
-        Value value = list.get(name);
+        Value value = current().get(name);
         //word = new Word();
         Value newValue = Interpreter.value(stream, this);
         if (value != null) {
-            list.remove(name);
+            current().remove(name);
         }
-        list.put(name, newValue);
+        current().put(name, newValue);
     }
 
     Value isname(String name) {
-        if (list.containsKey(name))
+        if (current().containsKey(name))
             return Value.TRUE;
         else
             return Value.FALSE;
@@ -44,8 +64,8 @@ class WordList implements Iterable<Map.Entry<String, Value>>{
 
     void erase(String name)
             throws RunningException {
-        if (list.containsKey(name))
-            list.remove(name);
+        if (current().containsKey(name))
+            current().remove(name);
         else
             throw new RunningException("Word " + name + "does not exist.");
     }
@@ -54,9 +74,9 @@ class WordList implements Iterable<Map.Entry<String, Value>>{
             throws RunningException {
         Value output = null;
 //        Value test = null;
-        if (list.containsKey(outputWordName)) {
-            output = list.get(outputWordName);
-            list.remove(outputWordName);
+        if (current().containsKey(outputWordName)) {
+            output = current().get(outputWordName);
+            current().remove(outputWordName);
         }
 //        if (list.containsKey(testWordName)) {
 //            test = list.get(testWordName);
@@ -69,14 +89,14 @@ class WordList implements Iterable<Map.Entry<String, Value>>{
                 file.createNewFile();
             FileOutputStream fileOutputStream = new FileOutputStream(file);
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-            objectOutputStream.writeObject(list);
+            objectOutputStream.writeObject(current());
         } catch (FileNotFoundException e) {
             throw new RunningException("File " + path + " not exists.");
         } catch (IOException e) {
             throw new RunningException(e.toString());
         } finally {
             if (output != null)
-                list.put(outputWordName, output);
+                current().put(outputWordName, output);
 //            if (test != null)
 //                list.put(testWordName, test);
         }
@@ -115,13 +135,13 @@ class WordList implements Iterable<Map.Entry<String, Value>>{
     void clear() {
         Value output = null;
 //        Value test = null;
-        if (list.containsKey(outputWordName))
-            output = list.get(outputWordName);
+        if (current().containsKey(outputWordName))
+            output = current().get(outputWordName);
 //        if (list.containsKey(testWordName))
 //            test = list.get(testWordName);
-        list.clear();
+        current().clear();
         if (output != null)
-            list.put(outputWordName, output);
+            current().put(outputWordName, output);
 //        if (test != null)
 //            list.put(testWordName, test);
     }
@@ -139,12 +159,21 @@ class WordList implements Iterable<Map.Entry<String, Value>>{
         }
     }
 
+    Value getOutput()
+    {
+        return current().get(outputWordName);
+    }
+
     boolean contains(String name) {
-        return list.containsKey(name);
+        for (int i = list.size() - 1; i >= 0; i--) {
+            if(list.get(i).containsKey(name))
+                return true;
+        }
+        return false;
     }
 
     @Override
     public Iterator<Map.Entry<String, Value>> iterator() {
-        return list.entrySet().iterator();
+        return current().entrySet().iterator();
     }
 }

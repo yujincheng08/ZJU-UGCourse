@@ -16,14 +16,6 @@ class Function {
             throw new SyntaxException("Except a word literary but get " + name);
         else
             return name;
-
-        /*
-        String name = Interpreter.value(stream).toString();
-        if(Interpreter.isWordLiterary(name))
-            return name.substring(1);
-        else
-            throw new RunningException("Except a word literary");
-            */
     }
 
     static Value thing(WordStream stream, WordList wordList)
@@ -349,11 +341,10 @@ class Function {
     static Value run(String functionName, WordStream stream, WordList wordList)
             throws RunningException, SyntaxException {
         if (wordList.contains(functionName)) {
-            WordList localWordList = new WordList();
             Value function = wordList.thing(functionName);
             if (!function.isList() || function.isEmpty())
                 throw new RunningException(functionName + " is not a function");
-            localWordList.make(functionName, function);
+            wordList.make(functionName, function);
             Value functionArg = function.item(0);
             if (functionArg == null || !functionArg.isList())
                 throw new RunningException(functionName + " is not a function");
@@ -363,18 +354,27 @@ class Function {
             Value dummy = function.item(2);
             if (dummy != null)
                 throw new RunningException(functionName + " is not a function");
-            for (Value arg : functionArg) {
-                if (arg.isList())
-                    throw new RunningException("List is not a valid argument.");
-                Value v = Interpreter.value(stream, wordList);
-                localWordList.make(arg.toString(), v);
+            try {
+                wordList.newSpace();
+                for (Value arg : functionArg) {
+                    if (arg.isList()) {
+                        throw new RunningException("List is not a valid argument.");
+                    }
+                    Value v = Interpreter.value(stream, wordList);
+                    wordList.make(arg.toString(), v);
+                }
+                Interpreter.interpret(functionBody.toWordStream(), wordList);
+                if (wordList.contains(WordList.outputWordName)) {
+                    return wordList.getOutput();
+                } else {
+                    return null;
+                }
+            }catch(RunningException | SyntaxException e){
+                throw e;
+            }finally {
+                wordList.endSpace();
             }
 
-            Interpreter.interpret(functionBody.toWordStream(), localWordList);
-            if (localWordList.contains(WordList.outputWordName))
-                return localWordList.thing(WordList.outputWordName);
-            else
-                return null;
         } else
             throw new RunningException("Unexpected token: " + functionName);
     }
@@ -406,34 +406,6 @@ class Function {
             if(!entry.getKey().equals(WordList.outputWordName))
                 Interpreter.globalWordList.make(entry.getKey(), entry.getValue());
     }
-
-//    static void test(WordStream stream, WordList wordList)
-//            throws RunningException, SyntaxException {
-//        Value value = Interpreter.value(stream, wordList);
-//        if (!value.isBool())
-//            throw new RunningException("Expected boolean value, but got " + value.toString());
-//        wordList.make(WordList.testWordName, value);
-//    }
-//
-//    static void iftrue(WordStream stream, WordList wordList)
-//            throws RunningException, SyntaxException {
-//        Value test = wordList.thing(WordList.testWordName);
-//        Value value = Interpreter.value(stream, wordList);
-//        if (!value.isList())
-//            throw new RunningException("Expected a list, but got " + value.toString());
-//        if (test != null && test.toString().equals("true"))
-//            stream.putBack(value.toWordStream());
-//    }
-//
-//    static void iffalse(WordStream stream, WordList wordList)
-//            throws RunningException, SyntaxException {
-//        Value test = wordList.thing(WordList.testWordName);
-//        Value value = Interpreter.value(stream, wordList);
-//        if (!value.isList())
-//            throw new RunningException("Expected a list, but got " + value.toString());
-//        if (test.toString().equals("false"))
-//            stream.putBack(value.toWordStream());
-//    }
 
     static void wait(WordStream stream, WordList wordList)
             throws RunningException, SyntaxException {
