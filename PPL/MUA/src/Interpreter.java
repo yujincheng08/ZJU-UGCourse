@@ -1,5 +1,6 @@
 public class Interpreter {
     static WordList wordList = new WordList();
+
     public static void main(String[] args) {
         WordStream wordStream = new WordStream();
 
@@ -18,8 +19,6 @@ public class Interpreter {
     private static boolean isWordLiterary(String name) {
         return name.startsWith("\"");
     }
-
-
 
     private static Value getValue(String operator, WordStream stream)
             throws RunningException, SyntaxException {
@@ -119,8 +118,7 @@ public class Interpreter {
         return val;
     }
 
-    private static void run(WordStream stream, Value list)
-    {
+    private static void run(WordStream stream, Value list) {
         System.out.println("Running: " + list.toString());
         stream.putBack(list.toWordStream());
     }
@@ -130,7 +128,7 @@ public class Interpreter {
         String operator = stream.next();
         if (operator == null)
             throw new RunningException("Expected a value but got null");
-        if (operator.equals("[")) run(stream ,new List(stream));
+        if (operator.equals("[")) run(stream, new List(stream));
         else if (operator.startsWith(":"))
             run(stream, Function.thing(operator.substring(1)));
         else {
@@ -143,7 +141,7 @@ public class Interpreter {
         }
     }
 
-    static void interpret(WordStream stream){
+    static void interpret(WordStream stream) {
         mainLoop:
         while (true) {
             String command = stream.next();
@@ -195,7 +193,7 @@ public class Interpreter {
                         Function.export();
                         break;
                     case "return":
-                        if(!Function.Return(stream))
+                        if (!Function.Return(stream))
                             break;
                     case "stop":
                         break mainLoop;

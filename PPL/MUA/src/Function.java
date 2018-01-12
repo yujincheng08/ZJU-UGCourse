@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.HashMap;
 import java.util.Map;
 
 import static java.lang.Thread.sleep;
@@ -19,15 +20,14 @@ class Function {
     }
 
 
-   private static Value booleanValue(WordStream stream)
-    throws RunningException, SyntaxException{
+    private static Value booleanValue(WordStream stream)
+            throws RunningException, SyntaxException {
         Value first = Interpreter.value(stream);
-        if(first.isBool())
+        if (first.isBool())
             return first;
         String op = stream.next();
         Value second;
-        switch (op)
-        {
+        switch (op) {
             case "<":
                 second = Interpreter.value(stream);
                 return compare(first, second, (BigDecimal a, BigDecimal b) -> a.compareTo(b) < 0, (String a, String b) -> a.compareTo(b) < 0);
@@ -47,6 +47,7 @@ class Function {
                 throw new SyntaxException("Expected >, <, =, <=, >=, but got" + op);
         }
     }
+
     static Value thing(WordStream stream)
             throws RunningException, SyntaxException {
         return thing(getWordName(stream));
@@ -105,7 +106,7 @@ class Function {
     }
 
     private static Value compare(Value first, Value second, NumericComparator numericComparator, StringComparator stringComparator)
-            throws RunningException{
+            throws RunningException {
         if (first.isNumber() && second.isNumber()) {
             BigDecimal a = first.toNumeric();
             BigDecimal b = second.toNumeric();
@@ -116,6 +117,7 @@ class Function {
             return new Word(stringComparator.apply(a, b));
         }
     }
+
     private static Value booleanOperate(Value first, Value second, BooleanBinaryOperator booleanBinaryOperator)
             throws RunningException {
         Boolean a = first.toBoolean();
@@ -282,7 +284,7 @@ class Function {
             throws RunningException, SyntaxException {
         Value first = Interpreter.value(stream);
         Value second = Interpreter.value(stream);
-        if(first.isList() || second.isList())
+        if (first.isList() || second.isList())
             throw new RunningException("Word can only concatenate two words.");
         return new Word(first.toString() + second.toString());
     }
@@ -376,7 +378,7 @@ class Function {
     }
 
     private static Value getFunction(String functionName)
-            throws RunningException{
+            throws RunningException {
         if (Interpreter.wordList.contains(functionName)) {
             Value function = Interpreter.wordList.thing(functionName);
             if (!function.isList() || function.isEmpty())
@@ -391,8 +393,7 @@ class Function {
             if (dummy != null)
                 throw new RunningException(functionName + " is not a function");
             return function;
-        }
-        else {
+        } else {
             throw new RunningException("Unexpected token: " + functionName);
         }
     }
@@ -400,10 +401,10 @@ class Function {
     static Value run(String functionName, WordStream stream)
             throws RunningException, SyntaxException {
         Value function = getFunction(functionName);
-        Interpreter.wordList.newTmpSpace();
-        addFunctionArg(stream, function);
+        HashMap<String, Value> tmpSpace = new HashMap<>();
+        addFunctionArg(stream, function, tmpSpace);
         try {
-            Interpreter.wordList.addTmpSpace();
+            Interpreter.wordList.addSpace(tmpSpace);
             Interpreter.interpret(function.item(1).toWordStream());
             if (Interpreter.wordList.contains(WordList.outputWordName)) {
                 return Interpreter.wordList.getOutput();
@@ -416,37 +417,37 @@ class Function {
     }
 
     static boolean Return(WordStream stream)
-        throws SyntaxException, RunningException{
+            throws SyntaxException, RunningException {
         String next = stream.next();
-        if(WordStream.keyWrods.contains(next) ||
+        if (WordStream.keyWrods.contains(next) ||
                 next.matches("^[:\\[(\"].*$") ||
                 next.matches("[+-]?\\d+(\\.\\d+)?")) {
             Interpreter.wordList.make(WordList.outputWordName, stream.putBack(next));
             return true;
         }
         Value function = getFunction(next);
-        Interpreter.wordList.newTmpSpace();
-        addFunctionArg(stream, function);
+        HashMap<String, Value> tmpSpace = new HashMap<>();
+        addFunctionArg(stream, function, tmpSpace);
         stream.replace(function.item(1).toWordStream());
-        Interpreter.wordList.replaceTmpSpace();
+        Interpreter.wordList.replaceSpace(tmpSpace);
         return false;
     }
 
-    private static void addFunctionArg(WordStream stream, Value function) throws RunningException, SyntaxException {
+    private static void addFunctionArg(WordStream stream, Value function, HashMap<String, Value> space)
+            throws RunningException, SyntaxException {
         for (Value arg : function.item(0)) {
             if (arg.isList()) {
                 throw new RunningException("List is not a valid argument.");
             }
             Value v = Interpreter.value(stream);
-            Interpreter.wordList.make(arg.toString(), v);
+            space.put(arg.toString(), v);
         }
     }
 
     static void run(WordStream stream)
-            throws RunningException, SyntaxException
-    {
+            throws RunningException, SyntaxException {
         Value runBody = Interpreter.value(stream);
-        if(!runBody.isList())
+        if (!runBody.isList())
             throw new RunningException("Only list can be run.");
         stream.putBack(runBody.toWordStream());
     }
@@ -456,17 +457,16 @@ class Function {
         Value timesValue = Interpreter.value(stream);
         BigInteger times = timesValue.toInt();
         Value loopBody = Interpreter.value(stream);
-        if(!loopBody.isList())
+        if (!loopBody.isList())
             throw new RunningException("Only list can be repeated.");
         WordStream loopBodyStream = loopBody.toWordStream();
         for (BigInteger i = BigInteger.ZERO; i.compareTo(times) < 0; i = i.add(BigInteger.ONE))
             stream.putBack(loopBodyStream);
     }
 
-    static void export()
-    {
-        for(Map.Entry<String, Value> entry : Interpreter.wordList)
-            if(!entry.getKey().equals(WordList.outputWordName))
+    static void export() {
+        for (Map.Entry<String, Value> entry : Interpreter.wordList)
+            if (!entry.getKey().equals(WordList.outputWordName))
                 Interpreter.wordList.export(entry.getKey(), entry.getValue());
     }
 
@@ -507,19 +507,17 @@ class Function {
     }
 
     static void If(WordStream stream)
-            throws RunningException, SyntaxException
-    {
+            throws RunningException, SyntaxException {
         Value value = booleanValue(stream);
         if (!value.isBool())
             throw new RunningException("Expected boolean value, but got " + value.toString());
         Value trueSection = Interpreter.value(stream);
         Value falseSection = Interpreter.value(stream);
-        if(!trueSection.isList())
+        if (!trueSection.isList())
             throw new RunningException("Expected a list, but got " + trueSection.toString());
-        if(!falseSection.isList())
+        if (!falseSection.isList())
             throw new RunningException("Expected a list, but got " + falseSection.toString());
-        switch (value.toString())
-        {
+        switch (value.toString()) {
             case "true":
                 stream.putBack(trueSection.toWordStream());
                 break;

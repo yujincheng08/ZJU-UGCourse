@@ -4,36 +4,28 @@ import java.util.Iterator;
 import java.util.Stack;
 import java.util.Map;
 
-class WordList implements Iterable<Map.Entry<String, Value>>{
+class WordList implements Iterable<Map.Entry<String, Value>> {
     static final String outputWordName = "0";
     private Stack<HashMap<String, Value>> list;
     private HashMap<String, Value> root;
-    private HashMap<String, Value> tmp;
+
     WordList() {
         root = new HashMap<>();
         list = new Stack<>();
         list.push(root);
     }
 
-    public void newTmpSpace() {
-        tmp = new HashMap<>();
-    }
-
-    public void addTmpSpace() {
-        list.push(tmp);
-        tmp = null;
+    public void addSpace(HashMap<String, Value> space) {
+        list.push(space);
     }
 
     public void endSpace() {
         list.pop();
     }
 
-    void replaceTmpSpace() {
-        if(list.size() > 2) {
-            list.pop();
-            list.push(tmp);
-        }
-        tmp = null;
+    void replaceSpace(HashMap<String, Value> space) {
+        list.pop();
+        list.push(space);
     }
 
     private HashMap<String, Value> current() {
@@ -46,9 +38,9 @@ class WordList implements Iterable<Map.Entry<String, Value>>{
 
     Value thing(String name) throws RunningException {
         Value value = null;
-        for(int i = list.size() - 1; i>=0; --i){
+        for (int i = list.size() - 1; i >= 0; --i) {
             value = list.get(i).get(name);
-            if(value != null)
+            if (value != null)
                 break;
         }
         if (value == null)
@@ -57,20 +49,14 @@ class WordList implements Iterable<Map.Entry<String, Value>>{
             return value;
     }
 
+    @SuppressWarnings("WeakerAccess")
     void make(String name, Value value) {
-        if(tmp != null)
-            tmp.put(name, value);
-        else
-            current().put(name, value);
+        current().put(name, value);
     }
 
     void make(String name, WordStream stream)
             throws RunningException, SyntaxException {
-        Value value = Interpreter.value(stream);
-        if(tmp != null)
-            tmp.put(name, value);
-        else
-            current().put(name, value);
+        current().put(name, Interpreter.value(stream));
     }
 
     Value isname(String name) {
@@ -129,7 +115,7 @@ class WordList implements Iterable<Map.Entry<String, Value>>{
         } catch (IOException e) {
             throw new RunningException(e.getMessage());
         }
-        for(Map.Entry<String, Value> entry : newList.entrySet())
+        for (Map.Entry<String, Value> entry : newList.entrySet())
             make(entry.getKey(), entry.getValue());
     }
 
@@ -154,14 +140,13 @@ class WordList implements Iterable<Map.Entry<String, Value>>{
         }
     }
 
-    Value getOutput()
-    {
+    Value getOutput() {
         return current().get(outputWordName);
     }
 
     boolean contains(String name) {
         for (int i = list.size() - 1; i >= 0; i--) {
-            if(list.get(i).containsKey(name))
+            if (list.get(i).containsKey(name))
                 return true;
         }
         return false;

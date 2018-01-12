@@ -62,10 +62,10 @@ class List extends Value {
     WordStream toWordStream() {
         WordStream stream = new WordStream(false);
         for (Value v : value) {
-            if(v.isList())
+            if (v.isList())
                 stream.merge("[");
             stream.merge(v.toWordStream());
-            if(v.isList())
+            if (v.isList())
                 stream.merge("]");
         }
         return stream;
@@ -160,10 +160,10 @@ class List extends Value {
     public String toString() {
         StringJoiner stringJoiner = new StringJoiner(" ");
         for (Value v : this) {
-            if(v.isList())
+            if (v.isList())
                 stringJoiner.add("[");
             stringJoiner.add(v.toString());
-            if(v.isList())
+            if (v.isList())
                 stringJoiner.add("]");
         }
         return stringJoiner.toString();

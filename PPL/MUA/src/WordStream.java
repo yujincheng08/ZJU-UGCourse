@@ -9,7 +9,7 @@ import jline.console.completer.AnsiStringsCompleter;
 class WordStream {
     private LinkedList<String> stream;
     private ConsoleReader consoleReader;
-    static HashSet<String> keyWrods= new HashSet<>(
+    static HashSet<String> keyWrods = new HashSet<>(
             Arrays.asList("make", "thing", "erase", "isname", "print",
                     "read", "readlinst", "add", "sub", "mul", "div",
                     "mod", "eq", "gt", "lt", "and", "or", "not", "repeat", "output", "stop", "if",
@@ -114,8 +114,7 @@ class WordStream {
     }
 
     @SuppressWarnings("UnusedReturnValue")
-    WordStream merge(String word)
-    {
+    WordStream merge(String word) {
         this.stream.add(word);
         return this;
     }
@@ -136,7 +135,7 @@ class WordStream {
 
     @SuppressWarnings("UnusedReturnValue")
     WordStream replace(WordStream stream) {
-        if(consoleReader == null) {
+        if (consoleReader == null) {
             this.stream = stream.stream;
         }
         return this;
