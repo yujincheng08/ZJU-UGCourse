@@ -88,7 +88,11 @@ class Function {
             throws RunningException {
         BigDecimal a = first.toNumeric();
         BigDecimal b = second.toNumeric();
-        return new Word(numericOperator.apply(a, b));
+        try {
+            return new Word(numericOperator.apply(a, b));
+        }catch(ArithmeticException e) {
+            throw new RunningException("Cannot divided by zero");
+        }
     }
 
     private static Value numericOperate(WordStream stream, NumericOperator numericOperator)
@@ -149,22 +153,13 @@ class Function {
 
     static Value div(WordStream stream)
             throws RunningException, SyntaxException {
-        try {
-            return numericOperate(stream, (BigDecimal a, BigDecimal b) -> a.divide(b, 16, BigDecimal.ROUND_HALF_EVEN));
-        } catch (ArithmeticException e) {
-            throw new RunningException("Cannot divided by zero");
-        }
+        return numericOperate(stream, (BigDecimal a, BigDecimal b) -> a.divide(b, 16, BigDecimal.ROUND_HALF_EVEN));
 
     }
 
     static Value mod(WordStream stream)
             throws RunningException, SyntaxException {
-        try {
-            return numericOperate(stream, BigDecimal::remainder);
-        } catch (ArithmeticException e) {
-            throw new RunningException("Cannot divided by zero");
-        }
-
+        return numericOperate(stream, BigDecimal::remainder);
     }
 
     static Value eq(WordStream stream)
@@ -378,7 +373,7 @@ class Function {
     }
 
     private static Value getFunction(String functionName)
-            throws RunningException {
+            throws RunningException, SyntaxException {
         if (Interpreter.wordList.contains(functionName)) {
             Value function = Interpreter.wordList.thing(functionName);
             if (!function.isList() || function.isEmpty())
@@ -394,7 +389,7 @@ class Function {
                 throw new RunningException(functionName + " is not a function");
             return function;
         } else {
-            throw new RunningException("Unexpected token: " + functionName);
+            throw new SyntaxException("Unexpected token: " + functionName);
         }
     }
 

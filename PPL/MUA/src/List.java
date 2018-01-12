@@ -1,6 +1,7 @@
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.StringJoiner;
 
@@ -32,6 +33,10 @@ class List extends Value {
     List(String[] list) {
         for (String s : list)
             value.add(new Word(s));
+    }
+
+    List(Value[] list) {
+        this.value.addAll(Arrays.asList(list));
     }
 
     static List list(Value first, Value second) {

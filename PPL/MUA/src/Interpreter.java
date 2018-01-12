@@ -3,7 +3,7 @@ public class Interpreter {
 
     public static void main(String[] args) {
         WordStream wordStream = new WordStream();
-
+        wordList.make("pi", new Word("3.14159"));
         //noinspection InfiniteLoopStatement
         while (true) {
             try {
@@ -87,10 +87,6 @@ public class Interpreter {
                 return Function.Int(stream);
             case "abs":
                 return Function.abs(stream);
-            /*
-            case "pi":
-                return new Value("3.1415926535897932");
-             */
             default:
                 if (operator.startsWith(":"))
                     return Function.thing(operator.substring(1));
