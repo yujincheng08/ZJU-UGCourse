@@ -1,3 +1,5 @@
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.io.IOException;
 
@@ -7,10 +9,15 @@ import jline.console.completer.AnsiStringsCompleter;
 class WordStream {
     private LinkedList<String> stream;
     private ConsoleReader consoleReader;
-    private static AnsiStringsCompleter ansiStringsCompleter = new AnsiStringsCompleter(
-            "make", "thing", "erase", "isname", "print",
-            "read", "readlinst", "add", "sub", "mul", "div",
-            "mod", "eq", "gt", "lt", "and", "or", "not", "repeat", "output", "stop");
+    static HashSet<String> keyWrods= new HashSet<>(
+            Arrays.asList("make", "thing", "erase", "isname", "print",
+                    "read", "readlinst", "add", "sub", "mul", "div",
+                    "mod", "eq", "gt", "lt", "and", "or", "not", "repeat", "output", "stop", "if",
+                    "random", "sqrt", "isnumber", "isbool", "islist", "isempty", "word", "list",
+                    "sentence", "join", "first", "last", "butlast", "butfirst", "item", "int", "return",
+                    "wait", "save", "load", "erall", "poall", "run", "export", "abs"));
+    private static AnsiStringsCompleter ansiStringsCompleter = new AnsiStringsCompleter(keyWrods);
+
     static private final String DELIMITER = "\\s+|((?<=\\[)|(?=\\[))|((?<=])|(?=]))";
 
     //|((?<=\\())|((?=\\())|((?<=\\)))|((?=\\)))|(?=\\+)|(?=-)|((?<=\\*)|(?=\\*))|((?<=/)|(?=/))";
@@ -89,7 +96,7 @@ class WordStream {
         if (keep || next == null)
             return next;
         else {
-            String[] list = next.split("((?<=\\())|((?=\\())|((?<=\\)))|((?=\\)))|(?=\\+)|(?=-)|((?<=\\*)|(?=\\*))|((?<=/)|(?=/))");
+            String[] list = next.split("((?<=\\())|((?=\\())|((?<=\\)))|((?=\\)))|(?=\\+)|(?=-)|((?<=\\*)|(?=\\*))|((?<=/)|(?=/))|(?=<)|(?<=<)(?=[^=])|(?=>)|(?<=>)(?=[^=])|(?<=[^<>])(?==)|(?<==)");
             for (int i = list.length - 1; i > 0; --i)
                 stream.push(list[i]);
             return list[0];
@@ -124,6 +131,14 @@ class WordStream {
         LinkedList<String> tmp = (LinkedList<String>) stream.stream.clone();
         tmp.addAll(this.stream);
         this.stream = tmp;
+        return this;
+    }
+
+    @SuppressWarnings("UnusedReturnValue")
+    WordStream replace(WordStream stream) {
+        if(consoleReader == null) {
+            this.stream = stream.stream;
+        }
         return this;
     }
 }

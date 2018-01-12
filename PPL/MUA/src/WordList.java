@@ -152,6 +152,14 @@ class WordList implements Iterable<Map.Entry<String, Value>>{
         return false;
     }
 
+    void replace() {
+        if(list.size() > 2) {
+            HashMap<String, Value> last = list.pop();
+            list.pop();
+            list.push(last);
+        }
+    }
+
     @Override
     public Iterator<Map.Entry<String, Value>> iterator() {
         return current().entrySet().iterator();

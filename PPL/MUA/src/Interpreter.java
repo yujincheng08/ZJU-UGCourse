@@ -2,17 +2,24 @@ public class Interpreter {
     static WordList wordList = new WordList();
     public static void main(String[] args) {
         WordStream wordStream = new WordStream();
+
         //noinspection InfiniteLoopStatement
-        while(true) {
-            interpret(wordStream);
+        while (true) {
+            try {
+                interpret(wordStream);
+            } catch (StackOverflowError e) {
+                System.err.println("StackOverflow");
+            }
         }
 
     }
 
 
-    private static Boolean isWordLiterary(String name) {
+    private static boolean isWordLiterary(String name) {
         return name.startsWith("\"");
     }
+
+
 
     private static Value getValue(String operator, WordStream stream)
             throws RunningException, SyntaxException {
@@ -79,6 +86,8 @@ public class Interpreter {
                 return Function.item(stream);
             case "int":
                 return Function.Int(stream);
+            case "abs":
+                return Function.abs(stream);
             /*
             case "pi":
                 return new Value("3.1415926535897932");
@@ -185,6 +194,9 @@ public class Interpreter {
                     case "export":
                         Function.export();
                         break;
+                    case "return":
+                        if(!Function.Return(stream))
+                            break;
                     case "stop":
                         break mainLoop;
                     default:

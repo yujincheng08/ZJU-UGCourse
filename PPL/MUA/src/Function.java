@@ -18,6 +18,35 @@ class Function {
             return name;
     }
 
+
+   private static Value booleanValue(WordStream stream)
+    throws RunningException, SyntaxException{
+        Value first = Interpreter.value(stream);
+        if(first.isBool())
+            return first;
+        String op = stream.next();
+        Value second;
+        switch (op)
+        {
+            case "<":
+                second = Interpreter.value(stream);
+                return compare(first, second, (BigDecimal a, BigDecimal b) -> a.compareTo(b) < 0, (String a, String b) -> a.compareTo(b) < 0);
+            case "<=":
+                second = Interpreter.value(stream);
+                return compare(first, second, (BigDecimal a, BigDecimal b) -> a.compareTo(b) <= 0, (String a, String b) -> a.compareTo(b) <= 0);
+            case "=":
+                second = Interpreter.value(stream);
+                return compare(first, second, (BigDecimal a, BigDecimal b) -> a.compareTo(b) == 0, (String a, String b) -> a.compareTo(b) == 0);
+            case ">":
+                second = Interpreter.value(stream);
+                return compare(first, second, (BigDecimal a, BigDecimal b) -> a.compareTo(b) > 0, (String a, String b) -> a.compareTo(b) > 0);
+            case ">=":
+                second = Interpreter.value(stream);
+                return compare(first, second, (BigDecimal a, BigDecimal b) -> a.compareTo(b) >= 0, (String a, String b) -> a.compareTo(b) >= 0);
+            default:
+                throw new SyntaxException("Expected >, <, =, <=, >=, but got" + op);
+        }
+    }
     static Value thing(WordStream stream)
             throws RunningException, SyntaxException {
         return thing(getWordName(stream));
@@ -72,6 +101,11 @@ class Function {
             throws RunningException, SyntaxException {
         Value first = Interpreter.value(stream);
         Value second = Interpreter.value(stream);
+        return compare(first, second, numericComparator, stringComparator);
+    }
+
+    private static Value compare(Value first, Value second, NumericComparator numericComparator, StringComparator stringComparator)
+            throws RunningException{
         if (first.isNumber() && second.isNumber()) {
             BigDecimal a = first.toNumeric();
             BigDecimal b = second.toNumeric();
@@ -82,14 +116,18 @@ class Function {
             return new Word(stringComparator.apply(a, b));
         }
     }
-
-    private static Value booleanOperate(WordStream stream, BooleanBinaryOperator booleanBinaryOperator)
-            throws RunningException, SyntaxException {
-        Value first = Interpreter.value(stream);
-        Value second = Interpreter.value(stream);
+    private static Value booleanOperate(Value first, Value second, BooleanBinaryOperator booleanBinaryOperator)
+            throws RunningException {
         Boolean a = first.toBoolean();
         Boolean b = second.toBoolean();
         return new Word(String.valueOf(booleanBinaryOperator.apply(a, b)));
+    }
+
+    private static Value booleanOperate(WordStream stream, BooleanBinaryOperator booleanBinaryOperator)
+            throws RunningException, SyntaxException {
+        Value first = booleanValue(stream);
+        Value second = booleanValue(stream);
+        return booleanOperate(first, second, booleanBinaryOperator);
     }
 
     static Value add(WordStream stream)
@@ -154,7 +192,7 @@ class Function {
 
     static Value not(WordStream stream)
             throws RunningException, SyntaxException {
-        Value first = Interpreter.value(stream);
+        Value first = booleanValue(stream);
         Boolean a = first.toBoolean();
         return new Word(String.valueOf(!a));
     }
@@ -310,6 +348,13 @@ class Function {
         return new Word(value.setScale(0, BigDecimal.ROUND_FLOOR));
     }
 
+    static Value abs(WordStream stream)
+            throws RunningException, SyntaxException {
+        Value first = Interpreter.value(stream);
+        BigDecimal value = first.toNumeric();
+        return new Word(value.abs());
+    }
+
     static void make(WordStream stream)
             throws RunningException, SyntaxException {
         Interpreter.wordList.make(getWordName(stream), stream);
@@ -330,13 +375,12 @@ class Function {
         Interpreter.wordList.make(WordList.outputWordName, stream);
     }
 
-    static Value run(String functionName, WordStream stream)
-            throws RunningException, SyntaxException {
+    private static Value getFunction(String functionName)
+            throws RunningException{
         if (Interpreter.wordList.contains(functionName)) {
             Value function = Interpreter.wordList.thing(functionName);
             if (!function.isList() || function.isEmpty())
                 throw new RunningException(functionName + " is not a function");
-            Interpreter.wordList.make(functionName, function);
             Value functionArg = function.item(0);
             if (functionArg == null || !functionArg.isList())
                 throw new RunningException(functionName + " is not a function");
@@ -346,27 +390,55 @@ class Function {
             Value dummy = function.item(2);
             if (dummy != null)
                 throw new RunningException(functionName + " is not a function");
-            try {
-                Interpreter.wordList.newSpace();
-                for (Value arg : functionArg) {
-                    if (arg.isList()) {
-                        throw new RunningException("List is not a valid argument.");
-                    }
-                    Value v = Interpreter.value(stream);
-                    Interpreter.wordList.make(arg.toString(), v);
-                }
-                Interpreter.interpret(functionBody.toWordStream());
-                if (Interpreter.wordList.contains(WordList.outputWordName)) {
-                    return Interpreter.wordList.getOutput();
-                } else {
-                    return null;
-                }
-            } finally {
-                Interpreter.wordList.endSpace();
-            }
-
-        } else
+            return function;
+        }
+        else {
             throw new RunningException("Unexpected token: " + functionName);
+        }
+    }
+
+    static Value run(String functionName, WordStream stream)
+            throws RunningException, SyntaxException {
+        Value function = getFunction(functionName);
+        try {
+            Interpreter.wordList.newSpace();
+            addFunctionArg(stream, function);
+            Interpreter.interpret(function.item(1).toWordStream());
+            if (Interpreter.wordList.contains(WordList.outputWordName)) {
+                return Interpreter.wordList.getOutput();
+            } else {
+                return null;
+            }
+        } finally {
+            Interpreter.wordList.endSpace();
+        }
+    }
+
+    static boolean Return(WordStream stream)
+        throws SyntaxException, RunningException{
+        String next = stream.next();
+        if(WordStream.keyWrods.contains(next) ||
+                next.matches("^[:\\[(\"].*$") ||
+                next.matches("[+-]?\\d+(\\.\\d+)?")) {
+            Interpreter.wordList.make(WordList.outputWordName, stream.putBack(next));
+            return true;
+        }
+        Value function = getFunction(next);
+        Interpreter.wordList.newSpace();
+        addFunctionArg(stream, function);
+        stream.replace(function.item(1).toWordStream());
+        Interpreter.wordList.replace();
+        return false;
+    }
+
+    private static void addFunctionArg(WordStream stream, Value function) throws RunningException, SyntaxException {
+        for (Value arg : function.item(0)) {
+            if (arg.isList()) {
+                throw new RunningException("List is not a valid argument.");
+            }
+            Value v = Interpreter.value(stream);
+            Interpreter.wordList.make(arg.toString(), v);
+        }
     }
 
     static void run(WordStream stream)
@@ -436,7 +508,7 @@ class Function {
     static void If(WordStream stream)
             throws RunningException, SyntaxException
     {
-        Value value = Interpreter.value(stream);
+        Value value = booleanValue(stream);
         if (!value.isBool())
             throw new RunningException("Expected boolean value, but got " + value.toString());
         Value trueSection = Interpreter.value(stream);
