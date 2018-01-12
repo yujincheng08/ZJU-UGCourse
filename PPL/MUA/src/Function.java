@@ -400,9 +400,10 @@ class Function {
     static Value run(String functionName, WordStream stream)
             throws RunningException, SyntaxException {
         Value function = getFunction(functionName);
+        Interpreter.wordList.newTmpSpace();
+        addFunctionArg(stream, function);
         try {
-            Interpreter.wordList.newSpace();
-            addFunctionArg(stream, function);
+            Interpreter.wordList.addTmpSpace();
             Interpreter.interpret(function.item(1).toWordStream());
             if (Interpreter.wordList.contains(WordList.outputWordName)) {
                 return Interpreter.wordList.getOutput();
@@ -424,10 +425,10 @@ class Function {
             return true;
         }
         Value function = getFunction(next);
-        Interpreter.wordList.newSpace();
+        Interpreter.wordList.newTmpSpace();
         addFunctionArg(stream, function);
         stream.replace(function.item(1).toWordStream());
-        Interpreter.wordList.replace();
+        Interpreter.wordList.replaceTmpSpace();
         return false;
     }
 

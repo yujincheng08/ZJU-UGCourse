@@ -8,18 +8,32 @@ class WordList implements Iterable<Map.Entry<String, Value>>{
     static final String outputWordName = "0";
     private Stack<HashMap<String, Value>> list;
     private HashMap<String, Value> root;
+    private HashMap<String, Value> tmp;
     WordList() {
         root = new HashMap<>();
         list = new Stack<>();
         list.push(root);
     }
 
-    public void newSpace() {
-        list.push(new HashMap<>());
+    public void newTmpSpace() {
+        tmp = new HashMap<>();
+    }
+
+    public void addTmpSpace() {
+        list.push(tmp);
+        tmp = null;
     }
 
     public void endSpace() {
         list.pop();
+    }
+
+    void replaceTmpSpace() {
+        if(list.size() > 2) {
+            list.pop();
+            list.push(tmp);
+        }
+        tmp = null;
     }
 
     private HashMap<String, Value> current() {
@@ -44,18 +58,19 @@ class WordList implements Iterable<Map.Entry<String, Value>>{
     }
 
     void make(String name, Value value) {
-        current().put(name, value);
+        if(tmp != null)
+            tmp.put(name, value);
+        else
+            current().put(name, value);
     }
 
     void make(String name, WordStream stream)
             throws RunningException, SyntaxException {
-        Value value = current().get(name);
-        //word = new Word();
-        Value newValue = Interpreter.value(stream);
-        if (value != null) {
-            current().remove(name);
-        }
-        current().put(name, newValue);
+        Value value = Interpreter.value(stream);
+        if(tmp != null)
+            tmp.put(name, value);
+        else
+            current().put(name, value);
     }
 
     Value isname(String name) {
@@ -152,13 +167,6 @@ class WordList implements Iterable<Map.Entry<String, Value>>{
         return false;
     }
 
-    void replace() {
-        if(list.size() > 2) {
-            HashMap<String, Value> last = list.pop();
-            list.pop();
-            list.push(last);
-        }
-    }
 
     @Override
     public Iterator<Map.Entry<String, Value>> iterator() {
