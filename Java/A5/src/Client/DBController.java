@@ -3,24 +3,33 @@ package Client;
 import java.sql.*;
 import java.util.Vector;
 
-@SuppressWarnings("SqlNoDataSourceInspection")
+@SuppressWarnings({"SqlNoDataSourceInspection", "SqlResolve"})
 public class DBController {
 
     private Connection connection;
-    static private final String createTableQuery = "" +
-            "CREATE TABLE IF NOT EXISTS chatRecord " +
+    static private final String [] createTableQuery = new String[]{"" +
+            "CREATE TABLE IF NOT EXISTS userChatRecord " +
             "(" +
             "   userID INTEGER NOT NULL, " +
             "   content TEXT NOT NULL, " +
             "   timestamp INTEGER " +
             "       DEFAULT ( CAST(STRFTIME('%s', 'NOW') /60*60 * 1000 + STRFTIME('%f', 'NOW')*1000 AS INTEGER)) NOT NULL, " +
             "   PRIMARY KEY (userID, timestamp)" +
-            ");";
+            ");",
+            "CREATE TABLE IF NOT EXISTS grouptChatRecord" +
+            "(" +
+            "   groupID INTEGER NOT NULL," +
+            "   userID INTEGER NOT NULL," +
+            "   timestamp INTEGER NOT NULL," +
+            "   content TEXT NOT NULL," +
+            "   PRIMARY KEY (groupID, userID, timestamp)" +
+            ");"
+    };
     static private final String insertDefaultQuery = "" +
-            "INSERT INTO chatRecord " +
+            "INSERT INTO userChatRecord " +
             "(userID, content) VALUES (?,?);";
     static private final String insertQuery =
-            "INSERT INTO chatRecord " +
+            "INSERT INTO userChatRecord " +
             "(userID, content, timestamp) VALUES (?,?,?);";
     static private final String getRecordQuery = "" +
             "SELECT timestamp, content " +
@@ -34,7 +43,8 @@ public class DBController {
             throws SQLException {
         connection = DriverManager.getConnection("jdbc:sqlite:" + path);
         Statement statement = connection.createStatement();
-        statement.execute(createTableQuery);
+        for(String query : createTableQuery)
+            statement.execute(query);
     }
 
     public void storeChatRecord(long userID, String content)

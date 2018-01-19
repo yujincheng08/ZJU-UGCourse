@@ -1,0 +1,6 @@
+[submodule "simplex"]
+	path = simplex
+	url = git@github.com:yao-zou/simplex.git
+[submodule "DBS/MiniSQL"]
+	path = DBS/MiniSQL
+	url = git@github.com:yujincheng08/MiniSQL.git

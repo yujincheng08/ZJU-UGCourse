@@ -1,4 +1,4 @@
-package Client;
+package Client.FriendListItem;
 
 import javafx.beans.property.*;
 import javafx.scene.image.Image;
@@ -8,7 +8,7 @@ public class FriendListItemModel {
     private final LongProperty userID;
     private final ObjectProperty<Image> avatar;
 
-    FriendListItemModel(String nickName, Long userID, String avatar){
+    public FriendListItemModel(String nickName, Long userID, String avatar){
         this.nickName = new SimpleStringProperty(nickName);
         this.userID = new SimpleLongProperty(userID);
         this.avatar = new SimpleObjectProperty<>(new Image(avatar));

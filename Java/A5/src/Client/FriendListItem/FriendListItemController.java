@@ -1,4 +1,4 @@
-package Client;
+package Client.FriendListItem;
 
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;

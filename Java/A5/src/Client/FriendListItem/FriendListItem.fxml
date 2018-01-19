@@ -4,7 +4,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 
-<HBox xmlns="http://javafx.com/javafx/8.0.86" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.FriendListItemController">
+<HBox xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.FriendListItem.FriendListItemController">
     <ImageView fx:id="avatar" fitHeight="39.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" />
     <Label fx:id="nickName" text="Label" />
 </HBox>

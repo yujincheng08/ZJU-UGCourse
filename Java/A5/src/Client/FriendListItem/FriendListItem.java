@@ -1,37 +1,27 @@
-package Client;
+package Client.FriendListItem;
 
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.JavaFXBuilderFactory;
 import javafx.scene.Node;
 import javafx.scene.control.ListCell;
 
 import java.io.IOException;
-import java.net.URL;
 
-public class FriendListItem extends ListCell<FriendListItemModel>{
+public class FriendListItem extends ListCell<FriendListItemModel> {
     @Override
-    protected void updateItem(FriendListItemModel model, boolean bln)
-    {
-        super.updateItem(model, bln);
+    protected void updateItem(FriendListItemModel model, boolean bool) {
+        super.updateItem(model, bool);
 
-        if(model != null)
-        {
-            URL location = FriendListItemController.class.getResource("ChoiceView.fxml");
+        if (model != null) {
 
-            FXMLLoader fxmlLoader = new FXMLLoader();
-            fxmlLoader.setLocation(location);
-            fxmlLoader.setBuilderFactory(new JavaFXBuilderFactory());
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("FriendListItem.fxml"));
 
-            try
-            {
-                Node root = (Node)fxmlLoader.load(location.openStream());
-                FriendListItemController controller = (FriendListItemController) fxmlLoader.getController();
+            try {
+                Node root = loader.load();
+                FriendListItemController controller = loader.getController();
                 controller.setModel(model);
                 setGraphic(root);
-            }
-            catch(IOException ioe)
-            {
-                throw new IllegalStateException(ioe);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }
