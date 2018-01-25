@@ -16,6 +16,7 @@ import java.util.Collections;
 
 public class Server extends WebSocketServer{
     private static int clientCount = 0;
+    private Session session = new Session();
     private DBManager dbManager;
 
     Server(int port, Draft d) {
@@ -71,7 +72,7 @@ public class Server extends WebSocketServer{
         conn.send(builder.build().toByteArray());
     }
 
-    private LoginMessage login(LoginMessage loginMessage) {
+    private LoginMessage login(WebSocket webSocket, LoginMessage loginMessage) {
         String prompt = "";
         boolean success = false;
         try {
@@ -91,6 +92,7 @@ public class Server extends WebSocketServer{
         if (!prompt.isEmpty())
             builder.setPrompt(prompt);
         builder.setStatus(success ? LoginMessage.Status.SUCCESS : LoginMessage.Status.FAIL);
+        if(success) session.login(loginMessage.getAccount(), webSocket);
         return builder.build();
     }
 
@@ -123,12 +125,12 @@ public class Server extends WebSocketServer{
         return builder.build();
     }
 
-    private LoginMessage handlerLoginMessage(LoginMessage loginMessage) {
+    private LoginMessage handlerLoginMessage(WebSocket webSocket, LoginMessage loginMessage) {
         if(loginMessage.hasType()) {
             switch(loginMessage.getType())
             {
                 case LOGIN:
-                    return login(loginMessage);
+                    return login(webSocket, loginMessage);
                 case REGISTER:
                     return register(loginMessage);
             }
@@ -146,7 +148,7 @@ public class Server extends WebSocketServer{
                 switch (message.getType()) {
                     case LoginMessage:
                         if(message.hasLoginMessage())
-                            webSocketSend(conn, handlerLoginMessage(message.getLoginMessage()));
+                            webSocketSend(conn, handlerLoginMessage(conn, message.getLoginMessage()));
                         break;
 
                     case ChatMessage:

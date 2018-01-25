@@ -105,8 +105,8 @@ public class MainController
 
     public void showStage(String showName, String closeName)
     {
-        getStage(closeName).close();
         showStage(showName);
+        getStage(closeName).close();
     }
 
     public void showDialog(String name, String resource, String ownerName)

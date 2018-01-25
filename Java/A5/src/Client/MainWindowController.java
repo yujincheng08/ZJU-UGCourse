@@ -5,7 +5,9 @@ import Client.FriendListItem.FriendListItemModel;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ListView;
+import javafx.stage.WindowEvent;
 import org.java_websocket.handshake.ServerHandshake;
 
 import java.net.URL;
@@ -16,6 +18,7 @@ public class MainWindowController implements StageController, WebSocketHandler, 
     private ListView groupListView;
     @FXML
     private ListView<FriendListItemModel> friendListView;
+    private WebSocketHandler backupHandler;
     private MainController mainController;
     private String stageName;
 
@@ -35,9 +38,17 @@ public class MainWindowController implements StageController, WebSocketHandler, 
 
     }
 
-    @Override
     public void onClose(int code, String reason, boolean remote) {
+        System.out.println(reason);
+        mainController.setWebSocketHandler(backupHandler);
+        AlertHelper.show("Connect Close", reason, Alert.AlertType.ERROR);
+        mainController.showStage("LoginForm",stageName);
+    }
 
+    @Override
+    public void stageOnShowing(WindowEvent event) {
+        backupHandler = mainController.getWebSocketHandler();
+        mainController.setWebSocketHandler(this);
     }
 
     @Override
