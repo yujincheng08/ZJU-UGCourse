@@ -1,0 +1,19 @@
+syntax = "proto2";
+package proto;
+option java_outer_classname = "FriendListMessageProto";
+message FriendListMessage{
+    enum Type{
+        SELF = 0;
+        FRIEND = 1;
+        GROUP = 2;
+        REQUIRE = 3;
+        FRIENDSEARCH = 4;
+        GROUPSEARCH = 5;
+        ADDFRIEND = 6;
+        ADDGROUP = 7;
+    }
+    optional Type type = 1;
+    optional int64 account = 2;
+    optional string nickname = 3;
+    optional bytes avatar = 4;
+}

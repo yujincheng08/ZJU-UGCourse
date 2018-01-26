@@ -3,7 +3,7 @@ package Client;
 import javafx.stage.WindowEvent;
 
 public interface StageController {
-    void setMainController(MainController mainController, String currentStageName);
+    void setStagesController(StagesController stagesController, String currentStageName);
 
     default void stageOnShowing(WindowEvent event) {
     }

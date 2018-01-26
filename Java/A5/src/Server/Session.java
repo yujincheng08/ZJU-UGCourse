@@ -13,6 +13,7 @@ public class Session {
                 sessions.get(user).close(1000, "Login else where");
         }
         sessions.put(user, webSocket);
+        webSocket.setAttachment(user);
     }
 
     void logout(long user){

@@ -4,14 +4,16 @@ package proto;
 option java_outer_classname = "MessageProto";
 import "proto/ChatMessage.proto";
 import "proto/LoginMessage.proto";
+import "proto/FriendListMessage.proto";
 
 message Message{
     enum Type{
         LoginMessage = 0;
         ChatMessage = 1;
+        FriendListMessage = 2;
     }
     required Type type = 1;
     optional ChatMessage chatMessage = 2;
     optional LoginMessage loginMessage = 3;
-
+    repeated FriendListMessage friendListMesage = 4;
 }

@@ -33,12 +33,14 @@ public class RegisterFormController implements StageController, WebSocketHandler
     private WebSocketHandler backupHandler;
 
     @Override
-    public void setMainController(MainController mainController, String currentStageName) {
-        this.mainController = mainController;
+    public void setStagesController(StagesController controller, String currentStageName) {
+        if(controller instanceof MainController)
+            mainController = (MainController)controller;
     }
 
     @Override
-    public void stageOnShown(WindowEvent event) {
+    public void stageOnShown(WindowEvent event)
+    {
         backupHandler = mainController.getWebSocketHandler();
         mainController.setWebSocketHandler(this);
     }

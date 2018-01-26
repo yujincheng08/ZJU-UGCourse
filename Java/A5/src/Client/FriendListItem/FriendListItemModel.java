@@ -3,6 +3,9 @@ package Client.FriendListItem;
 import javafx.beans.property.*;
 import javafx.scene.image.Image;
 
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+
 public class FriendListItemModel {
     private final StringProperty nickName;
     private final LongProperty userID;
@@ -12,6 +15,12 @@ public class FriendListItemModel {
         this.nickName = new SimpleStringProperty(nickName);
         this.userID = new SimpleLongProperty(userID);
         this.avatar = new SimpleObjectProperty<>(new Image(avatar));
+    }
+
+    public FriendListItemModel(String nickName, Long userID, byte[] avatar){
+        this.nickName = new SimpleStringProperty(nickName);
+        this.userID = new SimpleLongProperty(userID);
+        this.avatar = new SimpleObjectProperty<>(new Image(new ByteArrayInputStream(avatar)));
     }
 
     public Image getAvatar() {

@@ -11,6 +11,7 @@ import javafx.stage.WindowEvent;
 import org.java_websocket.handshake.ServerHandshake;
 import proto.LoginMessageProto.LoginMessage;
 import proto.MessageProto.Message;
+import sun.applet.Main;
 
 import java.net.URL;
 import java.nio.ByteBuffer;
@@ -39,8 +40,9 @@ public class LoginFormController implements StageController, WebSocketHandler, I
     private WebSocketHandler backupHandler;
 
     @Override
-    public void setMainController(MainController mainController, String currentStageName) {
-        this.mainController = mainController;
+    public void setStagesController(StagesController controller, String currentStageName) {
+        if(controller instanceof MainController)
+            this.mainController = (MainController)controller;
         this.stageName = currentStageName;
 
     }
@@ -70,8 +72,10 @@ public class LoginFormController implements StageController, WebSocketHandler, I
 
     @Override
     public void stageOnShowing(WindowEvent event) {
-        backupHandler = mainController.getWebSocketHandler();
-        mainController.setWebSocketHandler(this);
+        if(mainController != null) {
+            backupHandler = mainController.getWebSocketHandler();
+            mainController.setWebSocketHandler(this);
+        }
     }
 
     @Override
@@ -108,7 +112,7 @@ public class LoginFormController implements StageController, WebSocketHandler, I
 
     @Override
     public void onClose(int code, String reason, boolean remote) {
-        mainController.setWebSocketHandler(backupHandler);
+        if(mainController != null) mainController.setWebSocketHandler(backupHandler);
     }
 
     @Override

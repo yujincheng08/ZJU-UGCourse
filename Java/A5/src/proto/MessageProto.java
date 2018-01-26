@@ -52,6 +52,30 @@ public final class MessageProto {
      * <code>optional .proto.LoginMessage loginMessage = 3;</code>
      */
     proto.LoginMessageProto.LoginMessageOrBuilder getLoginMessageOrBuilder();
+
+    /**
+     * <code>repeated .proto.FriendListMessage friendListMesage = 4;</code>
+     */
+    java.util.List<proto.FriendListMessageProto.FriendListMessage> 
+        getFriendListMesageList();
+    /**
+     * <code>repeated .proto.FriendListMessage friendListMesage = 4;</code>
+     */
+    proto.FriendListMessageProto.FriendListMessage getFriendListMesage(int index);
+    /**
+     * <code>repeated .proto.FriendListMessage friendListMesage = 4;</code>
+     */
+    int getFriendListMesageCount();
+    /**
+     * <code>repeated .proto.FriendListMessage friendListMesage = 4;</code>
+     */
+    java.util.List<? extends proto.FriendListMessageProto.FriendListMessageOrBuilder> 
+        getFriendListMesageOrBuilderList();
+    /**
+     * <code>repeated .proto.FriendListMessage friendListMesage = 4;</code>
+     */
+    proto.FriendListMessageProto.FriendListMessageOrBuilder getFriendListMesageOrBuilder(
+        int index);
   }
   /**
    * Protobuf type {@code proto.Message}
@@ -67,6 +91,7 @@ public final class MessageProto {
     }
     private Message() {
       type_ = 0;
+      friendListMesage_ = java.util.Collections.emptyList();
     }
 
     @java.lang.Override
@@ -137,6 +162,15 @@ public final class MessageProto {
               bitField0_ |= 0x00000004;
               break;
             }
+            case 34: {
+              if (!((mutable_bitField0_ & 0x00000008) == 0x00000008)) {
+                friendListMesage_ = new java.util.ArrayList<proto.FriendListMessageProto.FriendListMessage>();
+                mutable_bitField0_ |= 0x00000008;
+              }
+              friendListMesage_.add(
+                  input.readMessage(proto.FriendListMessageProto.FriendListMessage.PARSER, extensionRegistry));
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -145,6 +179,9 @@ public final class MessageProto {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
       } finally {
+        if (((mutable_bitField0_ & 0x00000008) == 0x00000008)) {
+          friendListMesage_ = java.util.Collections.unmodifiableList(friendListMesage_);
+        }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
@@ -174,6 +211,10 @@ public final class MessageProto {
        * <code>ChatMessage = 1;</code>
        */
       ChatMessage(1),
+      /**
+       * <code>FriendListMessage = 2;</code>
+       */
+      FriendListMessage(2),
       ;
 
       /**
@@ -184,6 +225,10 @@ public final class MessageProto {
        * <code>ChatMessage = 1;</code>
        */
       public static final int ChatMessage_VALUE = 1;
+      /**
+       * <code>FriendListMessage = 2;</code>
+       */
+      public static final int FriendListMessage_VALUE = 2;
 
 
       public final int getNumber() {
@@ -202,6 +247,7 @@ public final class MessageProto {
         switch (value) {
           case 0: return LoginMessage;
           case 1: return ChatMessage;
+          case 2: return FriendListMessage;
           default: return null;
         }
       }
@@ -310,6 +356,41 @@ public final class MessageProto {
       return loginMessage_ == null ? proto.LoginMessageProto.LoginMessage.getDefaultInstance() : loginMessage_;
     }
 
+    public static final int FRIENDLISTMESAGE_FIELD_NUMBER = 4;
+    private java.util.List<proto.FriendListMessageProto.FriendListMessage> friendListMesage_;
+    /**
+     * <code>repeated .proto.FriendListMessage friendListMesage = 4;</code>
+     */
+    public java.util.List<proto.FriendListMessageProto.FriendListMessage> getFriendListMesageList() {
+      return friendListMesage_;
+    }
+    /**
+     * <code>repeated .proto.FriendListMessage friendListMesage = 4;</code>
+     */
+    public java.util.List<? extends proto.FriendListMessageProto.FriendListMessageOrBuilder> 
+        getFriendListMesageOrBuilderList() {
+      return friendListMesage_;
+    }
+    /**
+     * <code>repeated .proto.FriendListMessage friendListMesage = 4;</code>
+     */
+    public int getFriendListMesageCount() {
+      return friendListMesage_.size();
+    }
+    /**
+     * <code>repeated .proto.FriendListMessage friendListMesage = 4;</code>
+     */
+    public proto.FriendListMessageProto.FriendListMessage getFriendListMesage(int index) {
+      return friendListMesage_.get(index);
+    }
+    /**
+     * <code>repeated .proto.FriendListMessage friendListMesage = 4;</code>
+     */
+    public proto.FriendListMessageProto.FriendListMessageOrBuilder getFriendListMesageOrBuilder(
+        int index) {
+      return friendListMesage_.get(index);
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -341,6 +422,9 @@ public final class MessageProto {
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         output.writeMessage(3, getLoginMessage());
       }
+      for (int i = 0; i < friendListMesage_.size(); i++) {
+        output.writeMessage(4, friendListMesage_.get(i));
+      }
       unknownFields.writeTo(output);
     }
 
@@ -360,6 +444,10 @@ public final class MessageProto {
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(3, getLoginMessage());
+      }
+      for (int i = 0; i < friendListMesage_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(4, friendListMesage_.get(i));
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -391,6 +479,8 @@ public final class MessageProto {
         result = result && getLoginMessage()
             .equals(other.getLoginMessage());
       }
+      result = result && getFriendListMesageList()
+          .equals(other.getFriendListMesageList());
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
@@ -413,6 +503,10 @@ public final class MessageProto {
       if (hasLoginMessage()) {
         hash = (37 * hash) + LOGINMESSAGE_FIELD_NUMBER;
         hash = (53 * hash) + getLoginMessage().hashCode();
+      }
+      if (getFriendListMesageCount() > 0) {
+        hash = (37 * hash) + FRIENDLISTMESAGE_FIELD_NUMBER;
+        hash = (53 * hash) + getFriendListMesageList().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -541,6 +635,7 @@ public final class MessageProto {
                 .alwaysUseFieldBuilders) {
           getChatMessageFieldBuilder();
           getLoginMessageFieldBuilder();
+          getFriendListMesageFieldBuilder();
         }
       }
       public Builder clear() {
@@ -559,6 +654,12 @@ public final class MessageProto {
           loginMessageBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000004);
+        if (friendListMesageBuilder_ == null) {
+          friendListMesage_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000008);
+        } else {
+          friendListMesageBuilder_.clear();
+        }
         return this;
       }
 
@@ -602,6 +703,15 @@ public final class MessageProto {
           result.loginMessage_ = loginMessage_;
         } else {
           result.loginMessage_ = loginMessageBuilder_.build();
+        }
+        if (friendListMesageBuilder_ == null) {
+          if (((bitField0_ & 0x00000008) == 0x00000008)) {
+            friendListMesage_ = java.util.Collections.unmodifiableList(friendListMesage_);
+            bitField0_ = (bitField0_ & ~0x00000008);
+          }
+          result.friendListMesage_ = friendListMesage_;
+        } else {
+          result.friendListMesage_ = friendListMesageBuilder_.build();
         }
         result.bitField0_ = to_bitField0_;
         onBuilt();
@@ -653,6 +763,32 @@ public final class MessageProto {
         }
         if (other.hasLoginMessage()) {
           mergeLoginMessage(other.getLoginMessage());
+        }
+        if (friendListMesageBuilder_ == null) {
+          if (!other.friendListMesage_.isEmpty()) {
+            if (friendListMesage_.isEmpty()) {
+              friendListMesage_ = other.friendListMesage_;
+              bitField0_ = (bitField0_ & ~0x00000008);
+            } else {
+              ensureFriendListMesageIsMutable();
+              friendListMesage_.addAll(other.friendListMesage_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.friendListMesage_.isEmpty()) {
+            if (friendListMesageBuilder_.isEmpty()) {
+              friendListMesageBuilder_.dispose();
+              friendListMesageBuilder_ = null;
+              friendListMesage_ = other.friendListMesage_;
+              bitField0_ = (bitField0_ & ~0x00000008);
+              friendListMesageBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getFriendListMesageFieldBuilder() : null;
+            } else {
+              friendListMesageBuilder_.addAllMessages(other.friendListMesage_);
+            }
+          }
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -961,6 +1097,246 @@ public final class MessageProto {
         }
         return loginMessageBuilder_;
       }
+
+      private java.util.List<proto.FriendListMessageProto.FriendListMessage> friendListMesage_ =
+        java.util.Collections.emptyList();
+      private void ensureFriendListMesageIsMutable() {
+        if (!((bitField0_ & 0x00000008) == 0x00000008)) {
+          friendListMesage_ = new java.util.ArrayList<proto.FriendListMessageProto.FriendListMessage>(friendListMesage_);
+          bitField0_ |= 0x00000008;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          proto.FriendListMessageProto.FriendListMessage, proto.FriendListMessageProto.FriendListMessage.Builder, proto.FriendListMessageProto.FriendListMessageOrBuilder> friendListMesageBuilder_;
+
+      /**
+       * <code>repeated .proto.FriendListMessage friendListMesage = 4;</code>
+       */
+      public java.util.List<proto.FriendListMessageProto.FriendListMessage> getFriendListMesageList() {
+        if (friendListMesageBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(friendListMesage_);
+        } else {
+          return friendListMesageBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <code>repeated .proto.FriendListMessage friendListMesage = 4;</code>
+       */
+      public int getFriendListMesageCount() {
+        if (friendListMesageBuilder_ == null) {
+          return friendListMesage_.size();
+        } else {
+          return friendListMesageBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .proto.FriendListMessage friendListMesage = 4;</code>
+       */
+      public proto.FriendListMessageProto.FriendListMessage getFriendListMesage(int index) {
+        if (friendListMesageBuilder_ == null) {
+          return friendListMesage_.get(index);
+        } else {
+          return friendListMesageBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .proto.FriendListMessage friendListMesage = 4;</code>
+       */
+      public Builder setFriendListMesage(
+          int index, proto.FriendListMessageProto.FriendListMessage value) {
+        if (friendListMesageBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureFriendListMesageIsMutable();
+          friendListMesage_.set(index, value);
+          onChanged();
+        } else {
+          friendListMesageBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .proto.FriendListMessage friendListMesage = 4;</code>
+       */
+      public Builder setFriendListMesage(
+          int index, proto.FriendListMessageProto.FriendListMessage.Builder builderForValue) {
+        if (friendListMesageBuilder_ == null) {
+          ensureFriendListMesageIsMutable();
+          friendListMesage_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          friendListMesageBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .proto.FriendListMessage friendListMesage = 4;</code>
+       */
+      public Builder addFriendListMesage(proto.FriendListMessageProto.FriendListMessage value) {
+        if (friendListMesageBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureFriendListMesageIsMutable();
+          friendListMesage_.add(value);
+          onChanged();
+        } else {
+          friendListMesageBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .proto.FriendListMessage friendListMesage = 4;</code>
+       */
+      public Builder addFriendListMesage(
+          int index, proto.FriendListMessageProto.FriendListMessage value) {
+        if (friendListMesageBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureFriendListMesageIsMutable();
+          friendListMesage_.add(index, value);
+          onChanged();
+        } else {
+          friendListMesageBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .proto.FriendListMessage friendListMesage = 4;</code>
+       */
+      public Builder addFriendListMesage(
+          proto.FriendListMessageProto.FriendListMessage.Builder builderForValue) {
+        if (friendListMesageBuilder_ == null) {
+          ensureFriendListMesageIsMutable();
+          friendListMesage_.add(builderForValue.build());
+          onChanged();
+        } else {
+          friendListMesageBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .proto.FriendListMessage friendListMesage = 4;</code>
+       */
+      public Builder addFriendListMesage(
+          int index, proto.FriendListMessageProto.FriendListMessage.Builder builderForValue) {
+        if (friendListMesageBuilder_ == null) {
+          ensureFriendListMesageIsMutable();
+          friendListMesage_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          friendListMesageBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .proto.FriendListMessage friendListMesage = 4;</code>
+       */
+      public Builder addAllFriendListMesage(
+          java.lang.Iterable<? extends proto.FriendListMessageProto.FriendListMessage> values) {
+        if (friendListMesageBuilder_ == null) {
+          ensureFriendListMesageIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, friendListMesage_);
+          onChanged();
+        } else {
+          friendListMesageBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .proto.FriendListMessage friendListMesage = 4;</code>
+       */
+      public Builder clearFriendListMesage() {
+        if (friendListMesageBuilder_ == null) {
+          friendListMesage_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000008);
+          onChanged();
+        } else {
+          friendListMesageBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .proto.FriendListMessage friendListMesage = 4;</code>
+       */
+      public Builder removeFriendListMesage(int index) {
+        if (friendListMesageBuilder_ == null) {
+          ensureFriendListMesageIsMutable();
+          friendListMesage_.remove(index);
+          onChanged();
+        } else {
+          friendListMesageBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .proto.FriendListMessage friendListMesage = 4;</code>
+       */
+      public proto.FriendListMessageProto.FriendListMessage.Builder getFriendListMesageBuilder(
+          int index) {
+        return getFriendListMesageFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .proto.FriendListMessage friendListMesage = 4;</code>
+       */
+      public proto.FriendListMessageProto.FriendListMessageOrBuilder getFriendListMesageOrBuilder(
+          int index) {
+        if (friendListMesageBuilder_ == null) {
+          return friendListMesage_.get(index);  } else {
+          return friendListMesageBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .proto.FriendListMessage friendListMesage = 4;</code>
+       */
+      public java.util.List<? extends proto.FriendListMessageProto.FriendListMessageOrBuilder> 
+           getFriendListMesageOrBuilderList() {
+        if (friendListMesageBuilder_ != null) {
+          return friendListMesageBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(friendListMesage_);
+        }
+      }
+      /**
+       * <code>repeated .proto.FriendListMessage friendListMesage = 4;</code>
+       */
+      public proto.FriendListMessageProto.FriendListMessage.Builder addFriendListMesageBuilder() {
+        return getFriendListMesageFieldBuilder().addBuilder(
+            proto.FriendListMessageProto.FriendListMessage.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .proto.FriendListMessage friendListMesage = 4;</code>
+       */
+      public proto.FriendListMessageProto.FriendListMessage.Builder addFriendListMesageBuilder(
+          int index) {
+        return getFriendListMesageFieldBuilder().addBuilder(
+            index, proto.FriendListMessageProto.FriendListMessage.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .proto.FriendListMessage friendListMesage = 4;</code>
+       */
+      public java.util.List<proto.FriendListMessageProto.FriendListMessage.Builder> 
+           getFriendListMesageBuilderList() {
+        return getFriendListMesageFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          proto.FriendListMessageProto.FriendListMessage, proto.FriendListMessageProto.FriendListMessage.Builder, proto.FriendListMessageProto.FriendListMessageOrBuilder> 
+          getFriendListMesageFieldBuilder() {
+        if (friendListMesageBuilder_ == null) {
+          friendListMesageBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              proto.FriendListMessageProto.FriendListMessage, proto.FriendListMessageProto.FriendListMessage.Builder, proto.FriendListMessageProto.FriendListMessageOrBuilder>(
+                  friendListMesage_,
+                  ((bitField0_ & 0x00000008) == 0x00000008),
+                  getParentForChildren(),
+                  isClean());
+          friendListMesage_ = null;
+        }
+        return friendListMesageBuilder_;
+      }
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
@@ -1025,12 +1401,15 @@ public final class MessageProto {
   static {
     java.lang.String[] descriptorData = {
       "\n\023proto/Message.proto\022\005proto\032\027proto/Chat" +
-      "Message.proto\032\030proto/LoginMessage.proto\"" +
-      "\253\001\n\007Message\022!\n\004type\030\001 \002(\0162\023.proto.Messag" +
-      "e.Type\022\'\n\013chatMessage\030\002 \001(\0132\022.proto.Chat" +
-      "Message\022)\n\014loginMessage\030\003 \001(\0132\023.proto.Lo" +
-      "ginMessage\")\n\004Type\022\020\n\014LoginMessage\020\000\022\017\n\013" +
-      "ChatMessage\020\001B\016B\014MessageProto"
+      "Message.proto\032\030proto/LoginMessage.proto\032" +
+      "\035proto/FriendListMessage.proto\"\366\001\n\007Messa" +
+      "ge\022!\n\004type\030\001 \002(\0162\023.proto.Message.Type\022\'\n" +
+      "\013chatMessage\030\002 \001(\0132\022.proto.ChatMessage\022)" +
+      "\n\014loginMessage\030\003 \001(\0132\023.proto.LoginMessag" +
+      "e\0222\n\020friendListMesage\030\004 \003(\0132\030.proto.Frie" +
+      "ndListMessage\"@\n\004Type\022\020\n\014LoginMessage\020\000\022" +
+      "\017\n\013ChatMessage\020\001\022\025\n\021FriendListMessage\020\002B" +
+      "\016B\014MessageProto"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -1045,15 +1424,17 @@ public final class MessageProto {
         new com.google.protobuf.Descriptors.FileDescriptor[] {
           proto.ChatMessageProto.getDescriptor(),
           proto.LoginMessageProto.getDescriptor(),
+          proto.FriendListMessageProto.getDescriptor(),
         }, assigner);
     internal_static_proto_Message_descriptor =
       getDescriptor().getMessageTypes().get(0);
     internal_static_proto_Message_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_proto_Message_descriptor,
-        new java.lang.String[] { "Type", "ChatMessage", "LoginMessage", });
+        new java.lang.String[] { "Type", "ChatMessage", "LoginMessage", "FriendListMesage", });
     proto.ChatMessageProto.getDescriptor();
     proto.LoginMessageProto.getDescriptor();
+    proto.FriendListMessageProto.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)
