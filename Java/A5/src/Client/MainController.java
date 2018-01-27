@@ -7,17 +7,19 @@ import proto.FriendListMessageProto.FriendListMessage;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.sql.SQLException;
 
 public class MainController extends StagesController
 {
 
     private WebSocket webSocket;
     private URI uri;
+    private DBController dbController;
 
-    MainController()
+    MainController(int port)
     {
         try {
-            uri = new URI("ws://127.0.0.1:9000");
+            uri = new URI("ws://127.0.0.1:" + port);
         }catch(URISyntaxException e)
         {
             e.printStackTrace();
@@ -72,7 +74,7 @@ public class MainController extends StagesController
         if(webScoketCheck()) {
             Message.Builder messageBuilder = Message.newBuilder();
             messageBuilder.setType(Message.Type.ChatMessage);
-            messageBuilder.setChatMessage(chatMessage);
+            messageBuilder.addChatMessage(chatMessage);
             webSocket.send(messageBuilder.build().toByteArray());
         }
     }
@@ -101,4 +103,11 @@ public class MainController extends StagesController
             webSocket.close();
     }
 
+    public void setDbController(long userID) throws SQLException {
+        dbController = new DBController(userID+".db");
+    }
+
+    public DBController getDbController() {
+        return dbController;
+    }
 }

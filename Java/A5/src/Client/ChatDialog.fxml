@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane fx:id="root" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.ChatDialogController">
+    <VBox>
+        <HBox>
+            <ImageView fx:id="avatar" fitHeight="56.0" fitWidth="65.0" pickOnBounds="true" preserveRatio="true" />
+            <VBox>
+                <Label fx:id="nickName" text="Label" />
+                <Label fx:id="accountID" text="Label" />
+            </VBox>
+        </HBox>
+        <HBox>
+            <VBox>
+                <ListView fx:id="chatRecord" prefHeight="235.0" prefWidth="630.0" />
+                <TextArea fx:id="textField" prefHeight="142.0" prefWidth="200.0" />
+                <HBox alignment="CENTER" nodeOrientation="LEFT_TO_RIGHT">
+               <Button fx:id="prePage" mnemonicParsing="false" text="Prev" />
+               <Button fx:id="nextPage" mnemonicParsing="false" text="Next">
+                  <HBox.margin>
+                     <Insets left="20.0" />
+                  </HBox.margin></Button>
+                    <Button fx:id="closeButton" mnemonicParsing="false" text="Close">
+                        <HBox.margin>
+                            <Insets left="50.0" />
+                        </HBox.margin>
+                    </Button>
+                    <Button fx:id="sendButton" alignment="CENTER" mnemonicParsing="false" text="Send">
+                        <HBox.margin>
+                            <Insets left="20.0" />
+                        </HBox.margin>
+                    </Button>
+                </HBox>
+            </VBox>
+        </HBox>
+    </VBox>
+</AnchorPane>

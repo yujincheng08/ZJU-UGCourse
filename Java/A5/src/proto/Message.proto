@@ -11,9 +11,11 @@ message Message{
         LoginMessage = 0;
         ChatMessage = 1;
         FriendListMessage = 2;
+        ErrorMessage = 3;
     }
     required Type type = 1;
-    optional ChatMessage chatMessage = 2;
+    repeated ChatMessage chatMessage = 2;
     optional LoginMessage loginMessage = 3;
     repeated FriendListMessage friendListMesage = 4;
+    optional string errorMessage = 5;
 }

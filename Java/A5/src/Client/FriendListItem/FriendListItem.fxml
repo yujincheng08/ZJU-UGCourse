@@ -1,10 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<HBox xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.FriendListItem.FriendListItemController">
+<HBox xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.FriendListItem.FriendListItemController">
     <ImageView fx:id="avatar" fitHeight="39.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" />
-    <Label fx:id="nickName" text="Label" />
+    <VBox>
+        <Label fx:id="nickName" text="Label">
+         <font>
+            <Font size="18.0" />
+         </font></Label>
+        <Label fx:id="accountID" text="Label" />
+      <HBox.margin>
+         <Insets left="10.0" />
+      </HBox.margin>
+    </VBox>
+   <Label fx:id="unread" ellipsisString="" text="0" textFill="RED">
+      <HBox.margin>
+         <Insets left="10.0" />
+      </HBox.margin>
+   </Label>
 </HBox>

@@ -7,6 +7,7 @@ import org.java_websocket.drafts.Draft;
 import org.java_websocket.drafts.Draft_6455;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
+import proto.ChatMessageProto;
 import proto.LoginMessageProto.LoginMessage;
 import proto.MessageProto.Message;
 import java.net.InetSocketAddress;
@@ -92,6 +93,7 @@ public class Server extends WebSocketServer{
         if (!prompt.isEmpty())
             builder.setPrompt(prompt);
         builder.setStatus(success ? LoginMessage.Status.SUCCESS : LoginMessage.Status.FAIL);
+        builder.setAccount(loginMessage.getAccount());
         if(success) session.login(loginMessage.getAccount(), webSocket);
         return builder.build();
     }
@@ -151,7 +153,11 @@ public class Server extends WebSocketServer{
                             webSocketSend(conn, handlerLoginMessage(conn, message.getLoginMessage()));
                         break;
 
+                    case FriendListMessage:
+                        FriendListMessageHandler.handle(dbManager, conn, session, message.getFriendListMesageList());
+                        break;
                     case ChatMessage:
+                            ChatMessageHandler.handle(dbManager, conn, session, message.getChatMessageList());
                         break;
                 }
             }

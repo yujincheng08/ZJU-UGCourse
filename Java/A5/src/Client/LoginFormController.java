@@ -15,6 +15,7 @@ import sun.applet.Main;
 
 import java.net.URL;
 import java.nio.ByteBuffer;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 public class LoginFormController implements StageController, WebSocketHandler, Initializable {
@@ -93,8 +94,10 @@ public class LoginFormController implements StageController, WebSocketHandler, I
                 //noinspection StatementWithEmptyBody
                 if (!loginMessage.hasType() || loginMessage.getType() != LoginMessage.Type.LOGIN) {
                     //do nothing
-                } else if (loginMessage.hasStatus() && loginMessage.getStatus() == LoginMessage.Status.SUCCESS)
+                } else if (loginMessage.hasStatus() && loginMessage.getStatus() == LoginMessage.Status.SUCCESS) {
+                    mainController.setDbController(loginMessage.getAccount());
                     mainController.showStage("MainWindow", stageName);
+                }
                 else {
                     String prompt;
                     if (loginMessage.hasPrompt())
@@ -106,6 +109,8 @@ public class LoginFormController implements StageController, WebSocketHandler, I
             }
         } catch (InvalidProtocolBufferException e) {
             e.printStackTrace();
+        } catch (SQLException e) {
+            AlertHelper.show("Login failed", e.getMessage(), Alert.AlertType.ERROR);
         }
 
     }

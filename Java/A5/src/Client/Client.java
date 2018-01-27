@@ -4,8 +4,8 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 
 public class Client extends Application {
-
-    private MainController mainController = new MainController();
+    static int port;
+    private MainController mainController = new MainController(port);
     private static final String mainWindowName = "MainWindow";
     private static final String mainWindowResource = "MainWindow.fxml";
 
@@ -23,6 +23,11 @@ public class Client extends Application {
     }
 
     public static void main(String[] args) {
+        try {
+            port  = Integer.parseInt(args[0]);
+        }catch(ArithmeticException e) {
+            port = 9000;
+        }
         launch(args);
     }
 }

@@ -28,17 +28,28 @@ public final class MessageProto {
     proto.MessageProto.Message.Type getType();
 
     /**
-     * <code>optional .proto.ChatMessage chatMessage = 2;</code>
+     * <code>repeated .proto.ChatMessage chatMessage = 2;</code>
      */
-    boolean hasChatMessage();
+    java.util.List<proto.ChatMessageProto.ChatMessage> 
+        getChatMessageList();
     /**
-     * <code>optional .proto.ChatMessage chatMessage = 2;</code>
+     * <code>repeated .proto.ChatMessage chatMessage = 2;</code>
      */
-    proto.ChatMessageProto.ChatMessage getChatMessage();
+    proto.ChatMessageProto.ChatMessage getChatMessage(int index);
     /**
-     * <code>optional .proto.ChatMessage chatMessage = 2;</code>
+     * <code>repeated .proto.ChatMessage chatMessage = 2;</code>
      */
-    proto.ChatMessageProto.ChatMessageOrBuilder getChatMessageOrBuilder();
+    int getChatMessageCount();
+    /**
+     * <code>repeated .proto.ChatMessage chatMessage = 2;</code>
+     */
+    java.util.List<? extends proto.ChatMessageProto.ChatMessageOrBuilder> 
+        getChatMessageOrBuilderList();
+    /**
+     * <code>repeated .proto.ChatMessage chatMessage = 2;</code>
+     */
+    proto.ChatMessageProto.ChatMessageOrBuilder getChatMessageOrBuilder(
+        int index);
 
     /**
      * <code>optional .proto.LoginMessage loginMessage = 3;</code>
@@ -76,6 +87,20 @@ public final class MessageProto {
      */
     proto.FriendListMessageProto.FriendListMessageOrBuilder getFriendListMesageOrBuilder(
         int index);
+
+    /**
+     * <code>optional string errorMessage = 5;</code>
+     */
+    boolean hasErrorMessage();
+    /**
+     * <code>optional string errorMessage = 5;</code>
+     */
+    java.lang.String getErrorMessage();
+    /**
+     * <code>optional string errorMessage = 5;</code>
+     */
+    com.google.protobuf.ByteString
+        getErrorMessageBytes();
   }
   /**
    * Protobuf type {@code proto.Message}
@@ -91,7 +116,9 @@ public final class MessageProto {
     }
     private Message() {
       type_ = 0;
+      chatMessage_ = java.util.Collections.emptyList();
       friendListMesage_ = java.util.Collections.emptyList();
+      errorMessage_ = "";
     }
 
     @java.lang.Override
@@ -137,21 +164,17 @@ public final class MessageProto {
               break;
             }
             case 18: {
-              proto.ChatMessageProto.ChatMessage.Builder subBuilder = null;
-              if (((bitField0_ & 0x00000002) == 0x00000002)) {
-                subBuilder = chatMessage_.toBuilder();
+              if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
+                chatMessage_ = new java.util.ArrayList<proto.ChatMessageProto.ChatMessage>();
+                mutable_bitField0_ |= 0x00000002;
               }
-              chatMessage_ = input.readMessage(proto.ChatMessageProto.ChatMessage.PARSER, extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom(chatMessage_);
-                chatMessage_ = subBuilder.buildPartial();
-              }
-              bitField0_ |= 0x00000002;
+              chatMessage_.add(
+                  input.readMessage(proto.ChatMessageProto.ChatMessage.PARSER, extensionRegistry));
               break;
             }
             case 26: {
               proto.LoginMessageProto.LoginMessage.Builder subBuilder = null;
-              if (((bitField0_ & 0x00000004) == 0x00000004)) {
+              if (((bitField0_ & 0x00000002) == 0x00000002)) {
                 subBuilder = loginMessage_.toBuilder();
               }
               loginMessage_ = input.readMessage(proto.LoginMessageProto.LoginMessage.PARSER, extensionRegistry);
@@ -159,7 +182,7 @@ public final class MessageProto {
                 subBuilder.mergeFrom(loginMessage_);
                 loginMessage_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00000004;
+              bitField0_ |= 0x00000002;
               break;
             }
             case 34: {
@@ -171,6 +194,12 @@ public final class MessageProto {
                   input.readMessage(proto.FriendListMessageProto.FriendListMessage.PARSER, extensionRegistry));
               break;
             }
+            case 42: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00000004;
+              errorMessage_ = bs;
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -179,6 +208,9 @@ public final class MessageProto {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
       } finally {
+        if (((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
+          chatMessage_ = java.util.Collections.unmodifiableList(chatMessage_);
+        }
         if (((mutable_bitField0_ & 0x00000008) == 0x00000008)) {
           friendListMesage_ = java.util.Collections.unmodifiableList(friendListMesage_);
         }
@@ -215,6 +247,10 @@ public final class MessageProto {
        * <code>FriendListMessage = 2;</code>
        */
       FriendListMessage(2),
+      /**
+       * <code>ErrorMessage = 3;</code>
+       */
+      ErrorMessage(3),
       ;
 
       /**
@@ -229,6 +265,10 @@ public final class MessageProto {
        * <code>FriendListMessage = 2;</code>
        */
       public static final int FriendListMessage_VALUE = 2;
+      /**
+       * <code>ErrorMessage = 3;</code>
+       */
+      public static final int ErrorMessage_VALUE = 3;
 
 
       public final int getNumber() {
@@ -248,6 +288,7 @@ public final class MessageProto {
           case 0: return LoginMessage;
           case 1: return ChatMessage;
           case 2: return FriendListMessage;
+          case 3: return ErrorMessage;
           default: return null;
         }
       }
@@ -315,24 +356,38 @@ public final class MessageProto {
     }
 
     public static final int CHATMESSAGE_FIELD_NUMBER = 2;
-    private proto.ChatMessageProto.ChatMessage chatMessage_;
+    private java.util.List<proto.ChatMessageProto.ChatMessage> chatMessage_;
     /**
-     * <code>optional .proto.ChatMessage chatMessage = 2;</code>
+     * <code>repeated .proto.ChatMessage chatMessage = 2;</code>
      */
-    public boolean hasChatMessage() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
+    public java.util.List<proto.ChatMessageProto.ChatMessage> getChatMessageList() {
+      return chatMessage_;
     }
     /**
-     * <code>optional .proto.ChatMessage chatMessage = 2;</code>
+     * <code>repeated .proto.ChatMessage chatMessage = 2;</code>
      */
-    public proto.ChatMessageProto.ChatMessage getChatMessage() {
-      return chatMessage_ == null ? proto.ChatMessageProto.ChatMessage.getDefaultInstance() : chatMessage_;
+    public java.util.List<? extends proto.ChatMessageProto.ChatMessageOrBuilder> 
+        getChatMessageOrBuilderList() {
+      return chatMessage_;
     }
     /**
-     * <code>optional .proto.ChatMessage chatMessage = 2;</code>
+     * <code>repeated .proto.ChatMessage chatMessage = 2;</code>
      */
-    public proto.ChatMessageProto.ChatMessageOrBuilder getChatMessageOrBuilder() {
-      return chatMessage_ == null ? proto.ChatMessageProto.ChatMessage.getDefaultInstance() : chatMessage_;
+    public int getChatMessageCount() {
+      return chatMessage_.size();
+    }
+    /**
+     * <code>repeated .proto.ChatMessage chatMessage = 2;</code>
+     */
+    public proto.ChatMessageProto.ChatMessage getChatMessage(int index) {
+      return chatMessage_.get(index);
+    }
+    /**
+     * <code>repeated .proto.ChatMessage chatMessage = 2;</code>
+     */
+    public proto.ChatMessageProto.ChatMessageOrBuilder getChatMessageOrBuilder(
+        int index) {
+      return chatMessage_.get(index);
     }
 
     public static final int LOGINMESSAGE_FIELD_NUMBER = 3;
@@ -341,7 +396,7 @@ public final class MessageProto {
      * <code>optional .proto.LoginMessage loginMessage = 3;</code>
      */
     public boolean hasLoginMessage() {
-      return ((bitField0_ & 0x00000004) == 0x00000004);
+      return ((bitField0_ & 0x00000002) == 0x00000002);
     }
     /**
      * <code>optional .proto.LoginMessage loginMessage = 3;</code>
@@ -391,6 +446,48 @@ public final class MessageProto {
       return friendListMesage_.get(index);
     }
 
+    public static final int ERRORMESSAGE_FIELD_NUMBER = 5;
+    private volatile java.lang.Object errorMessage_;
+    /**
+     * <code>optional string errorMessage = 5;</code>
+     */
+    public boolean hasErrorMessage() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    /**
+     * <code>optional string errorMessage = 5;</code>
+     */
+    public java.lang.String getErrorMessage() {
+      java.lang.Object ref = errorMessage_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          errorMessage_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>optional string errorMessage = 5;</code>
+     */
+    public com.google.protobuf.ByteString
+        getErrorMessageBytes() {
+      java.lang.Object ref = errorMessage_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        errorMessage_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -401,8 +498,8 @@ public final class MessageProto {
         memoizedIsInitialized = 0;
         return false;
       }
-      if (hasChatMessage()) {
-        if (!getChatMessage().isInitialized()) {
+      for (int i = 0; i < getChatMessageCount(); i++) {
+        if (!getChatMessage(i).isInitialized()) {
           memoizedIsInitialized = 0;
           return false;
         }
@@ -416,14 +513,17 @@ public final class MessageProto {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         output.writeEnum(1, type_);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeMessage(2, getChatMessage());
+      for (int i = 0; i < chatMessage_.size(); i++) {
+        output.writeMessage(2, chatMessage_.get(i));
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
         output.writeMessage(3, getLoginMessage());
       }
       for (int i = 0; i < friendListMesage_.size(); i++) {
         output.writeMessage(4, friendListMesage_.get(i));
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 5, errorMessage_);
       }
       unknownFields.writeTo(output);
     }
@@ -437,17 +537,20 @@ public final class MessageProto {
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(1, type_);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+      for (int i = 0; i < chatMessage_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(2, getChatMessage());
+          .computeMessageSize(2, chatMessage_.get(i));
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(3, getLoginMessage());
       }
       for (int i = 0; i < friendListMesage_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(4, friendListMesage_.get(i));
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, errorMessage_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -469,11 +572,8 @@ public final class MessageProto {
       if (hasType()) {
         result = result && type_ == other.type_;
       }
-      result = result && (hasChatMessage() == other.hasChatMessage());
-      if (hasChatMessage()) {
-        result = result && getChatMessage()
-            .equals(other.getChatMessage());
-      }
+      result = result && getChatMessageList()
+          .equals(other.getChatMessageList());
       result = result && (hasLoginMessage() == other.hasLoginMessage());
       if (hasLoginMessage()) {
         result = result && getLoginMessage()
@@ -481,6 +581,11 @@ public final class MessageProto {
       }
       result = result && getFriendListMesageList()
           .equals(other.getFriendListMesageList());
+      result = result && (hasErrorMessage() == other.hasErrorMessage());
+      if (hasErrorMessage()) {
+        result = result && getErrorMessage()
+            .equals(other.getErrorMessage());
+      }
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
@@ -496,9 +601,9 @@ public final class MessageProto {
         hash = (37 * hash) + TYPE_FIELD_NUMBER;
         hash = (53 * hash) + type_;
       }
-      if (hasChatMessage()) {
+      if (getChatMessageCount() > 0) {
         hash = (37 * hash) + CHATMESSAGE_FIELD_NUMBER;
-        hash = (53 * hash) + getChatMessage().hashCode();
+        hash = (53 * hash) + getChatMessageList().hashCode();
       }
       if (hasLoginMessage()) {
         hash = (37 * hash) + LOGINMESSAGE_FIELD_NUMBER;
@@ -507,6 +612,10 @@ public final class MessageProto {
       if (getFriendListMesageCount() > 0) {
         hash = (37 * hash) + FRIENDLISTMESAGE_FIELD_NUMBER;
         hash = (53 * hash) + getFriendListMesageList().hashCode();
+      }
+      if (hasErrorMessage()) {
+        hash = (37 * hash) + ERRORMESSAGE_FIELD_NUMBER;
+        hash = (53 * hash) + getErrorMessage().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -643,11 +752,11 @@ public final class MessageProto {
         type_ = 0;
         bitField0_ = (bitField0_ & ~0x00000001);
         if (chatMessageBuilder_ == null) {
-          chatMessage_ = null;
+          chatMessage_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000002);
         } else {
           chatMessageBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000002);
         if (loginMessageBuilder_ == null) {
           loginMessage_ = null;
         } else {
@@ -660,6 +769,8 @@ public final class MessageProto {
         } else {
           friendListMesageBuilder_.clear();
         }
+        errorMessage_ = "";
+        bitField0_ = (bitField0_ & ~0x00000010);
         return this;
       }
 
@@ -688,16 +799,17 @@ public final class MessageProto {
           to_bitField0_ |= 0x00000001;
         }
         result.type_ = type_;
-        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-          to_bitField0_ |= 0x00000002;
-        }
         if (chatMessageBuilder_ == null) {
+          if (((bitField0_ & 0x00000002) == 0x00000002)) {
+            chatMessage_ = java.util.Collections.unmodifiableList(chatMessage_);
+            bitField0_ = (bitField0_ & ~0x00000002);
+          }
           result.chatMessage_ = chatMessage_;
         } else {
           result.chatMessage_ = chatMessageBuilder_.build();
         }
         if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
-          to_bitField0_ |= 0x00000004;
+          to_bitField0_ |= 0x00000002;
         }
         if (loginMessageBuilder_ == null) {
           result.loginMessage_ = loginMessage_;
@@ -713,6 +825,10 @@ public final class MessageProto {
         } else {
           result.friendListMesage_ = friendListMesageBuilder_.build();
         }
+        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        result.errorMessage_ = errorMessage_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -758,8 +874,31 @@ public final class MessageProto {
         if (other.hasType()) {
           setType(other.getType());
         }
-        if (other.hasChatMessage()) {
-          mergeChatMessage(other.getChatMessage());
+        if (chatMessageBuilder_ == null) {
+          if (!other.chatMessage_.isEmpty()) {
+            if (chatMessage_.isEmpty()) {
+              chatMessage_ = other.chatMessage_;
+              bitField0_ = (bitField0_ & ~0x00000002);
+            } else {
+              ensureChatMessageIsMutable();
+              chatMessage_.addAll(other.chatMessage_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.chatMessage_.isEmpty()) {
+            if (chatMessageBuilder_.isEmpty()) {
+              chatMessageBuilder_.dispose();
+              chatMessageBuilder_ = null;
+              chatMessage_ = other.chatMessage_;
+              bitField0_ = (bitField0_ & ~0x00000002);
+              chatMessageBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getChatMessageFieldBuilder() : null;
+            } else {
+              chatMessageBuilder_.addAllMessages(other.chatMessage_);
+            }
+          }
         }
         if (other.hasLoginMessage()) {
           mergeLoginMessage(other.getLoginMessage());
@@ -790,6 +929,11 @@ public final class MessageProto {
             }
           }
         }
+        if (other.hasErrorMessage()) {
+          bitField0_ |= 0x00000010;
+          errorMessage_ = other.errorMessage_;
+          onChanged();
+        }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
@@ -799,8 +943,8 @@ public final class MessageProto {
         if (!hasType()) {
           return false;
         }
-        if (hasChatMessage()) {
-          if (!getChatMessage().isInitialized()) {
+        for (int i = 0; i < getChatMessageCount(); i++) {
+          if (!getChatMessage(i).isInitialized()) {
             return false;
           }
         }
@@ -862,117 +1006,239 @@ public final class MessageProto {
         return this;
       }
 
-      private proto.ChatMessageProto.ChatMessage chatMessage_ = null;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          proto.ChatMessageProto.ChatMessage, proto.ChatMessageProto.ChatMessage.Builder, proto.ChatMessageProto.ChatMessageOrBuilder> chatMessageBuilder_;
-      /**
-       * <code>optional .proto.ChatMessage chatMessage = 2;</code>
-       */
-      public boolean hasChatMessage() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
+      private java.util.List<proto.ChatMessageProto.ChatMessage> chatMessage_ =
+        java.util.Collections.emptyList();
+      private void ensureChatMessageIsMutable() {
+        if (!((bitField0_ & 0x00000002) == 0x00000002)) {
+          chatMessage_ = new java.util.ArrayList<proto.ChatMessageProto.ChatMessage>(chatMessage_);
+          bitField0_ |= 0x00000002;
+         }
       }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          proto.ChatMessageProto.ChatMessage, proto.ChatMessageProto.ChatMessage.Builder, proto.ChatMessageProto.ChatMessageOrBuilder> chatMessageBuilder_;
+
       /**
-       * <code>optional .proto.ChatMessage chatMessage = 2;</code>
+       * <code>repeated .proto.ChatMessage chatMessage = 2;</code>
        */
-      public proto.ChatMessageProto.ChatMessage getChatMessage() {
+      public java.util.List<proto.ChatMessageProto.ChatMessage> getChatMessageList() {
         if (chatMessageBuilder_ == null) {
-          return chatMessage_ == null ? proto.ChatMessageProto.ChatMessage.getDefaultInstance() : chatMessage_;
+          return java.util.Collections.unmodifiableList(chatMessage_);
         } else {
-          return chatMessageBuilder_.getMessage();
+          return chatMessageBuilder_.getMessageList();
         }
       }
       /**
-       * <code>optional .proto.ChatMessage chatMessage = 2;</code>
+       * <code>repeated .proto.ChatMessage chatMessage = 2;</code>
        */
-      public Builder setChatMessage(proto.ChatMessageProto.ChatMessage value) {
+      public int getChatMessageCount() {
+        if (chatMessageBuilder_ == null) {
+          return chatMessage_.size();
+        } else {
+          return chatMessageBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .proto.ChatMessage chatMessage = 2;</code>
+       */
+      public proto.ChatMessageProto.ChatMessage getChatMessage(int index) {
+        if (chatMessageBuilder_ == null) {
+          return chatMessage_.get(index);
+        } else {
+          return chatMessageBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .proto.ChatMessage chatMessage = 2;</code>
+       */
+      public Builder setChatMessage(
+          int index, proto.ChatMessageProto.ChatMessage value) {
         if (chatMessageBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          chatMessage_ = value;
+          ensureChatMessageIsMutable();
+          chatMessage_.set(index, value);
           onChanged();
         } else {
-          chatMessageBuilder_.setMessage(value);
+          chatMessageBuilder_.setMessage(index, value);
         }
-        bitField0_ |= 0x00000002;
         return this;
       }
       /**
-       * <code>optional .proto.ChatMessage chatMessage = 2;</code>
+       * <code>repeated .proto.ChatMessage chatMessage = 2;</code>
        */
       public Builder setChatMessage(
+          int index, proto.ChatMessageProto.ChatMessage.Builder builderForValue) {
+        if (chatMessageBuilder_ == null) {
+          ensureChatMessageIsMutable();
+          chatMessage_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          chatMessageBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .proto.ChatMessage chatMessage = 2;</code>
+       */
+      public Builder addChatMessage(proto.ChatMessageProto.ChatMessage value) {
+        if (chatMessageBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureChatMessageIsMutable();
+          chatMessage_.add(value);
+          onChanged();
+        } else {
+          chatMessageBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .proto.ChatMessage chatMessage = 2;</code>
+       */
+      public Builder addChatMessage(
+          int index, proto.ChatMessageProto.ChatMessage value) {
+        if (chatMessageBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureChatMessageIsMutable();
+          chatMessage_.add(index, value);
+          onChanged();
+        } else {
+          chatMessageBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .proto.ChatMessage chatMessage = 2;</code>
+       */
+      public Builder addChatMessage(
           proto.ChatMessageProto.ChatMessage.Builder builderForValue) {
         if (chatMessageBuilder_ == null) {
-          chatMessage_ = builderForValue.build();
+          ensureChatMessageIsMutable();
+          chatMessage_.add(builderForValue.build());
           onChanged();
         } else {
-          chatMessageBuilder_.setMessage(builderForValue.build());
+          chatMessageBuilder_.addMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00000002;
         return this;
       }
       /**
-       * <code>optional .proto.ChatMessage chatMessage = 2;</code>
+       * <code>repeated .proto.ChatMessage chatMessage = 2;</code>
        */
-      public Builder mergeChatMessage(proto.ChatMessageProto.ChatMessage value) {
+      public Builder addChatMessage(
+          int index, proto.ChatMessageProto.ChatMessage.Builder builderForValue) {
         if (chatMessageBuilder_ == null) {
-          if (((bitField0_ & 0x00000002) == 0x00000002) &&
-              chatMessage_ != null &&
-              chatMessage_ != proto.ChatMessageProto.ChatMessage.getDefaultInstance()) {
-            chatMessage_ =
-              proto.ChatMessageProto.ChatMessage.newBuilder(chatMessage_).mergeFrom(value).buildPartial();
-          } else {
-            chatMessage_ = value;
-          }
+          ensureChatMessageIsMutable();
+          chatMessage_.add(index, builderForValue.build());
           onChanged();
         } else {
-          chatMessageBuilder_.mergeFrom(value);
+          chatMessageBuilder_.addMessage(index, builderForValue.build());
         }
-        bitField0_ |= 0x00000002;
         return this;
       }
       /**
-       * <code>optional .proto.ChatMessage chatMessage = 2;</code>
+       * <code>repeated .proto.ChatMessage chatMessage = 2;</code>
+       */
+      public Builder addAllChatMessage(
+          java.lang.Iterable<? extends proto.ChatMessageProto.ChatMessage> values) {
+        if (chatMessageBuilder_ == null) {
+          ensureChatMessageIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, chatMessage_);
+          onChanged();
+        } else {
+          chatMessageBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .proto.ChatMessage chatMessage = 2;</code>
        */
       public Builder clearChatMessage() {
         if (chatMessageBuilder_ == null) {
-          chatMessage_ = null;
+          chatMessage_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000002);
           onChanged();
         } else {
           chatMessageBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
       /**
-       * <code>optional .proto.ChatMessage chatMessage = 2;</code>
+       * <code>repeated .proto.ChatMessage chatMessage = 2;</code>
        */
-      public proto.ChatMessageProto.ChatMessage.Builder getChatMessageBuilder() {
-        bitField0_ |= 0x00000002;
-        onChanged();
-        return getChatMessageFieldBuilder().getBuilder();
+      public Builder removeChatMessage(int index) {
+        if (chatMessageBuilder_ == null) {
+          ensureChatMessageIsMutable();
+          chatMessage_.remove(index);
+          onChanged();
+        } else {
+          chatMessageBuilder_.remove(index);
+        }
+        return this;
       }
       /**
-       * <code>optional .proto.ChatMessage chatMessage = 2;</code>
+       * <code>repeated .proto.ChatMessage chatMessage = 2;</code>
        */
-      public proto.ChatMessageProto.ChatMessageOrBuilder getChatMessageOrBuilder() {
-        if (chatMessageBuilder_ != null) {
-          return chatMessageBuilder_.getMessageOrBuilder();
-        } else {
-          return chatMessage_ == null ?
-              proto.ChatMessageProto.ChatMessage.getDefaultInstance() : chatMessage_;
+      public proto.ChatMessageProto.ChatMessage.Builder getChatMessageBuilder(
+          int index) {
+        return getChatMessageFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .proto.ChatMessage chatMessage = 2;</code>
+       */
+      public proto.ChatMessageProto.ChatMessageOrBuilder getChatMessageOrBuilder(
+          int index) {
+        if (chatMessageBuilder_ == null) {
+          return chatMessage_.get(index);  } else {
+          return chatMessageBuilder_.getMessageOrBuilder(index);
         }
       }
       /**
-       * <code>optional .proto.ChatMessage chatMessage = 2;</code>
+       * <code>repeated .proto.ChatMessage chatMessage = 2;</code>
        */
-      private com.google.protobuf.SingleFieldBuilderV3<
+      public java.util.List<? extends proto.ChatMessageProto.ChatMessageOrBuilder> 
+           getChatMessageOrBuilderList() {
+        if (chatMessageBuilder_ != null) {
+          return chatMessageBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(chatMessage_);
+        }
+      }
+      /**
+       * <code>repeated .proto.ChatMessage chatMessage = 2;</code>
+       */
+      public proto.ChatMessageProto.ChatMessage.Builder addChatMessageBuilder() {
+        return getChatMessageFieldBuilder().addBuilder(
+            proto.ChatMessageProto.ChatMessage.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .proto.ChatMessage chatMessage = 2;</code>
+       */
+      public proto.ChatMessageProto.ChatMessage.Builder addChatMessageBuilder(
+          int index) {
+        return getChatMessageFieldBuilder().addBuilder(
+            index, proto.ChatMessageProto.ChatMessage.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .proto.ChatMessage chatMessage = 2;</code>
+       */
+      public java.util.List<proto.ChatMessageProto.ChatMessage.Builder> 
+           getChatMessageBuilderList() {
+        return getChatMessageFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
           proto.ChatMessageProto.ChatMessage, proto.ChatMessageProto.ChatMessage.Builder, proto.ChatMessageProto.ChatMessageOrBuilder> 
           getChatMessageFieldBuilder() {
         if (chatMessageBuilder_ == null) {
-          chatMessageBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+          chatMessageBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
               proto.ChatMessageProto.ChatMessage, proto.ChatMessageProto.ChatMessage.Builder, proto.ChatMessageProto.ChatMessageOrBuilder>(
-                  getChatMessage(),
+                  chatMessage_,
+                  ((bitField0_ & 0x00000002) == 0x00000002),
                   getParentForChildren(),
                   isClean());
           chatMessage_ = null;
@@ -1337,6 +1603,82 @@ public final class MessageProto {
         }
         return friendListMesageBuilder_;
       }
+
+      private java.lang.Object errorMessage_ = "";
+      /**
+       * <code>optional string errorMessage = 5;</code>
+       */
+      public boolean hasErrorMessage() {
+        return ((bitField0_ & 0x00000010) == 0x00000010);
+      }
+      /**
+       * <code>optional string errorMessage = 5;</code>
+       */
+      public java.lang.String getErrorMessage() {
+        java.lang.Object ref = errorMessage_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            errorMessage_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string errorMessage = 5;</code>
+       */
+      public com.google.protobuf.ByteString
+          getErrorMessageBytes() {
+        java.lang.Object ref = errorMessage_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          errorMessage_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string errorMessage = 5;</code>
+       */
+      public Builder setErrorMessage(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000010;
+        errorMessage_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string errorMessage = 5;</code>
+       */
+      public Builder clearErrorMessage() {
+        bitField0_ = (bitField0_ & ~0x00000010);
+        errorMessage_ = getDefaultInstance().getErrorMessage();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string errorMessage = 5;</code>
+       */
+      public Builder setErrorMessageBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000010;
+        errorMessage_ = value;
+        onChanged();
+        return this;
+      }
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
@@ -1402,13 +1744,14 @@ public final class MessageProto {
     java.lang.String[] descriptorData = {
       "\n\023proto/Message.proto\022\005proto\032\027proto/Chat" +
       "Message.proto\032\030proto/LoginMessage.proto\032" +
-      "\035proto/FriendListMessage.proto\"\366\001\n\007Messa" +
+      "\035proto/FriendListMessage.proto\"\236\002\n\007Messa" +
       "ge\022!\n\004type\030\001 \002(\0162\023.proto.Message.Type\022\'\n" +
-      "\013chatMessage\030\002 \001(\0132\022.proto.ChatMessage\022)" +
+      "\013chatMessage\030\002 \003(\0132\022.proto.ChatMessage\022)" +
       "\n\014loginMessage\030\003 \001(\0132\023.proto.LoginMessag" +
       "e\0222\n\020friendListMesage\030\004 \003(\0132\030.proto.Frie" +
-      "ndListMessage\"@\n\004Type\022\020\n\014LoginMessage\020\000\022" +
-      "\017\n\013ChatMessage\020\001\022\025\n\021FriendListMessage\020\002B" +
+      "ndListMessage\022\024\n\014errorMessage\030\005 \001(\t\"R\n\004T" +
+      "ype\022\020\n\014LoginMessage\020\000\022\017\n\013ChatMessage\020\001\022\025" +
+      "\n\021FriendListMessage\020\002\022\020\n\014ErrorMessage\020\003B" +
       "\016B\014MessageProto"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
@@ -1431,7 +1774,7 @@ public final class MessageProto {
     internal_static_proto_Message_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_proto_Message_descriptor,
-        new java.lang.String[] { "Type", "ChatMessage", "LoginMessage", "FriendListMesage", });
+        new java.lang.String[] { "Type", "ChatMessage", "LoginMessage", "FriendListMesage", "ErrorMessage", });
     proto.ChatMessageProto.getDescriptor();
     proto.LoginMessageProto.getDescriptor();
     proto.FriendListMessageProto.getDescriptor();

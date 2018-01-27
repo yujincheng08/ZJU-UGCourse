@@ -1,20 +1,23 @@
 package Client;
 
-import java.sql.*;
-import java.util.Vector;
+import proto.ChatMessageProto.ChatMessage;
 
-@SuppressWarnings({"SqlNoDataSourceInspection", "SqlResolve"})
+import java.sql.*;
+import java.util.ArrayList;
+
+@SuppressWarnings({"SqlNoDataSourceInspection", "SqlResolve", "SqlDialectInspection"})
 public class DBController {
 
     private Connection connection;
     static private final String [] createTableQuery = new String[]{"" +
             "CREATE TABLE IF NOT EXISTS userChatRecord " +
             "(" +
-            "   userID INTEGER NOT NULL, " +
+            "   fromID INTEGER NOT NULL, " +
+            "   toID INTEGER NOT NULL, " +
             "   content TEXT NOT NULL, " +
             "   timestamp INTEGER " +
             "       DEFAULT ( CAST(STRFTIME('%s', 'NOW') /60*60 * 1000 + STRFTIME('%f', 'NOW')*1000 AS INTEGER)) NOT NULL, " +
-            "   PRIMARY KEY (userID, timestamp)" +
+            "   PRIMARY KEY (fromID, toID, timestamp)" +
             ");",
             "CREATE TABLE IF NOT EXISTS grouptChatRecord" +
             "(" +
@@ -27,14 +30,15 @@ public class DBController {
     };
     static private final String insertDefaultQuery = "" +
             "INSERT INTO userChatRecord " +
-            "(userID, content) VALUES (?,?);";
+            "(fromID, toID, content) VALUES (?,?,?);";
     static private final String insertQuery =
             "INSERT INTO userChatRecord " +
-            "(userID, content, timestamp) VALUES (?,?,?);";
+            "(fromID, toID, content, timestamp) VALUES (?,?,?,?);";
     static private final String getRecordQuery = "" +
-            "SELECT timestamp, content " +
-            "FROM chatRecord " +
-            "WHERE userID = ? " +
+            "SELECT fromID, timestamp, content " +
+            "FROM userChatRecord " +
+            "WHERE fromID = ? " +
+            "OR toID = ?" +
             "ORDER BY timestamp DESC " +
             "LIMIT ? OFFSET ?;";
 
@@ -47,57 +51,50 @@ public class DBController {
             statement.execute(query);
     }
 
-    public void storeChatRecord(long userID, String content)
-            throws SQLException {
-        PreparedStatement statement = connection.prepareStatement(insertDefaultQuery);
-        statement.setLong(1, userID);
-        statement.setString(2, content);
-        statement.execute();
-    }
-
-    public void storeChatRecord(long userID, ChatRecord chatRecord)
+    public void storeChatRecord(long userID, ChatMessage chatMessage)
             throws SQLException {
         PreparedStatement statement = connection.prepareStatement(insertQuery);
-        statement.setLong(1, userID);
-        statement.setString(2, chatRecord.getContent());
-        statement.setLong(3, chatRecord.getTimestamp());
+        statement.setLong(1, chatMessage.getUserID());
+        statement.setLong(2, userID);
+        statement.setString(3, chatMessage.getContent());
+        statement.setLong(4, chatMessage.getTimestamp());
         statement.execute();
     }
 
-    public Vector<ChatRecord> getChartRecord(long userID)
+    public void storeSendRecord(long userID, ChatMessage chatMessage) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement(insertQuery);
+        statement.setLong(1, userID);
+        statement.setLong(2, chatMessage.getUserID());
+        statement.setString(3, chatMessage.getContent());
+        statement.setLong(4, chatMessage.getTimestamp());
+        statement.execute();
+    }
+
+    public Iterable<ChatMessage> getChartRecord(long userID)
             throws SQLException {
         return getChartRecord(userID, 0);
     }
 
-    public Vector<ChatRecord> getChartRecord(long userID, int offset)
+    public Iterable<ChatMessage> getChartRecord(long userID, int offset)
             throws SQLException {
         return getChartRecord(userID, 30, offset);
     }
 
-    public Vector<ChatRecord> getChartRecord(long userID, int limit, int offset)
+    public ArrayList<ChatMessage> getChartRecord(long userID, int limit, int offset)
             throws SQLException {
-        Vector<ChatRecord> ChatRecordList = new Vector<>();
+        ArrayList<ChatMessage> ChatRecordList = new ArrayList<>();
         PreparedStatement statement = connection.prepareStatement(getRecordQuery);
         statement.setLong(1, userID);
-        statement.setInt(2, limit);
-        statement.setInt(3, offset);
+        statement.setLong(2, userID);
+        statement.setInt(3, limit);
+        statement.setInt(4, offset);
         ResultSet result = statement.executeQuery();
         while (result.next()) {
-            ChatRecordList.add(new ChatRecord(result.getLong("timestamp"), result.getString("content")));
+            ChatRecordList.add(
+                    ChatMessage.newBuilder().setUserID(result.getLong("fromID"))
+                            .setTimestamp(result.getLong("timestamp"))
+                    .setContent(result.getString("content")).build());
         }
         return ChatRecordList;
     }
-
-    public static void main(String[] arg) {
-        try {
-            DBController dbController = new DBController("./db.db");
-            dbController.storeChatRecord(1L, "Hello!");
-            Vector<ChatRecord> records = dbController.getChartRecord(1L, 10, 1);
-            for (ChatRecord record : records)
-                System.out.println(record);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
 }

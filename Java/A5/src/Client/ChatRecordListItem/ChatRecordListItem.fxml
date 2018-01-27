@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="67.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.ChatRecordListItem.ChatRecordListItemController">
+    <HBox>
+        <Label fx:id="nickNameLabel" text="Label" />
+        <Label fx:id="idLabel" text="Label">
+            <HBox.margin>
+                <Insets left="20.0" />
+            </HBox.margin>
+        </Label>
+        <Label fx:id="timeLabel" text="Label">
+            <HBox.margin>
+                <Insets left="20.0" />
+            </HBox.margin>
+        </Label>
+    </HBox>
+    <TextArea fx:id="contentArea" editable="false" />
+</VBox>

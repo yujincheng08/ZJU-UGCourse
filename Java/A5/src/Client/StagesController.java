@@ -15,6 +15,7 @@ class StagesController
 {
     protected static final String PRIMARY_STAGE_NAME = "PrimaryStage";
     protected HashMap<String, Stage> stages = new HashMap<>();
+    protected HashMap<String, StageController> controllers = new HashMap<>();
     protected int shownStageCount = 0;
 
     protected void stageClosed(String name){}
@@ -30,12 +31,20 @@ class StagesController
         return stages.get(name);
     }
 
+    public StageController getController(String name) {
+        return controllers.get(name);
+    }
+
     public void setPrimaryStage(Stage primaryStage)
     {
         if(!stages.containsKey(PRIMARY_STAGE_NAME))
             addStage(PRIMARY_STAGE_NAME, primaryStage);
         else
             throw new RuntimeException("Primary stage already exists");
+    }
+
+    public boolean isRegistered(String name) {
+        return stages.containsKey(name);
     }
 
     public Stage loadStage(String name, String resource, StageStyle... styles)
@@ -65,6 +74,7 @@ class StagesController
         for (StageStyle style : styles)
             tmpStage.initStyle(style);
         tmpStage.setTitle(name);
+        controllers.put(name, stageController);
         return tmpStage;
     }
 
@@ -73,11 +83,8 @@ class StagesController
         if(getStage(name) != null)
             return false;
         try{
-
             Stage tmpStage = loadStage(name, resource, styles);
             this.addStage(name, tmpStage);
-
-
             return true;
         }catch(Exception e){
             e.printStackTrace();
@@ -131,7 +138,9 @@ class StagesController
         Stage tmpStage = stages.remove(name);
         if(tmpStage == null)
             throw new RuntimeException("Stage " + name + " does not exists");
-        else
+        else {
             tmpStage.close();
+            controllers.remove(name);
+        }
     }
 }

@@ -3,9 +3,10 @@ package Server;
 import org.java_websocket.WebSocket;
 
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Session {
-    private HashMap<Long, WebSocket> sessions = new HashMap<>();
+    private ConcurrentHashMap<Long, WebSocket> sessions = new ConcurrentHashMap<>();
     void login(long user, WebSocket webSocket) {
         if(sessions.containsKey(user)) {
             WebSocket old = sessions.get(user);
@@ -21,12 +22,18 @@ public class Session {
         sessions.remove(user);
     }
 
-    void sendTo(long user, byte [] message){
-        if(sessions.containsKey(user)) {
-            new Thread(()->sessions.get(user).send(message)).run();
+    boolean sendTo(long user, byte [] message){
+        if(isOnline(user)) {
+            sessions.get(user).send(message);
+            return true;
         }
         else
-           ; //DBManager.store(user, message);
+            return false;
     }
+
+    boolean isOnline(long user) {
+        return sessions.containsKey(user) && sessions.get(user).isOpen();
+    }
+
 
 }
