@@ -1,0 +1,2 @@
+CC=gcc
+default: count
