@@ -1,20 +1,20 @@
 %{
-unsigned wordCount = 0;
-unsigned charCount = 0;
-unsigned lineCount = 0;
+unsigned wordCount = 0u;
+unsigned charCount = 0u;
+unsigned lineCount = 0u;
 %}
-/*rules begin*/
+whitespace [ \t]
 %%
-\s {charCount++;}
-[a-zA-Z0-9\\]+ {
-  wordCount++;
-  charCount += strlen(yytext);
+whitespace {charCount++; /*whitespace char*/}
+[a-zA-Z0-9]+ {
+  wordCount++; // This is a word
+  charCount += strlen(yytext); // and plus the length
 }
 \n {
-  lineCount++;
-  charCount++;
+  lineCount++; // One line ends
+  charCount++; // This is also a char
 }
-. {charCount++;}
+. { charCount++; /*Other char*/}
 %%
 int main() {
   yylex();
