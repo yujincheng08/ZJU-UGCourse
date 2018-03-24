@@ -1,8 +1,6 @@
 import java.io.File;
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.Socket;
-import java.net.ServerSocket;
+import java.net.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -30,9 +28,10 @@ class MiniHttp {
                 Socket client = serverSocket.accept();
                 handlerPool.execute(new RequestHandler(client, home));
             }
+        } catch (BindException e){
+            System.err.println(e.getLocalizedMessage());
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 }

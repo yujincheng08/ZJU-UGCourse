@@ -15,7 +15,6 @@ class Store {
       this.isAuth = config.isAuth;
   }
 
-
   fetchConfig() {
     let host = '';
     if (process.env.NODE_ENV !== 'production')
