@@ -13,7 +13,7 @@ export default class Header extends React.Component {
           <ListItem component={NavLink} to={"/register"} button>
             <ListItemText primary={"Register"}/>
           </ListItem>
-          <ListItem component={NavLink} to={"/Login"} button>
+          <ListItem component={NavLink} to={"/login"} button>
             <ListItemText primary={"Login"}/>
           </ListItem>
         </nav>

@@ -4,3 +4,6 @@
 [submodule "DBS/MiniSQL"]
 	path = DBS/MiniSQL
 	url = git@github.com:yujincheng08/MiniSQL.git
+[submodule "AI/MiniAlphaReversi"]
+	path = AI/MiniAlphaReversi
+	url = git@github.com:yujincheng08/MiniAlphaReversi.git

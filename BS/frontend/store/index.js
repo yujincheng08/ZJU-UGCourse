@@ -1,28 +1,9 @@
-import {action, observable} from 'mobx';
-import CONFIG from 'store/default';
-import DEV from 'store/dev';
+import Profile from 'store/Profile';
+import Auth from 'store/Auth';
 
 class Store {
-  @observable isAuth = false;
-
-  constructor() {
-    this.isAuth = CONFIG.isAuth;
-    this.fetchConfig();
-  }
-
-  @action updateConfig(config) {
-    if (config.isAuth)
-      this.isAuth = config.isAuth;
-  }
-
-  fetchConfig() {
-    let host = '';
-    if (process.env.NODE_ENV !== 'production')
-      host = `${DEV.protocol}://${DEV.host}:${DEV.port}`;
-    fetch(`${host}/config`)
-      .then(response => response.json())
-      .then(json => this.updateConfig(json));
-  }
+  profile = new Profile;
+  auth = new Auth;
 }
 
 const STORE = new Store();

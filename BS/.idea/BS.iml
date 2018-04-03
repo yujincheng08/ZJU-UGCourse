@@ -8,5 +8,13 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="@types/mongoose" level="application" />
+    <orderEntry type="library" name="@types/express" level="application" />
+    <orderEntry type="library" name="@types/react-router-dom" level="application" />
+    <orderEntry type="library" name="@types/express-jwt" level="application" />
+    <orderEntry type="library" name="@types/superagent" level="application" />
+    <orderEntry type="library" name="@types/passport" level="application" />
+    <orderEntry type="library" name="@types/passport-local" level="application" />
+    <orderEntry type="library" name="@types/jsonwebtoken" level="application" />
   </component>
 </module>

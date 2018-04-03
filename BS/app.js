@@ -1,32 +1,41 @@
-import path from 'path';
-import express from 'express';
+import {secret} from 'Config';
+import Router from 'Router';
+import Express from 'express';
 import session from 'express-session';
-import history from 'connect-history-api-fallback';
+import cors from 'cors';
+import methodOverride from 'method-override';
+import bodyParser from 'body-parser';
+import mongoose from 'mongoose';
 
-let app = express();
+class App extends Express {
+  PORT = process.env.PORT || 3000;
 
-app.get('/config', (req, res) => {
-  res.set("Access-Control-Allow-Origin", "*");
-  res.set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS");
-  res.set("Access-Control-Allow-Headers", "X-Requested-With, content-type, Authorization");
-  res.send(JSON.stringify({
-    isAuth: true,
-  }));
-})
-;
 
-app.use(history());
-app.use(express.static(path.join(__dirname, 'dist')));
+  static MONGODB = "mongodb://localhost/test";
 
-app.get('/', (req, res) => {
-  res.send(path.join(__dirname, 'index.html'));
-});
+  constructor() {
+    super();
+    this.use(cors());
+    this.use(methodOverride());
+    this.use(bodyParser.urlencoded({extended: false}));
+    this.use(bodyParser.json());
+    this.use(session({
+      secret: secret,
+      resave: false,
+      saveUninitialized: false,
+    }));
 
-app.use(session({
-  secret: 'LoveSy',
-  resave: false,
-  saveUninitialized: false,
-}));
 
-app.listen(3000);
+    this.use(Router);
 
+    mongoose.connect(App.MONGODB);
+    this.listen(this.PORT, this.listening);
+  }
+
+  listening = () => {
+    console.log(`listening on ${this.PORT}`)
+  };
+
+}
+
+new App();
