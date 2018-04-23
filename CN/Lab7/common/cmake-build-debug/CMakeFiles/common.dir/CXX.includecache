@@ -1,0 +1,32 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/lovesy/Course/CN/Lab7/common/message.cpp
+iostream
+-
+algorithm
+-
+sstream
+-
+iterator
+-
+message.h
+/home/lovesy/Course/CN/Lab7/common/message.h
+
+/home/lovesy/Course/CN/Lab7/common/message.h
+cstdint
+-
+string
+-
+ostream
+-
+istream
+-
+memory
+-
+

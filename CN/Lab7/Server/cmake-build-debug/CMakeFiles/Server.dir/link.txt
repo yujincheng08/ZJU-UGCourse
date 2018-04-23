@@ -1,0 +1,1 @@
+/usr/bin/c++  -g   CMakeFiles/Server.dir/main.cpp.o  -o Server 

@@ -1,0 +1,2 @@
+/usr/bin/ar qc libcommon.a  CMakeFiles/common.dir/message.cpp.o
+/usr/bin/ranlib libcommon.a
