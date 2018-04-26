@@ -1,9 +1,12 @@
 [submodule "simplex"]
 	path = simplex
 	url = git@github.com:yao-zou/simplex.git
+	branch = master
 [submodule "DBS/MiniSQL"]
 	path = DBS/MiniSQL
 	url = git@github.com:yujincheng08/MiniSQL.git
+	branch = master
 [submodule "AI/MiniAlphaReversi"]
 	path = AI/MiniAlphaReversi
 	url = git@github.com:yujincheng08/MiniAlphaReversi.git
+	branch = master

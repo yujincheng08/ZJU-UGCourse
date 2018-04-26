@@ -103,3 +103,28 @@
     - 多核优化
     - `Amdahl`定律
 - 并行计算的实现
+    - 结构并行
+        - `Folk/Join`框架
+    - 函数并行
+        - Future框架
+        - 记忆优化
+    - 循环并行
+        - Forall框架
+        - 栅栏问题
+## 递归
+- Reference
+    - The Structure and Interpretation of Programing Language
+- 线性递归和迭代
+    - 递归：展开过程不计算、收缩过程计算
+    - 迭代：没有展开过程
+    - 例子
+        - 牛顿逼近算平方根
+        - 阶乘
+- 树递归和迭代
+    - 树递归
+    - 帕斯卡三角
+    - 指数计算的优化
+- 高阶函数和Lambda实现
+    - 累加
+    - 求方程的根
+
