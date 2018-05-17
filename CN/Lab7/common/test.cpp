@@ -3,32 +3,49 @@
 //
 
 #include <iostream>
-#include <sstream>
-#include <boost/asio.hpp>
-
-#include "message.h"
+#include <cstring>
+#include "socket.h"
 
 using namespace std;
-using namespace boost::asio;
 
-int main() {
-  ip::tcp::iostream stream;
-  stream.expires_from_now(boost::posix_time::seconds(60));
-  stream.connect("www.boost.org", "http");
-  stream << "GET /LICENSE_1_0.txt HTTP/1.0\r\n";
-  stream << "Host: www.boost.org\r\n";
-  stream << "Accept: */*\r\n";
-  stream << "Connection: close\r\n\r\n";
-  stream.flush();
-  Client newClient;
-  stream >> newClient;
-
-  Client client(233u, "::", 666u);
-  cout << client.id() << client.ip() << client.port() << endl;
-  stringstream ss;
-  ss << client;
-  ss >> newClient;
-  cout << newClient.id() << newClient.ip() << newClient.port();
-  return 0;
+int main(int argc, char *argv[]) {
+  std::uint16_t port = 23333u;
+  if (argc < 2) {
+    std::cerr << "No enough options" << std::endl;
+    return 2;
+  }
+  if (argv[1] == std::string("server")) {
+    try {
+      ServerSocket serverSocket(port);
+      while (true) {
+        auto socket = serverSocket.accept();
+        size_t size;
+        auto serializeSize = socket.read(sizeof(size));
+        std::memcpy(&size, &serializeSize[0], sizeof(size));
+        cout << size << endl;
+        auto toRead = socket.read(size);
+        for (auto const &i : toRead)
+          cout << i;
+        cout << endl;
+        socket.close();
+      }
+    } catch (SocketException const &e) {
+      std::cerr << e.what() << std::endl;
+      return 1;
+    }
+  } else if (argv[1] == std::string("client")) {
+    try {
+      Socket socket("localhost", port);
+      string sendString("Hello World!");
+      vector<unsigned char> toWrite{sendString.begin(), sendString.end()};
+      auto size = toWrite.size();
+      auto serializeSize = reinterpret_cast<unsigned char *>(&size);
+      socket.write({serializeSize, serializeSize + sizeof(size)});
+      socket.write(toWrite);
+    } catch (SocketException const &e) {
+      std::cerr << e.what() << std::endl;
+      return 1;
+    }
+  }
 }
 

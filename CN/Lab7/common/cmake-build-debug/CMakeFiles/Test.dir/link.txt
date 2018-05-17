@@ -1,1 +1,0 @@
-/usr/bin/c++  -g   CMakeFiles/Test.dir/test.cpp.o  -o Test libcommon.a /usr/lib/x86_64-linux-gnu/libboost_system.so -lpthread 
