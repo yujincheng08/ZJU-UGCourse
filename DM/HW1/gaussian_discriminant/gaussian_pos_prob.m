@@ -17,6 +17,16 @@ function p = gaussian_pos_prob(X, Mu, Sigma, Phi)
 
 N = size(X, 2);
 K = length(Phi);
-P = zeros(N, K);
-
+p = zeros(N, K);
+for n = 1:N
+    for k = 1:K
+        x = X(:,n);
+        mu = Mu(:,k);
+        sigma = Sigma(:,:,k);
+        p(n, k) = Phi(k) * exp((x-mu)' * sigma^-1 * (x-mu)/-2) ./ (2 * pi * det(sigma));
+    end
+end
+p = p ./ sum(p,2);
 % Your code HERE
+end
+

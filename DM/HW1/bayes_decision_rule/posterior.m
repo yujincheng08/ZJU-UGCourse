@@ -9,6 +9,6 @@ function p = posterior(x)
 
 [C, N] = size(x);
 l = likelihood(x);
-total = sum(x(:));
-p = l .* sum(x,2) ./ total;
+p = l .* sum(x,2);
+p = p ./ sum(p, 1);
 end

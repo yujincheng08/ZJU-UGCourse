@@ -26,7 +26,7 @@ for i=1:size(l,2)
     end
 end
 
-fprintf("test error is: %d\n.", test_error);
+fprintf("test error is: %d.\n", test_error);
 
 %% Part2 posterior:
 p = posterior(train_x);
@@ -44,10 +44,10 @@ for i=1:size(p,2)
         test_error = test_error + test_x(2,i);
     end
 end
-fprintf("test error is: %d\n.", test_error);
+fprintf("test error is: %d.\n", test_error);
 
 %% Part3 risk:
 risk = [0, 1; 2, 0];
 bayes_risk = risk * p;
 min_risk = sum(min(bayes_risk));
-fprintf("Minimum risk: %f\n", min_risk);
+fprintf("Minimum risk: %f.\n", min_risk);
