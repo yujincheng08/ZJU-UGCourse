@@ -16,6 +16,7 @@ function p = gaussian_pos_prob(X, Mu, Sigma, Phi)
 %                   with in K Gaussian distributions.
 
 N = size(X, 2);
+M = size(X, 1);
 K = length(Phi);
 p = zeros(N, K);
 for n = 1:N
@@ -23,7 +24,7 @@ for n = 1:N
         x = X(:,n);
         mu = Mu(:,k);
         sigma = Sigma(:,:,k);
-        p(n, k) = Phi(k) * exp((x-mu)' * sigma^-1 * (x-mu)/-2) ./ (2 * pi * det(sigma));
+        p(n, k) = Phi(k) * exp((x-mu)' * sigma^-1 * (x-mu)/-2) ./ (2 * pi * det(sigma) ^ M);
     end
 end
 p = p ./ sum(p,2);

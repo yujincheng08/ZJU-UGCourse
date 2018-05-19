@@ -15,7 +15,7 @@ l = likelihood(train_x);
 bar(range(1):range(2), l');
 xlabel('x');
 ylabel('P(x|\omega)');
-axis([range(1) - 1, range(2) + 1, 0, 0.5]);
+axis([range(1) - 1  , range(2) + 1, 0, 0.5]);
 
 test_error = 0;
 for i=1:size(l,2)

@@ -8,7 +8,6 @@ function l = likelihood(x)
 %
 
 [C, N] = size(x);
-l = zeros(C, N);
-%TODO
+l = x./sum(x,2);
 
 end

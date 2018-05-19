@@ -21,5 +21,31 @@ spam_test_tight = spconvert(spam_test);
 spam_test = sparse(size(spam_test_tight, 1), size(spam_train, 2));
 spam_test(:, 1:size(spam_test_tight, 2)) = spam_test_tight;
 
+
 %TODO
 %Implement a ham/spam email classifier, and calculate the accuracy of your classifier
+l = likelihood(x);
+[sorted_values, sorted_index] = sort(l(2,:)./l(1,:),'descend');
+top_10 = sorted_index(1:10);
+num_spam_test = size(spam_test, 1);
+num_ham_test = size(ham_test, 1);
+tp = 0; fp = 0; fn = 0; tn = 0;
+num_ham_predict = 0;
+log_ham = log(num_ham_train / (num_ham_train + num_spam_train));
+log_spam = log(num_spam_train / (num_ham_train + num_spam_train));
+for i=1:num_spam_test
+    if(spam_test(i,:)*log(l(2,:)') + log_spam > spam_test(i,:)*log(l(1,:)') + log_ham)
+        tp = tp + 1;
+    else
+        fn = fn + 1;
+    end
+end
+for i=1:num_ham_test
+    if(ham_test(i,:)*log(l(1,:)') + log_ham > ham_test(i,:)*log(l(2,:)') + log_spam)
+        tn = tn + 1;
+    else
+        fp = fp + 1;
+    end
+end
+
+accuracy = (tp + tn) / (num_ham_test + num_spam_test);
