@@ -24,7 +24,7 @@ for n = 1:N
         x = X(:,n);
         mu = Mu(:,k);
         sigma = Sigma(:,:,k);
-        p(n, k) = Phi(k) * exp((x-mu)' * sigma^-1 * (x-mu)/-2) ./ (2 * pi * det(sigma) ^ M);
+        p(n, k) = Phi(k) * exp((x-mu)' * sigma^-1 * (x-mu)/-2) ./ ((2 * pi)^(M/2) * sqrt(det(sigma)));
     end
 end
 p = p ./ sum(p,2);

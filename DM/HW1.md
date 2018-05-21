@@ -4,13 +4,13 @@
 - (a)
     1. BF
     1. C
-    1. AD
+    1. C
     1. BG
     1. AE
     1. AD
     1. BF
     1. AE
-    1. BG
+    1. BF
 - (b)
     No. Data set should be divided into training set and test data. And we should not maximize the performance of the training set, but that of the test set.
 
