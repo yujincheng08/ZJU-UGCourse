@@ -117,8 +117,9 @@ void Socket::connect(std::string const &hostname, std::uint16_t const &port) {
 
 Socket::Socket() = default;
 
-std::vector<unsigned char> Socket::read(size_t const &size) {
-  std::vector<unsigned char> result(size);
+std::string Socket::read(size_t const &size) {
+  std::string result;
+  result.resize(size);
   auto realSize = ::read(socket_, &result[0], size);
   if (realSize < 0)
     throw SocketException("Read error: " + std::string(strerror(errno)));
@@ -128,7 +129,7 @@ std::vector<unsigned char> Socket::read(size_t const &size) {
 
 }
 
-ssize_t Socket::write(std::vector<unsigned char> const &buff) {
+ssize_t Socket::write(std::string const &buff) {
   auto result = ::write(socket_, &buff[0], buff.size());
   if (result < 0)
     throw SocketException("Write error: " + std::string(strerror(errno)));

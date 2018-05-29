@@ -37,11 +37,10 @@ int main(int argc, char *argv[]) {
     try {
       Socket socket("localhost", port);
       string sendString("Hello World!");
-      vector<unsigned char> toWrite{sendString.begin(), sendString.end()};
-      auto size = toWrite.size();
+      auto size = sendString.size();
       auto serializeSize = reinterpret_cast<unsigned char *>(&size);
       socket.write({serializeSize, serializeSize + sizeof(size)});
-      socket.write(toWrite);
+      socket.write(sendString);
     } catch (SocketException const &e) {
       std::cerr << e.what() << std::endl;
       return 1;

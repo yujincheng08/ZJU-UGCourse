@@ -48,9 +48,9 @@ class Socket {
  public:
   explicit Socket();
   explicit Socket(std::string const &hostname, std::uint16_t const &port);
-  ssize_t write(std::vector<unsigned char> const &buff);
+  ssize_t write(std::string const &buff);
   void close();
-  std::vector<unsigned char> read(size_t const &size);
+  std::string read(size_t const &size);
   void connect(std::string const &hostname, std::uint16_t const &port);
 
  private:
