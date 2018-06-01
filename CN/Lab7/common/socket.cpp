@@ -18,7 +18,7 @@ extern "C" {
 
 ServerSocket::ServerSocket() = default;
 
-void ServerSocket::bind(std::string const &ip, std::uint16_t const &port, const unsigned int &backlog) {
+void ServerSocket::bind(std::string const &ip, std::string const &port, const unsigned int &backlog) {
   addrinfo hints{};
   hints.ai_family = PF_INET6;
   hints.ai_socktype = SOCK_STREAM;
@@ -28,7 +28,7 @@ void ServerSocket::bind(std::string const &ip, std::uint16_t const &port, const 
   const char *host = ip.empty() ? nullptr : ip.c_str();
 
   addrinfo *info;
-  if (auto s = getaddrinfo(host, std::to_string(port).c_str(), &hints, &info) < 0)
+  if (auto s = getaddrinfo(host, port.c_str(), &hints, &info) < 0)
     throw SocketException("Resolve error: " + std::string(gai_strerror(s)));
   for (auto address = info; address != nullptr; address = address->ai_next) {
     socket_ = socket(address->ai_family, address->ai_socktype, address->ai_protocol);
@@ -62,7 +62,8 @@ Socket ServerSocket::accept() {
   if (auto s = getnameinfo(reinterpret_cast<sockaddr *>(&address), addressLen, host, NI_MAXHOST,
                            service, NI_MAXSERV, NI_NUMERICSERV) < 0)
     throw SocketException("Resolve error: " + std::string(gai_strerror(s)));
-  std::cout << "Receive from: " << host << ':' << service << std::endl;
+  result.host_ = std::string(host);
+  result.service_ = std::string(service);
   return result;
 }
 
@@ -70,8 +71,7 @@ void ServerSocket::close() {
   ::close(socket_);
   isClose_ = true;
 }
-ServerSocket::ServerSocket(std::uint16_t const &port, unsigned const &backlog, std::string const &ip)
-    : ServerSocket() {
+ServerSocket::ServerSocket(std::string const &port, unsigned const &backlog, std::string const &ip) : ServerSocket() {
   bind(ip, port, backlog);
 }
 
@@ -80,12 +80,12 @@ ServerSocket::~ServerSocket() {
     close();
 }
 
-Socket::Socket(std::string const &hostname, std::uint16_t const &port)
+Socket::Socket(std::string const &hostname, std::string const &port)
     : Socket() {
   connect(hostname, port);
 }
 
-void Socket::connect(std::string const &hostname, std::uint16_t const &port) {
+void Socket::connect(std::string const &hostname, std::string const &port) {
   addrinfo hints{};
   hints.ai_family = AF_UNSPEC;
   hints.ai_socktype = SOCK_STREAM;
@@ -93,8 +93,8 @@ void Socket::connect(std::string const &hostname, std::uint16_t const &port) {
   hints.ai_protocol = 0;
 
   addrinfo *info;
-  if (auto s = getaddrinfo(hostname.c_str(), std::to_string(port).c_str(), &hints, &info) < 0)
-    throw SocketException("Hostname resolve error:" + std::string(gai_strerror(s)));
+  if (auto s = getaddrinfo(hostname.c_str(), port.c_str(), &hints, &info) < 0)
+    throw SocketException("Hostname resolve error: " + std::string(gai_strerror(s)));
 
   for (auto address = info; address != nullptr; address = address->ai_next) {
     socket_ = socket(address->ai_family, address->ai_socktype, address->ai_protocol);
@@ -113,6 +113,7 @@ void Socket::connect(std::string const &hostname, std::uint16_t const &port) {
       throw SocketException("Close socket error: " + std::string(strerror(errno)));
   }
   freeaddrinfo(info);
+  isClosed_ = false;
 }
 
 Socket::Socket() = default;
@@ -139,5 +140,6 @@ ssize_t Socket::write(std::string const &buff) {
 void Socket::close() {
   if (::close(socket_) < 0)
     throw SocketException("Close error: " + std::string(strerror(errno)));
+  isClosed_ = true;
 }
 

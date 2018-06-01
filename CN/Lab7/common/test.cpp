@@ -3,48 +3,39 @@
 //
 
 #include <iostream>
-#include <cstring>
-#include "socket.h"
+#include "message.h"
+#include <sstream>
 
 using namespace std;
 
 int main(int argc, char *argv[]) {
-  std::uint16_t port = 23333u;
-  if (argc < 2) {
-    std::cerr << "No enough options" << std::endl;
-    return 2;
-  }
-  if (argv[1] == std::string("server")) {
-    try {
-      ServerSocket serverSocket(port);
-      while (true) {
-        auto socket = serverSocket.accept();
-        size_t size;
-        auto serializeSize = socket.read(sizeof(size));
-        std::memcpy(&size, &serializeSize[0], sizeof(size));
-        cout << size << endl;
-        auto toRead = socket.read(size);
-        for (auto const &i : toRead)
-          cout << i;
-        cout << endl;
-        socket.close();
-      }
-    } catch (SocketException const &e) {
-      std::cerr << e.what() << std::endl;
-      return 1;
-    }
-  } else if (argv[1] == std::string("client")) {
-    try {
-      Socket socket("localhost", port);
-      string sendString("Hello World!");
-      auto size = sendString.size();
-      auto serializeSize = reinterpret_cast<unsigned char *>(&size);
-      socket.write({serializeSize, serializeSize + sizeof(size)});
-      socket.write(sendString);
-    } catch (SocketException const &e) {
-      std::cerr << e.what() << std::endl;
-      return 1;
-    }
+  Reply reply(RECIEVE);
+  stringstream ss;
+  ss << reply;
+  Reply newReply;
+  ss >> newReply;
+  cout << newReply.type() << newReply.hasTimestamp() << newReply.hasName() << newReply.hasMessage() << endl;
+  newReply.message("hello");
+  ss << reply;
+  ss >> newReply;
+  cout << newReply.type() << newReply.hasTimestamp() << newReply.hasName() << newReply.hasMessage() << endl;
+  cout << newReply.message() << endl;
+  newReply.name("bye");
+  ss << reply;
+  ss >> newReply;
+  cout << newReply.type() << newReply.hasTimestamp() << newReply.hasName() << newReply.hasMessage() << endl;
+  cout << newReply.name() << endl;
+  newReply.timestamp(1234u);
+  ss << reply;
+  ss >> newReply;
+  cout << newReply.type() << newReply.hasTimestamp() << newReply.hasName() << newReply.hasMessage() << endl;
+  cout << newReply.timestamp() << endl;
+  reply.client(ClientMessage(12, "::", 30));
+  reply.client(ClientMessage(80, "localhost", 20));
+  ss << reply;
+  ss >> newReply;
+  for (auto const &client : newReply.clients()) {
+    cout << client.id() << client.ip() << client.service() << endl;
   }
 }
 
