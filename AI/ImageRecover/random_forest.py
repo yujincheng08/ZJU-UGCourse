@@ -30,12 +30,14 @@ def fix_patch(c, w, h, patch_size, corr_img, recover_img):
     # train_y =
 
 
-def optimize(recover_img):
-    radius = 1
+def optimize(corr_img, recover_img):
+    radius = 2
     (channel, width, height) = recover_img.shape
     for c in range(channel):
         for w in range(width):
             for h in range(height):
+                if corr_img[c, w, h] != 0:
+                    continue
                 total = 0
                 count = 0
                 for dx in range(-radius, 1 + radius):
@@ -47,12 +49,12 @@ def optimize(recover_img):
                                 and 0 != new_h != new_w:
                             total += recover_img[c, new_w, new_h]
                             count += 1
-                if abs(total / count - recover_img[c, w, h]) > 20/255:
+                if abs(total / count - recover_img[c, w, h]) > 0.2:
                     recover_img[c, w, h] = total / count
 
 
 def fix_global(corr_img, recover_img):
-    rfr = RandomForestRegressor(n_estimators=10)
+    rfr = RandomForestRegressor(n_estimators=50)
     noise_mask = corr_img == 0
     sample_coordinates = np.nonzero(~noise_mask)
     # if len(sample_coordinates[0]) < 2 * patch_size:
@@ -87,15 +89,13 @@ def main():
     recover_img[np.nonzero(recover_img < 0)] = 0
 
     cv.namedWindow("Before", flags=0)
-    cv.imshow("Before", recover_img.transpose().copy())
-    for _ in range(3):
-        optimize(recover_img)
+    cv.imshow("Before", corr_img.transpose())
 
     cv.namedWindow("After", flags=0)
     cv.imshow("After", recover_img.transpose())
     cv.waitKey(0)
     cv.destroyAllWindows()
-    cv.imwrite(img_path + '_fixed.png', recover_img.transpose() * 255)
+    cv.imwrite(img_path + '_rfr.png', recover_img.transpose() * 255)
 
 
 if __name__ == '__main__':

@@ -69,6 +69,7 @@ def main():
     cv.imshow("After", recover_img.transpose())
     cv.waitKey(0)
     cv.destroyAllWindows()
+    cv.imwrite(img_path+'_baseblock.png', recover_img.transpose() * 255)
 
 
 if __name__ == '__main__':

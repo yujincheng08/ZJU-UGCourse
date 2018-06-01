@@ -8,7 +8,7 @@ from sklearn.ensemble import GradientBoostingRegressor
 
 def fix_global(corr_img, recover_img):
     g = GradientBoostingRegressor(loss='ls', max_depth=4, n_estimators=500)
-    noise_mask = corr_img== 0
+    noise_mask = corr_img == 0
     sample_coordinates = np.nonzero(~noise_mask)
     # if len(sample_coordinates[0]) < 2 * patch_size:
     #     return fix_patch(c, w, h, patch_size * 2, recover_img)
@@ -41,7 +41,7 @@ def main():
     recover_img[np.nonzero(recover_img > 255)] = 255
     recover_img[np.nonzero(recover_img < 0)] = 0
 
-    recover_img = cv.medianBlur(recover_img, 3)
+    # recover_img = cv.medianBlur(recover_img, 3)
 
     cv.namedWindow("Before", flags=0)
     cv.imshow("Before", corr_img.transpose())
@@ -49,6 +49,7 @@ def main():
     cv.imshow("After", recover_img.transpose())
     cv.waitKey(0)
     cv.destroyAllWindows()
+    cv.imwrite(img_path + '_boosting.png', recover_img.transpose())
 
 
 if __name__ == '__main__':

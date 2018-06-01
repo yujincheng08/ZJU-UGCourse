@@ -40,9 +40,4 @@ if __name__ == '__main__':
     cv.imshow("After", recover_img.transpose())
     cv.waitKey(0)
     cv.destroyAllWindows()
-
-
-
-
-
-
+    cv.imwrite(img_path + '_mean.png', recover_img.transpose())
