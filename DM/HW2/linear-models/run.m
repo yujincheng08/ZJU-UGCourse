@@ -112,7 +112,7 @@ plotdata(X, y, w_f, w_g, 'Logistic Regression');
 %% Part7: Logistic Regression: noisy
 nRep = 100; % number of replicates
 nTrain = 100; % number of training data
-nTest = 10000; % number of training data
+nTest = 100; % number of training data
 E_train = 0;
 E_test = 0;
 for i = 1:nRep
@@ -130,14 +130,23 @@ plotdata(X, y, w_f, w_g, 'Logistic Regression: noisy');
 
 %% Part8: SVM
 nRep = 1000; % number of replicates
-nTrain = 100; % number of training data
-
+nTrain = 30; % number of training data
+nTest = 100; % number of training data
+num_sv = 0;
+E_train = 0;
+E_test = 0;
 for i = 1:nRep
     [X, y, w_f] = mkdata(nTrain);
     [w_g, num_sc] = svm(X, y);
-    % Compute training, testing error
-    % Sum up number of support vectors
+    num_sv = num_sv + num_sc;
+    E_train = E_train + sum(sum(w_g .* [ones(1, nTrain); X], 1).* y < 0);
+    X_test = [ones(1, nTest); rand(2, nTest)*(range(2)-range(1)) + range(1)];
+    y_test = sign(w_f'* X_test);
+    E_test = E_test + sum(sum(w_g .* X_test, 1) .* y_test < 0);
 end
-
-%fprintf('E_train is %f, E_test is %f.\n', E_train, E_test);
+E_train = E_train / nRep / nTrain;
+E_test = E_test / nRep / nTest;
+num_sv = E_train / nRep;
+fprintf('E_train is %f, E_test is %f.\n', E_train, E_test);
+fprintf('Average number of supported vectors is %d.\n', num_sv);
 plotdata(X, y, w_f, w_g, 'SVM');

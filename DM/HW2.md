@@ -18,3 +18,35 @@
     1. When the size of the training set that is not linearly separable is 100, the train error rate is 13.6659%, and the test error rate is 5.2%.
     1. The training error rate is 49% and the test error rate is 54.96%.
     1. After transformation, the training error rate becomes 5.0% and the test error rate becomes 5.2%.
+- c. Logistic Regression
+    In our problem, the label is $\left\{1, -1\right\}$. So using sigmoid function to estimating the probabilities, we have:
+    $$
+    P(y_i=1\mid \mathbf{x}_i, \mathbf{w})=\frac{1}{1+e^{-\mathbf{w}^T\mathbf{x}_i}}\\
+    P(y_i=-1\mid \mathbf{x}_i, \mathbf{w})=1-\frac{1}{1+e^{-\mathbf{w}^T\mathbf{x}_i}}=\frac{1}{1+e^{\mathbf{w}^T\mathbf{x}_i}}
+    $$
+    so:
+    $$
+    P(y_i\mid \mathbf{x}_i, \mathbf{w})=\frac{1}{1+e^{-y_i\mathbf{w}^T\mathbf{x}_i}}
+    $$
+    Using MLE, the log probability of dataset D is:
+    $$
+    l(D)=-\sum_i{\ln{\left(1+e^{-y_i\mathbf{w}^T\mathbf{x}_i}\right)}}
+    $$
+    To maximize $l(D)$ is to minimize $-l(D)$. So the error function is defined as:
+    $$
+    E(D)=\sum_i{\ln{\left(1+e^{-y_i\mathbf{w}^T\mathbf{x}_i}\right)}}
+    $$
+    Using gradient descent to minimize $E(D)$, suppose the learning rate is $\eta$, the gradient of $E(D)$ is:
+    $$
+    \nabla E(D)=\sum_i{\frac{-y_i\mathbf{x}_i}{1+e^{y_i\mathbf{w}^T\mathbf{x}_i}}}
+    $$
+    So applying gradient descent, the iteration step is:
+    $$
+    \mathbf{w}_{t+1} = \mathbf{w}_t - \eta\sum_i{\frac{-y_i\mathbf{x}_i}{1+e^{y_i\mathbf{w}^T\mathbf{x}_i}}}
+    $$
+    1. The training error rate of the linearly separable training set of size 100 is 0.76% and the test error rate is 1.0%.
+    1. The training error rate of a noisy training set is 13.08%. And the test error rate is 6%.
+- d. Support Vector Machine
+    1. The training error rate is 0.0% and the test error rate is 3.3% with 30 linearly separable training data.
+    1. For linearly separable training data with size 100, the training error rate is 0.005%, and the test error rate is 1.3%.
+    1. The average number of support vectors are 5.0 when training data size is 100.
