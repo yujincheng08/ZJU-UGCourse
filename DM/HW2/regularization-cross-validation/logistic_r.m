@@ -9,5 +9,10 @@ function w = logistic_r(X, y, lambda)
 %
 
 % YOUR CODE HERE
-
+w = rand(size(X, 1) + 1, 1);
+rate = 0.1;
+x = [ones(1, size(X, 2)); X];
+for i=1:100
+    w = w - rate * (sum(-y ./ ( 1 + exp(w' * x .* y)) .* x,2) + 2 * lambda * w);
+end
 end

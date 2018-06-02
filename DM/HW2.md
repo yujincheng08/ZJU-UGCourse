@@ -50,3 +50,13 @@
     1. The training error rate is 0.0% and the test error rate is 3.3% with 30 linearly separable training data.
     1. For linearly separable training data with size 100, the training error rate is 0.005%, and the test error rate is 1.3%.
     1. The average number of support vectors are 5.0 when training data size is 100.
+
+## 2. Regularization and Cross-Validation
+- a. 
+    1. The $\lambda$ chosen by LOOCV is 100.
+    1. The $\sum_{i=1}^m\omega_i^2$ with regularization is 0.113724, and is 0.887821 without regularization.
+    1. The training error rate is 0.0%, the test error rate is 6.4289%.
+    Without regularization, the training error rate is 0.0%, the test error rate is 9.0909%.
+- b.
+    The $\lambda$ chosen by LOOCV is 0.001. The training error rate is 0.0%, the testing error is 6.0773%.
+    Without regularization, the training error is 0.0%, the test error rate is 6.4289%.
