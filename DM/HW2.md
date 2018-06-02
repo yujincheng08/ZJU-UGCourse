@@ -60,3 +60,10 @@
 - b.
     The $\lambda$ chosen by LOOCV is 0.001. The training error rate is 0.0%, the testing error is 6.0773%.
     Without regularization, the training error is 0.0%, the test error rate is 6.4289%.
+## 3. Bias Variance Trade-off
+- a
+    1. False. A more training examples will only improve the test error of those models with high variance rather than high bias.
+    1. False. Models with high variance are more likely to perform worse than those with high bias if the training data set is small.
+    1. True. More complex the model is, higher variance it will have.
+    1. False. If the regularization parameter $\lambda$ is too high, the models become more linear and its performance might decrease.
+    1. False. It does hurt the performance.
