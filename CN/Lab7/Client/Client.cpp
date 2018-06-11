@@ -98,7 +98,8 @@ Client::Client(int argc, char **argv) {
       }
       std::cerr << "Not a valid command" << std::endl;
     } catch (SocketException &e) {
-      std::cerr << e.what() << std::endl << "> " << std::ends;
+      std::cerr << e.what() << std::endl;
+      std::cout << "> " << std::flush;
     }
   }
 
