@@ -7,6 +7,8 @@
 
 #include <message.h>
 #include <mutex>
+#include <condition_variable>
+
 class Client {
  public:
   Client(int argc, char *argv[]);
@@ -14,6 +16,9 @@ class Client {
   void receive();
   void handleReply(Reply const &reply);
   Socket socket_;
+  std::mutex mutex_;
+  std::condition_variable cv_;
+  void wait();
 };
 
 #endif //SERVER_CLIENT_H

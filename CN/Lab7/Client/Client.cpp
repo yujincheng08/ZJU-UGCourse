@@ -8,13 +8,18 @@
 #include <message.h>
 #include <thread>
 #include <functional>
+#include <chrono>
+using namespace std::chrono_literals;
 
 Client::Client(int argc, char **argv) {
   std::thread thread;
   std::string command;
+  std::cout << "Please enter command: " << std::endl;
+  std::cout << "Available commands: " << std::endl;
+  std::cout << "\tconnect, disconnect, quit, timestamp, name, clients, send" << std::endl;
   while (true) {
     try {
-      std::cout << "Please enter command: " << std::endl;
+      std::cout << "> " << std::flush;
       std::cin >> command;
       if (command == "connect") {
         if (!socket_.isClosed()) {
@@ -27,6 +32,7 @@ Client::Client(int argc, char **argv) {
         std::cin >> host >> service;
         socket_.connect(host, service);
         thread = std::thread(std::bind(&Client::receive, this));
+        wait();
         continue;
       }
       if (command == "disconnect") {
@@ -62,16 +68,19 @@ Client::Client(int argc, char **argv) {
       if (command == "timestamp") {
         Require require(TIME);
         require.sendTo(socket_);
+        wait();
         continue;
       }
       if (command == "name") {
         Require require(NAME);
         require.sendTo(socket_);
+        wait();
         continue;
       }
       if (command == "clients") {
         Require require(CLIENT);
         require.sendTo(socket_);
+        wait();
         continue;
       }
       if (command == "send") {
@@ -89,7 +98,7 @@ Client::Client(int argc, char **argv) {
       }
       std::cerr << "Not a valid command" << std::endl;
     } catch (SocketException &e) {
-      std::cerr << e.what() << std::endl;
+      std::cerr << e.what() << std::endl << "> " << std::ends;
     }
   }
 
@@ -116,23 +125,38 @@ void Client::handleReply(Reply const &reply) {
       socket_.close();
       return;
     }
+    case SEND: {
+      if(reply.hasMessage()) {
+        std::cout<< reply.message() << std::endl;
+        cv_.notify_one();
+      } else {
+        std::cerr << "Error message got from server." << std::endl;
+      }
+      break;
+    }
     case TIME: {
-      if (reply.hasTimestamp())
+      if (reply.hasTimestamp()) {
         std::cout << "Got server timestamp: " << reply.timestamp() << std::endl;
+        cv_.notify_one();
+      }
       else
-        std::cerr << "Error message get from server." << std::endl;
+        std::cerr << "Error message got from server." << std::endl;
       break;
     }
     case NAME: {
-      if (reply.hasName())
+      if (reply.hasName()) {
         std::cout << "Got server name: " << reply.name() << std::endl;
+        cv_.notify_one();
+      }
       else
         std::cerr << "Error message get from server." << std::endl;
       break;
     }
     case HELLO: {
-      if (reply.hasMessage())
+      if (reply.hasMessage()) {
         std::cout << "Got a greet from server: " << reply.message() << std::endl;
+        cv_.notify_one();
+      }
       else
         std::cerr << "Get a greet from server without any message" << std::endl;
       break;
@@ -141,6 +165,7 @@ void Client::handleReply(Reply const &reply) {
       std::cout << "All clients are listed as follow:" << std::endl;
       for (auto &client : reply.clients())
         std::cout << "\tClient #" << client.id() << " " << client.ip() << ":" << client.service() << std::endl;
+      cv_.notify_one();
       break;
     }
     case RECEIVE: {
@@ -154,6 +179,7 @@ void Client::handleReply(Reply const &reply) {
                   << client.service()
                   << std::endl;
         std::cout << "\t" << reply.message() << std::endl;
+        cv_.notify_one();
       } else
         std::cerr << "Error message get from server." << std::endl;
       break;
@@ -162,6 +188,7 @@ void Client::handleReply(Reply const &reply) {
       std::cerr << "Receive an error from server." << std::endl;
       if (reply.hasMessage())
         std::cerr << "\t" << reply.message() << std::endl;
+      cv_.notify_one();
       break;
     }
     default: {
@@ -169,5 +196,9 @@ void Client::handleReply(Reply const &reply) {
       break;
     }
   }
+}
+void Client::wait() {
+  std::unique_lock<std::mutex> lock(mutex_);
+  cv_.wait_for(lock, 5s);
 }
 

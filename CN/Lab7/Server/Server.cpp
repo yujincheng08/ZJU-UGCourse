@@ -31,19 +31,21 @@ void Server::handle(Socket &socket) {
       require.readFrom(socket);
       if (require.type() == CLOSE) {
         std::cout << "Client #" << id << " disconnect." << std::endl;
-        mutex_.lock();
-        clientSockets_.erase(id);
-        clients_.erase(client);
-        mutex_.unlock();
+        {
+          std::lock_guard<std::mutex> lk(mutex_);
+          clientSockets_.erase(id);
+          clients_.erase(client);
+        }
         break;
       }
       handleRequire(socket, require, *client);
     } catch (SocketException &e) {
       std::cerr << "Client #" << id << ": " << e.what() << std::endl;
-      mutex_.lock();
-      clientSockets_.erase(id);
-      clients_.erase(client);
-      mutex_.unlock();
+      {
+        std::lock_guard<std::mutex> lk(mutex_);
+        clientSockets_.erase(id);
+        clients_.erase(client);
+      }
       break;
     }
   }
@@ -81,10 +83,13 @@ void Server::handleRequire(Socket &socket, Require const &require, ClientMessage
           reply.message("Not a valid ID");
           reply.sendTo(socket);
         } else {
-          Reply reply(RECEIVE);
-          reply.client(client);
-          reply.message(require.message());
-          reply.sendTo(clientSocket->second);
+          Reply msg(RECEIVE);
+          msg.client(client);
+          msg.message(require.message());
+          msg.sendTo(clientSocket->second);
+          Reply reply(SEND);
+          reply.message("Sent");
+          reply.sendTo(socket);
         }
         break;
       } else {
@@ -103,13 +108,12 @@ void Server::handleRequire(Socket &socket, Require const &require, ClientMessage
 }
 
 Server::~Server() {
-  mutex_.lock();
   Reply reply(CLOSE);
+  std::lock_guard<std::mutex> lk(mutex_);
   for (auto socket : clientSockets_) {
     reply.sendTo(socket.second);
     socket.second.close();
   }
-  mutex_.unlock();
 }
 void Server::accept() {
   while (true) {
@@ -124,7 +128,16 @@ void Server::accept() {
 }
 void Server::start() {
   std::string command;
-  serverSocket_.bind("::", "6000");
+  const std::string host = "::";
+  const std::string port = "1155";
+  try {
+    serverSocket_.bind(host, port);
+  }catch (SocketException &e) {
+    std::cerr<< e.what() << std::endl;
+    return;
+  }
+  std::cout << "Server started on " << host << ":" << port << std::endl;
+  std::cout << "Press ^C to stop the server." << std::endl;
   acceptThread_ = std::thread(std::bind(&Server::accept, this));
   while (true) {
     std::cin >> command;

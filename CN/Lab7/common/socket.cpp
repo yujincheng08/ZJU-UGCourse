@@ -122,18 +122,29 @@ std::string Socket::read(size_t const &size) {
   std::string result;
   result.resize(size);
   auto realSize = ::read(socket_, &result[0], size);
-  if (realSize < 0)
+  if (realSize < 0) {
+    isClosed_ = true;
     throw SocketException("Read error: " + std::string(strerror(errno)));
-  else
-    result.resize(static_cast<size_t>(realSize));
+  }
+  else if(realSize == 0)  {
+    isClosed_ = true;
+    throw SocketException("Disconnected");
+  }
+  result.resize(static_cast<size_t>(realSize));
   return result;
 
 }
 
 ssize_t Socket::write(std::string const &buff) {
   auto result = ::write(socket_, &buff[0], buff.size());
-  if (result < 0)
+  if (result < 0) {
+    isClosed_ = true;
     throw SocketException("Write error: " + std::string(strerror(errno)));
+    }
+  else if(result == 0) {
+    isClosed_ = true;
+    throw SocketException("Disconnected");
+  }
   return result;
 }
 
