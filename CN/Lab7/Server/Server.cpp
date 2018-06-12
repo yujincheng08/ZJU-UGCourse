@@ -29,15 +29,6 @@ void Server::handle(Socket &socket) {
     try {
       Require require;
       require.readFrom(socket);
-      if (require.type() == CLOSE) {
-        log(id, "disconnected");
-        {
-          std::lock_guard<std::mutex> lk(mutex_);
-          clientSockets_.erase(id);
-          clients_.erase(client);
-        }
-        break;
-      }
       handleRequire(socket, require, *client);
     } catch (SocketException &e) {
       std::cerr << "Client #" << id << ": " << e.what() << std::endl;
@@ -120,14 +111,8 @@ void Server::handleRequire(Socket &socket, Require const &require, ClientMessage
   }
 }
 
-Server::~Server() {
-  Reply reply(CLOSE);
-  std::lock_guard<std::mutex> lk(mutex_);
-  for (auto socket : clientSockets_) {
-    reply.sendTo(socket.second);
-    socket.second.close();
-  }
-}
+Server::~Server() = default;
+
 void Server::accept() {
   while (true) {
     try {
@@ -160,25 +145,22 @@ void Server::start() {
     } else
       std::cerr << "Enter quit to end the server" << std::endl;
   }
-  if (acceptThread_.joinable()) {
-    acceptThread_.detach();
-    pthread_cancel(acceptThread_.native_handle());
-  }
+  serverSocket_.close();
+  for (auto socket : clientSockets_)
+    if (!socket.second.isClosed())
+      socket.second.close();
   for (auto &thread : threads_) {
     if (thread.joinable()) {
-      thread.detach();
-      pthread_cancel(thread.native_handle());
+      thread.join();
     }
   }
-  Reply reply(CLOSE);
-  for (auto socket : clientSockets_) {
-    if (!socket.second.isClosed()) {
-      reply.sendTo(socket.second);
-      socket.second.close();
-
-    }
+  if (acceptThread_.joinable()) {
+    acceptThread_.join();
   }
+  clientSockets_.clear();
+  threads_.clear();
 }
+
 void Server::log(uint64_t const &id, std::string const &msg) {
   std::lock_guard<std::mutex> lk(mutex_);
   std::cout << "Client #" << id << ": " << msg << std::endl;

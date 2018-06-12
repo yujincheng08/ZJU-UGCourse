@@ -56,7 +56,7 @@ Socket ServerSocket::accept() {
   sockaddr_storage address{};
   socklen_t addressLen = sizeof(sockaddr_storage);
   result.socket_ = ::accept(socket_, reinterpret_cast<sockaddr *> (&address), &addressLen);
-  if (result.socket_ < 0)
+  if (result.socket_ <= 0)
     throw SocketException("Accept Error: " + std::string(strerror(errno)));
   char host[NI_MAXHOST], service[NI_MAXSERV];
   if (auto s = getnameinfo(reinterpret_cast<sockaddr *>(&address), addressLen, host, NI_MAXHOST,
@@ -68,9 +68,12 @@ Socket ServerSocket::accept() {
 }
 
 void ServerSocket::close() {
-  ::close(socket_);
+  shutdown(socket_, SHUT_RDWR);
+  if (::close(socket_) < 0)
+    throw SocketException("Close error: " + std::string(strerror(errno)));
   isClose_ = true;
 }
+
 ServerSocket::ServerSocket(std::string const &port, unsigned const &backlog, std::string const &ip) : ServerSocket() {
   bind(ip, port, backlog);
 }
@@ -151,6 +154,7 @@ ssize_t Socket::write(std::string const &buff) {
 }
 
 void Socket::close() {
+  shutdown(socket_, SHUT_RDWR);
   if (::close(socket_) < 0)
     throw SocketException("Close error: " + std::string(strerror(errno)));
   isClosed_ = true;

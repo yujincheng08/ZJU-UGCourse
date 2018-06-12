@@ -24,11 +24,12 @@ Client::Client(int argc, char **argv) {
         break;
     } catch (SocketException &e) {
       std::cerr << e.what() << std::endl;
-      std::cout << "> " << std::flush;
+      if (socket_.isClosed() && thread_.joinable())
+        thread_.join();
     }
   }
-
 }
+
 
 void Client::receive() {
   while (true) {
@@ -36,21 +37,15 @@ void Client::receive() {
       Reply reply;
       reply.readFrom(socket_);
       handleReply(reply);
-      if (reply.type() == CLOSE)
-        break;
     } catch (SocketException &e) {
       std::cerr << e.what() << std::endl;
+      cv_.notify_one();
       break;
     }
   }
 }
 void Client::handleReply(Reply const &reply) {
   switch (reply.type()) {
-    case CLOSE: {
-      std::cout << "Disconnect from server" << std::endl;
-      socket_.close();
-      return;
-    }
     case SEND: {
       if (reply.hasMessage()) {
         std::cout << reply.message() << std::endl;
@@ -157,29 +152,18 @@ void Client::handleCommand(std::string const &command) {
     return;
   }
   if (command == "disconnect") {
-    if (!socket_.isClosed()) {
-      Require require(CLOSE);
-      require.sendTo(socket_);
+    if (!socket_.isClosed())
       socket_.close();
-      if (thread_.joinable()) {
-        thread_.detach();
-        pthread_cancel(thread_.native_handle());
-      }
-    }
-    std::cout << "Disconnected from server" << std::endl;
+    if(thread_.joinable())
+      thread_.join();
     return;
   }
   if (command == "quit") {
     std::cout << "Bye" << std::endl;
-    if (!socket_.isClosed()) {
-      Require require(CLOSE);
-      require.sendTo(socket_);
+    if (!socket_.isClosed())
       socket_.close();
-    }
-    if (thread_.joinable()) {
-      thread_.detach();
-      pthread_cancel(thread_.native_handle());
-    }
+    if(thread_.joinable())
+      thread_.join();
     return;
   }
   if (socket_.isClosed()) {
@@ -211,7 +195,7 @@ void Client::handleCommand(std::string const &command) {
     require.id(id);
 
     std::string first;
-    std::cin>> first;
+    std::cin >> first;
     std::stringstream message;
 
     message << first;
