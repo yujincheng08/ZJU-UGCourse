@@ -12,91 +12,16 @@
 using namespace std::chrono_literals;
 
 Client::Client(int argc, char **argv) {
-  std::thread thread;
   std::string command;
   std::cout << "Please enter command: " << std::endl;
-  std::cout << "Available commands: " << std::endl;
-  std::cout << "\tconnect, disconnect, quit, timestamp, name, clients, send" << std::endl;
+  printHelp();
   while (true) {
     try {
       std::cout << "> " << std::flush;
       std::cin >> command;
-      if (command == "connect") {
-        if (!socket_.isClosed()) {
-          std::cerr << "You have to disconnect first" << std::endl;
-          continue;
-        }
-        std::cout << "Hostname and service:" << std::endl;
-        std::string host;
-        std::string service;
-        std::cin >> host >> service;
-        socket_.connect(host, service);
-        thread = std::thread(std::bind(&Client::receive, this));
-        wait();
-        continue;
-      }
-      if (command == "disconnect") {
-        if (!socket_.isClosed()) {
-          Require require(CLOSE);
-          require.sendTo(socket_);
-          socket_.close();
-          if (thread.joinable()) {
-            thread.detach();
-            pthread_cancel(thread.native_handle());
-          }
-        }
-        std::cout << "Disconnected from server" << std::endl;
-        continue;
-      }
-      if (command == "quit") {
-        std::cout << "Bye" << std::endl;
-        if (!socket_.isClosed()) {
-          Require require(CLOSE);
-          require.sendTo(socket_);
-          socket_.close();
-        }
-        if (thread.joinable()) {
-          thread.detach();
-          pthread_cancel(thread.native_handle());
-        }
+      handleCommand(command);
+      if(command == "quit")
         break;
-      }
-      if (socket_.isClosed()) {
-        std::cout << "You have to connect first" << std::endl;
-        continue;
-      }
-      if (command == "timestamp") {
-        Require require(TIME);
-        require.sendTo(socket_);
-        wait();
-        continue;
-      }
-      if (command == "name") {
-        Require require(NAME);
-        require.sendTo(socket_);
-        wait();
-        continue;
-      }
-      if (command == "clients") {
-        Require require(CLIENT);
-        require.sendTo(socket_);
-        wait();
-        continue;
-      }
-      if (command == "send") {
-        Require require(SEND);
-        std::cout << "Please enter id: " << std::endl;
-        decltype(require.id()) id;
-        std::cin >> id;
-        require.id(id);
-        std::cout << "Please enter message: " << std::endl;
-        std::string message;
-        std::cin >> message;
-        require.message(message);
-        require.sendTo(socket_);
-        continue;
-      }
-      std::cerr << "Not a valid command" << std::endl;
     } catch (SocketException &e) {
       std::cerr << e.what() << std::endl;
       std::cout << "> " << std::flush;
@@ -111,7 +36,7 @@ void Client::receive() {
       Reply reply;
       reply.readFrom(socket_);
       handleReply(reply);
-      if(reply.type() == CLOSE)
+      if (reply.type() == CLOSE)
         break;
     } catch (SocketException &e) {
       std::cerr << e.what() << std::endl;
@@ -127,8 +52,8 @@ void Client::handleReply(Reply const &reply) {
       return;
     }
     case SEND: {
-      if(reply.hasMessage()) {
-        std::cout<< reply.message() << std::endl;
+      if (reply.hasMessage()) {
+        std::cout << reply.message() << std::endl;
         cv_.notify_one();
       } else {
         std::cerr << "Error message got from server." << std::endl;
@@ -139,8 +64,7 @@ void Client::handleReply(Reply const &reply) {
       if (reply.hasTimestamp()) {
         std::cout << "Got server timestamp: " << reply.timestamp() << std::endl;
         cv_.notify_one();
-      }
-      else
+      } else
         std::cerr << "Error message got from server." << std::endl;
       break;
     }
@@ -148,8 +72,7 @@ void Client::handleReply(Reply const &reply) {
       if (reply.hasName()) {
         std::cout << "Got server name: " << reply.name() << std::endl;
         cv_.notify_one();
-      }
-      else
+      } else
         std::cerr << "Error message get from server." << std::endl;
       break;
     }
@@ -157,8 +80,7 @@ void Client::handleReply(Reply const &reply) {
       if (reply.hasMessage()) {
         std::cout << "Got a greet from server: " << reply.message() << std::endl;
         cv_.notify_one();
-      }
-      else
+      } else
         std::cerr << "Get a greet from server without any message" << std::endl;
       break;
     }
@@ -179,7 +101,7 @@ void Client::handleReply(Reply const &reply) {
                   << ":"
                   << client.service()
                   << std::endl;
-        std::cout << "\t" << reply.message() << std::endl;
+        std::cout << reply.message() << std::endl;
         cv_.notify_one();
       } else
         std::cerr << "Error message get from server." << std::endl;
@@ -200,6 +122,109 @@ void Client::handleReply(Reply const &reply) {
 }
 void Client::wait() {
   std::unique_lock<std::mutex> lock(mutex_);
-  cv_.wait_for(lock, 5s);
+  if (cv_.wait_for(lock, 5s) == std::cv_status::timeout) {
+    std::cerr << "Timeout waiting for server" << std::endl;
+  }
+}
+
+void Client::printHelp() const {
+  std::cout << "Available commands: " << std::endl;
+  std::cout << "\tconnect host port:   connect to host:port," << std::endl
+            << "\tdisconnect:          disconnect from server," << std::endl
+            << "\tquit:                quit the program," << std::endl
+            << "\ttimestamp:           get timestamp from server," << std::endl
+            << "\tname:                get the name from server," << std::endl
+            << "\tclients:             get clients list from server," << std::endl
+            << "\tsend client message: send message to client, message ends with ^D (EOF)," << std::endl
+            << "\thelp:                print this message." << std::endl;
+}
+void Client::handleCommand(std::string const &command) {
+  if (command == "help") {
+    printHelp();
+    return;
+  }
+  if (command == "connect") {
+    if (!socket_.isClosed()) {
+      std::cerr << "You have to disconnect first" << std::endl;
+      return;
+    }
+    std::string host;
+    std::string service;
+    std::cin >> host >> service;
+    socket_.connect(host, service);
+    thread_ = std::thread(std::bind(&Client::receive, this));
+    wait();
+    return;
+  }
+  if (command == "disconnect") {
+    if (!socket_.isClosed()) {
+      Require require(CLOSE);
+      require.sendTo(socket_);
+      socket_.close();
+      if (thread_.joinable()) {
+        thread_.detach();
+        pthread_cancel(thread_.native_handle());
+      }
+    }
+    std::cout << "Disconnected from server" << std::endl;
+    return;
+  }
+  if (command == "quit") {
+    std::cout << "Bye" << std::endl;
+    if (!socket_.isClosed()) {
+      Require require(CLOSE);
+      require.sendTo(socket_);
+      socket_.close();
+    }
+    if (thread_.joinable()) {
+      thread_.detach();
+      pthread_cancel(thread_.native_handle());
+    }
+    return;
+  }
+  if (socket_.isClosed()) {
+    std::cout << "You have to connect first" << std::endl;
+    return;
+  }
+  if (command == "timestamp") {
+    Require require(TIME);
+    require.sendTo(socket_);
+    wait();
+    return;
+  }
+  if (command == "name") {
+    Require require(NAME);
+    require.sendTo(socket_);
+    wait();
+    return;
+  }
+  if (command == "clients") {
+    Require require(CLIENT);
+    require.sendTo(socket_);
+    wait();
+    return;
+  }
+  if (command == "send") {
+    Require require(SEND);
+    decltype(require.id()) id;
+    std::cin >> id;
+    require.id(id);
+
+    std::string first;
+    std::cin>> first;
+    std::stringstream message;
+
+    message << first;
+    std::copy(std::istreambuf_iterator<char>(std::cin),
+              std::istreambuf_iterator<char>(),
+              std::ostreambuf_iterator<char>(message)
+    );
+    std::cin.clear();
+    require.message(message.str());
+    require.sendTo(socket_);
+    wait();
+    return;
+  }
+  std::cerr << "Not a valid command" << std::endl;
 }
 

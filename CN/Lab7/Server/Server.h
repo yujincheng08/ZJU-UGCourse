@@ -27,6 +27,8 @@ class Server {
 
   void handleRequire(Socket &socket, Require const &require, ClientMessage const &client);
 
+  void log(uint64_t const &id, std::string const &msg) ;
+
   std::unordered_map<std::uint64_t, Socket> clientSockets_;
 
   std::list<ClientMessage> clients_;

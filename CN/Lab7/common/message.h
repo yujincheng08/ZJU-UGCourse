@@ -52,7 +52,7 @@ class MessageArray : public std::enable_if_t<std::is_base_of_v<Message, T>, Mess
 
 template<class T>
 std::istream &MessageArray<T>::deserialize(std::istream &buff) {
-  size_t size_;
+  std::uint64_t size_;
   buff.read(reinterpret_cast<char *>(&size_), sizeof(size_));
   std::vector<T>::resize(size_);
   for (auto &element : *this)

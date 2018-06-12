@@ -8,6 +8,7 @@
 #include <message.h>
 #include <mutex>
 #include <condition_variable>
+#include <thread>
 
 class Client {
  public:
@@ -15,10 +16,13 @@ class Client {
  private:
   void receive();
   void handleReply(Reply const &reply);
+  void handleCommand(std::string const &command);
+  void wait();
+  void printHelp() const;
   Socket socket_;
   std::mutex mutex_;
   std::condition_variable cv_;
-  void wait();
+  std::thread thread_;
 };
 
 #endif //SERVER_CLIENT_H

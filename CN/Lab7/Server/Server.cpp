@@ -21,7 +21,7 @@ void Server::handle(Socket &socket) {
   ClientMessage clientMessage(id, socket.host(), socket.service());
   auto client = clients_.insert(clients_.end(), clientMessage);
   mutex_.unlock();
-  std::cout << "Client #" << id << " " << socket.host() << ":" << socket.service() << " connected" << std::endl;
+  log(id, "connected");
   Reply reply(HELLO);
   reply.message("hello Client #" + std::to_string(id));
   reply.sendTo(socket);
@@ -30,7 +30,7 @@ void Server::handle(Socket &socket) {
       Require require;
       require.readFrom(socket);
       if (require.type() == CLOSE) {
-        std::cout << "Client #" << id << " disconnect." << std::endl;
+        log(id, "disconnected");
         {
           std::lock_guard<std::mutex> lk(mutex_);
           clientSockets_.erase(id);
@@ -41,6 +41,8 @@ void Server::handle(Socket &socket) {
       handleRequire(socket, require, *client);
     } catch (SocketException &e) {
       std::cerr << "Client #" << id << ": " << e.what() << std::endl;
+      if (!socket.isClosed())
+        continue;
       {
         std::lock_guard<std::mutex> lk(mutex_);
         clientSockets_.erase(id);
@@ -54,6 +56,7 @@ void Server::handle(Socket &socket) {
 void Server::handleRequire(Socket &socket, Require const &require, ClientMessage const &client) {
   switch (require.type()) {
     case TIME: {
+      log(client.id(), "requires time.");
       Reply reply(TIME);
       std::time_t result = std::time(nullptr);
       reply.timestamp(result);
@@ -61,6 +64,7 @@ void Server::handleRequire(Socket &socket, Require const &require, ClientMessage
       break;
     }
     case NAME: {
+      log(client.id(), "requires name.");
       Reply reply(NAME);
       char hostname[HOST_NAME_MAX];
       gethostname(hostname, HOST_NAME_MAX);
@@ -69,12 +73,14 @@ void Server::handleRequire(Socket &socket, Require const &require, ClientMessage
       break;
     }
     case CLIENT: {
+      log(client.id(), "requires clients.");
       Reply reply(CLIENT);
       reply.clients().assign(clients_.begin(), clients_.end());
       reply.sendTo(socket);
       break;
     }
     case SEND: {
+      log(client.id(), "send messages.");
       if (require.hasId() && require.hasMessage()) {
         auto id = require.id();
         auto clientSocket = clientSockets_.find(id);
@@ -83,10 +89,17 @@ void Server::handleRequire(Socket &socket, Require const &require, ClientMessage
           reply.message("Not a valid ID");
           reply.sendTo(socket);
         } else {
-          Reply msg(RECEIVE);
-          msg.client(client);
-          msg.message(require.message());
-          msg.sendTo(clientSocket->second);
+          try {
+            Reply msg(RECEIVE);
+            msg.client(client);
+            msg.message(require.message());
+            msg.sendTo(clientSocket->second);
+          } catch (SocketException &e) {
+            Reply reply(ERROR);
+            reply.message(e.what());
+            reply.sendTo(socket);
+            break;
+          }
           Reply reply(SEND);
           reply.message("Sent");
           reply.sendTo(socket);
@@ -132,12 +145,12 @@ void Server::start() {
   const std::string port = "1155";
   try {
     serverSocket_.bind(host, port);
-  }catch (SocketException &e) {
-    std::cerr<< e.what() << std::endl;
+  } catch (SocketException &e) {
+    std::cerr << e.what() << std::endl;
     return;
   }
   std::cout << "Server started on " << host << ":" << port << std::endl;
-  std::cout << "Press ^C to stop the server." << std::endl;
+  std::cout << "Press ^C or type quit to stop the server." << std::endl;
   acceptThread_ = std::thread(std::bind(&Server::accept, this));
   while (true) {
     std::cin >> command;
@@ -165,4 +178,8 @@ void Server::start() {
 
     }
   }
+}
+void Server::log(uint64_t const &id, std::string const &msg) {
+  std::lock_guard<std::mutex> lk(mutex_);
+  std::cout << "Client #" << id << ": " << msg << std::endl;
 }

@@ -120,13 +120,16 @@ Socket::Socket() = default;
 
 std::string Socket::read(size_t const &size) {
   std::string result;
-  result.resize(size);
+  try {
+    result.resize(size);
+  } catch (std::bad_alloc &e) {
+    throw SocketException(e.what());
+  }
   auto realSize = ::read(socket_, &result[0], size);
   if (realSize < 0) {
     isClosed_ = true;
     throw SocketException("Read error: " + std::string(strerror(errno)));
-  }
-  else if(realSize == 0)  {
+  } else if (realSize == 0) {
     isClosed_ = true;
     throw SocketException("Disconnected");
   }
@@ -140,8 +143,7 @@ ssize_t Socket::write(std::string const &buff) {
   if (result < 0) {
     isClosed_ = true;
     throw SocketException("Write error: " + std::string(strerror(errno)));
-    }
-  else if(result == 0) {
+  } else if (result == 0) {
     isClosed_ = true;
     throw SocketException("Disconnected");
   }
