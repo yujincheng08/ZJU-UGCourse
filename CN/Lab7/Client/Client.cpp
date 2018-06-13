@@ -57,6 +57,8 @@ void Client::handleReply(Reply const &reply) {
     }
     case TIME: {
       if (reply.hasTimestamp()) {
+        static size_t count = 0u;
+        std::cout << ++count << ": ";
         std::cout << "Got server timestamp: " << reply.timestamp() << std::endl;
         cv_.notify_one();
       } else
@@ -172,7 +174,8 @@ void Client::handleCommand(std::string const &command) {
   }
   if (command == "timestamp") {
     Require require(TIME);
-    require.sendTo(socket_);
+    for(size_t i = 0u; i < 100u; ++i)
+      require.sendTo(socket_);
     wait();
     return;
   }
