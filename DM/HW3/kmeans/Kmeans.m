@@ -1,4 +1,4 @@
-function [idx, ctrs, iter_ctrs] = kmeans(X, K)
+function [idx, ctrs, iter_ctrs] = Kmeans(X, K)
 %KMEANS K-Means clustering algorithm
 %
 %   Input: X - data point features, n-by-p maxtirx.
@@ -9,8 +9,8 @@ function [idx, ctrs, iter_ctrs] = kmeans(X, K)
 %           iter_ctrs - cluster centers of each iteration, K-by-p-by-iter
 %                       3D matrix.
 ctrs = datasample(X, K, 1, 'Replace', false);
-iter_ctrs = ctrs;
 idx = zeros(1, size(X,1));
+iter_ctrs = ctrs;
 while(true)
     [~, idx_new] = pdist2(ctrs, X, 'euclidean','Smallest', 1);
     if(idx_new == idx)
@@ -22,5 +22,4 @@ while(true)
     iter_ctrs = cat(3, iter_ctrs, ctrs);
     idx = idx_new;
 end
-kmeans_plot(X, idx, ctrs, iter_ctrs);
 end
