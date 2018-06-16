@@ -64,7 +64,7 @@ public class RequestHandler implements Runnable {
         writer.print("HTTP/1.1");
         writer.print(code);
         writer.println(" " + status);
-        writer.println("Server: 2nweb: a tiny, safe Web server (static pages only)");
+        writer.println("Server: Homework written by Jincheng YU");
         writer.println("Content-Length: " + data.length);
         writer.println("Connection: close");
         writer.print("Content-Type: ");
