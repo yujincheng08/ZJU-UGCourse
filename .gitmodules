@@ -10,3 +10,7 @@
 	path = AI/MiniAlphaReversi
 	url = git@github.com:yujincheng08/MiniAlphaReversi.git
 	branch = master
+[submodule "BS"]
+	path = BS
+	url = git@github.com:yujincheng08/CiCi.git
+	branch = master
