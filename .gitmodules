@@ -18,3 +18,6 @@
 	path = Compile/Tiny-Tiger
 	url = git@github.com:yujincheng08/Tiny-Tiger.git
 	branch = llvm
+[submodule "Hardware"]
+	path = Hardware
+	url = git@github.com:yujincheng08/Hardware-Course.git
