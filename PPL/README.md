@@ -56,7 +56,7 @@
 * `stop`：停止执行
 * `export`：将本地make的值输出到全局
 
-##表达式计算
+## 表达式计算
 
 允许使用以下运算符对数字进行计算：
 
@@ -64,7 +64,7 @@
 	
 为了方便识别，解释器的实现可以要求表达式的外面有括号包围。
 
-##类型判断
+## 类型判断
 
 * `isnumber <value>`：返回value是否是数字 
 * `isword <value>`：返回value是否是字
@@ -72,13 +72,13 @@
 * `isbool <value>`：返回value是否是布尔量 
 * `isempty <word|list>`: 返回word或list是否是空
 
-##数值计算
+## 数值计算
 
 * `random <number>`：返回[0,number)的一个随机数
 * `sqrt <number>`：返回number的平方根
 * `int <number>`: floor the int
 
-##字表处理
+## 字表处理
 
 * `word <word> <word|number|bool>`：将两个word合并为一个word，第二个值可以是word、number或bool
 * `if <bool> <list1> <list2>`：如果bool为真，则执行list1，否则执行list2。list均可以为空表
@@ -90,7 +90,7 @@
 * `butfirst <word|list>`：返回除第一个元素外剩下的表，或除第一个字符外剩下的字
 * `butlast <word|list>`：返回除最后一个元素外剩下的表，或除最后一个字符外剩下的字
 
-##其他操作
+## 其他操作
 
 * `wait <number>`：等待number个ms
 * `save <word>`：保存当前命名空间在word文件中
